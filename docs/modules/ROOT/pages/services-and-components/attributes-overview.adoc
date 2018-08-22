@@ -105,6 +105,9 @@ Unless a specific `ViewElement` type has been specified, this will force the con
 |`EntityAttributes.PROPERTY_REQUIRED`
 |Should be a `Boolean` value that sets if a control for this property should be marked as required or not.
 
+|`EntityAttributes.FORM_ENCTYPE`
+|The `enctype` that should be used on a HTML form when a control for this property is present.
+
 |===
 
 [discrete]
@@ -135,5 +138,7 @@ See `EntityAttributeRegistrars.adminMenu()` variations for helper factory method
 |Optionally contains a `BiConsumer<EntityViewFactory, EntityViewContext>` that should be used to verify access to the view.
 Usually the default `EntityViewFactoryAttributes.defaultAccessValidator()` is set, which inspects the `AllowableAction.class` attribute.
 
+|`EntityAttributes.FORM_ENCTYPE`
+|The `enctype` that should be used on the HTML form rendere by this view.
 
 |===

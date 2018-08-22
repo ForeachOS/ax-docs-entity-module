@@ -1,5 +1,13 @@
 = 3.x.x release notes
 
+[#3-2-0]
+== 3.2.0-SNAPSHOT
+
+* addition of `EntityAttributes.FORM_ENCTYPE` that can be specified as `EntityViewFactory` or `EntityPropertyDescriptor` attribute
+** its value should be the actual enctype that should be used for submitting the form of a form view, eg `FormViewElement.ENC_MULTIPART`
+** this is especially useful to change the form enctype based on the presence of property descriptors (for example a file property)
+** the attribute on a `EntityViewFactory` will take precedence, property descriptors will only be inspected if it is missing
+
 [#3-1-0]
 == 3.1.0.RELEASE
 
