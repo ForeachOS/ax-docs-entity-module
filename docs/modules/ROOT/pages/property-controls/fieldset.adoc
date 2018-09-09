@@ -1,4 +1,6 @@
-[[fieldset-properties]]
+= Fieldset
+
+
 == Fieldset properties
 A fieldset is a visual grouping of other properties, inside a block that has a title (legend) and optional description.
 Fieldsets are rendered as a `FieldsetFormElement`.

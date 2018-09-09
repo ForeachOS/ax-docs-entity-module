@@ -59,7 +59,7 @@ You will have to take care yourself of complex delete scenarios - like deleting 
 [[configuring-form-text]]
 ==== Configuring form controls text
 A form view usually renders properties in either `ViewElementMode.FORM_WRITE` or `ViewElementMode.FORM_READ`, depending on the fact if a property can be edited or not.
-By default, a property like this would be rendered as a form group (`FormGroupElement` that is usually a combination of the label and the control for the property) or a <<fieldset-properties,fieldset>> (`FieldsetFormElement`).
+By default, a property like this would be rendered as a form group (`FormGroupElement` that is usually a combination of the label and the control for the property) or as a xref:property-controls/fieldset.adoc[fieldset].
 
 In `FORM_READ` (readonly) mode, the default form renders only the label of a property.
 You can customize the label value by setting the corresponding message code, for example: `UserModule.entities.user.properties.username=Name of the user`.

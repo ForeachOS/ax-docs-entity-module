@@ -7,6 +7,11 @@
 ** its value should be the actual enctype that should be used for submitting the form of a form view, eg `FormViewElement.ENC_MULTIPART`
 ** this is especially useful to change the form enctype based on the presence of property descriptors (for example a file property)
 ** the attribute on a `EntityViewFactory` will take precedence, property descriptors will only be inspected if it is missing
+* more options are now available for xref:property-controls/fieldset.adoc[fieldset property controls]
+** a fieldset can now be rendered either as a HTML `FieldsetFormElement` or using a custom template
+** a custom template can be configured on a property using the `ViewElementFieldset.TEMPLATE` attribute
+** several default templates have been provided with default styling for common form layouts in Admin Web
+** if no property selector is specified, a fieldset property will select all child properties as its members
 
 [#3-1-0]
 == 3.1.0.RELEASE
