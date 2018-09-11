@@ -1,49 +1,138 @@
 = Fieldset
+include::{partialsdir}/_attributes.adoc[]
 
+A fieldset property is a single property that represents a group of other properties.
+Usually this grouping is also visible on the user interface due to different styling.
 
-== Fieldset properties
-A fieldset is a visual grouping of other properties, inside a block that has a title (legend) and optional description.
-Fieldsets are rendered as a `FieldsetFormElement`.
-You can postprocess a group of `ViewElement` instances and move them manually to a `FieldsetFormElement`, or you can set a fieldset as the `ViewElementMode` for a property.
+NOTE: A fieldset in this context is not the same as an HTML `fieldset` element.
+Fieldsets can be rendered in many different ways, a HTML `fieldset` is one of the rendering options.
 
-In the latter, because a fieldset is a collection of other properties, you will need to specify which properties make up the fieldset.
+== Creating a fieldset property
+
+You can render any property as a fieldset by setting the `BootstrapUiElements.FIELDSET` as the `viewElementType` for the relevant rendering mode (usually `FORM_WRITE` and `FORM_READ`).
+
+Properties mapped to an `@Embedded` type will automatically be rendered as a fieldset and do not need the `viewElementType` set.
+
+.Fieldset members
+Because a fieldset is a collection of other properties, you will need to specify which properties make up the fieldset.
 Specifying the properties of fieldset is done by setting the `EntityAttributes.FIELDSET_PROPERTY_SELECTOR` to a valid `EntityPropertySelector`.
 
-The following is an example of manually adding a fieldset property to a form, and moving some properties to it:
+If you do not specify a property selector, all child properties will be selected by default.
+For example: if your fieldset property is `address`, the default selector will be `address.*`.
+
+.Example: creating a custom fieldset property
 [source,java,indent=0]
 [subs="verbatim,attributes"]
 ----
 entities.withType( WebPage.class )
         .createOrUpdateFormView( fvb -> fvb
-                /**
-                 * First create a new property that is a fieldset
-                 * of the existing url and urlGenerated properties.
-                 * We add this property only to the scope of the
-                 * create or update form view.
-                 */
                 .properties( props -> props
                         .property( "url-settings" )
                         .displayName( "URL settings" )
-                        .viewElementType( ViewElementMode.FORM_WRITE, BootstrapUiElements.FIELDSET )
+                        .viewElementType( ViewElementMode.FORM_WRITE, BootstrapUiElements.FIELDSET ) <1>
                         .attribute(
-                                EntityAttributes.FIELDSET_PROPERTY_SELECTOR,
+                                EntityAttributes.FIELDSET_PROPERTY_SELECTOR, <2>
                                 EntityPropertySelector.of( "url", "urlGenerated" )
                         )
                 )
-                /**
-                 * Because url and urlGenerated are direct members
-                 * of WebPage, we need to ensure they are not rendered
-                 * directly anymore, so we remove them from the form view.
-                 * The new url-settings property will be selected by default
-                 * and in turn will render the url and urlGenerated properties.
-                 *
-                 * If we were to configure the url-settings property as hidden,
-                 * we would have to explicitly include it in the form view as well.
-                 * That would probably be a preferred approach if we have defined
-                 * url-settings in the global property registry for WebPage.
-                 */
-                .showProperties( "*", "~url", "~urlGenerated" )
+                .showProperties( "*", "url-settings", "~url", "~urlGenerated" ) <3>
         )
 ----
 
-NOTE: Properties mapped to an `@Embedded` type will automatically be mapped as a fieldset type.
+<1> Create a new property `url-settings` that renders as a fieldset on a form.
+Create the property directly on the form view, for layouting purposes.
+<2> Select existing properties `url` and `urlGenerated` as members of the fieldset.
+<3> Add `url-settings` to the form view, but remove `url` and `urlGenerated` as standalone controls.
+
+== Fieldset rendering
+
+A fieldset property is rendered using a `ViewElementFieldset` object.
+A `ViewElementFieldset` holds 4 containers:
+
+`title`::
+  Holds elements that make up the title of the fieldset.
+  This corresponds to the property name and optional tooltip.
+`header`::
+  Holds elements that should be rendered before the actual members of the fieldset.
+  Usually a `description` message code that has been configured for the property.
+`body`::
+  Holds the actual members of the fieldset.
+  These are usually other form groups of the individual properties.
+`footer`::
+  Holds elements that should be rendered after the actual members of the fieldset.
+  Usually a `help` message code that has been configured for the property.
+
+How the actual properties are rendered is determined by the `template` attribute.
+This is a `Function` that takes the `ViewElementFieldset` as input parameter, and returns a single `ViewElement` that should be rendered.
+
+If not custom template has been configured, the output will be an HTML `fieldset` element.
+
+=== Configuring a custom template
+A custom template for a fieldset property can be set as a `ViewElementFieldset.TEMPLATE` attribute on the property descriptor.
+
+[source,java,indent=0]
+[subs="verbatim,attributes"]
+----
+.properties( props -> props
+        .property( "url-settings" )
+        ...
+        .attribute(
+                ViewElementFieldset.TEMPLATE,
+                ViewElementFieldset.template( fieldset -> {
+                    // only render the body of the fieldset but wrap it in a div
+                    NodeViewElement membersOnly = new NodeViewElement( "div" );
+                    membersOnly.addCssClass( "members-only" );
+                    membersOnly.addChild( fieldset.getBody() );
+                    return membersOnly;
+                } );
+        )
+)
+----
+
+=== Default templates
+
+A number of default template functions are available for building layouts:
+
+
+[cols="1,2a"]
+|===
+|Template |Example styling
+
+|Render fieldset as HTML `fieldset` element. +
+ +
+ `ViewElementFieldset.TEMPLATE_FIELDSET`
+|image::fieldset-fieldset.png[]
+
+|Render fieldset as `section` element with heading (`h1`, `h2`, `h3`). +
+ +
+ `ViewElementFieldset.TEMPLATE_SECTION_H1`
+`ViewElementFieldset.TEMPLATE_SECTION_H2`
+`ViewElementFieldset.TEMPLATE_SECTION_H3` +
+ +
+`ViewElementFieldset.structureTemplate(...)`
+|image::fieldset-section.png[]
+
+|Render fieldset as Bootstrap panel. +
+ +
+`ViewElementFieldset.TEMPLATE_PANEL_DEFAULT`
+`ViewElementFieldset.TEMPLATE_PANEL_PRIMARY`
+`ViewElementFieldset.TEMPLATE_PANEL_INFO`
+`ViewElementFieldset.TEMPLATE_PANEL_SUCCESS`
+`ViewElementFieldset.TEMPLATE_PANEL_WARNING`
+`ViewElementFieldset.TEMPLATE_PANEL_DANGER` +
+ +
+`ViewElementFieldset.panelTemplate(...)`
+
+|image::fieldset-panel.png[]
+
+|Render only the members of the fieldset. +
+ +
+`ViewElementFieldset.TEMPLATE_BODY_ONLY`
+|image::fieldset-body-only.png[]
+
+|===
+
+=== CSS styling
+The default templates add CSS classes to the markup identifying the different content elements.
+See the generated markup or {entity-module-javadoc}[javadoc] for `ViewElementFieldset` for all details.
+
