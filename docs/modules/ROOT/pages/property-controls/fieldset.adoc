@@ -65,7 +65,7 @@ A `ViewElementFieldset` holds 4 containers:
 How the actual properties are rendered is determined by the `template` attribute.
 This is a `Function` that takes the `ViewElementFieldset` as input parameter, and returns a single `ViewElement` that should be rendered.
 
-If not custom template has been configured, the output will be an HTML `fieldset` element.
+If no custom template has been configured, the output will be an HTML `fieldset` element.
 
 === Configuring a custom template
 A custom template for a fieldset property can be set as a `ViewElementFieldset.TEMPLATE` attribute on the property descriptor.
