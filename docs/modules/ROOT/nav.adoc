@@ -21,7 +21,6 @@
 ** xref:customizing-entities/entity-views.adoc[Entity views]
 ** xref:customizing-entities/entity-associations.adoc[Associations]
 
-* xref:securing-entities.adoc[Securing entities]
 
 * xref:building-views/index.adoc[Building entity views]
 ** xref:building-views/list-view.adoc[Creating a list view]
@@ -31,6 +30,7 @@
 ** xref:building-views/customizing-views.adoc[Customizing views]
 *** xref:building-views/customizing-views.adoc#view-processors[View processors]
 ** xref:building-views/localization.adoc[Localization & text messages]
+** xref:building-views/security-and-permissions.adoc[Security and permissions]
 
 * xref:property-controls/index.adoc[Entity property controls]
 ** xref:property-controls/autosuggest.adoc[Autosuggest]

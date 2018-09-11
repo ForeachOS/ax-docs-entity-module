@@ -1,4 +1,4 @@
-= Securing entities
+= Security and Permissions
 
 EntityModule provides base security by integrating with the xref:spring-security-module::allowable-actions.adoc[`AllowableAction`] model of `SpringSecurityModule`.
 Allowable actions define which actions an end user can perform on an item or a type.
@@ -78,7 +78,11 @@ In this case each instance has the `AllowableAction.READ` and `AllowableAction.U
 <1> Only administrators can create new books.
 <2> Only administrators can modify or delete books.
 
-== Allowable action for a view.
+NOTE: Actions specified on the configuration can be used by other components of the application, such as the various views provided by `EntityModule`.
+
+== Securing views
+
+=== Actions for default views
 
 The action registered on a view specifies which action must be present for a view to be accessible by a user.
 For each of the default views, a required action is configured.
@@ -111,15 +115,44 @@ For each of the default views, a required action is configured.
 
 If the current user does not have access to the action required for the view, then he will not have access to the page itself.
 
-.Customizing the required action for a view
-[source,java,indent=0]
-----
-		configuration.withType( Book.class )
-		             .updateFormView( fvb -> fvb.requiredAllowableAction( AllowableAction.ADMINISTER ) ) # <1>
-----
-<1> A custom required action is specified to access the update form view.
-
 When the default views are rendered, these actions are also checked when links to different views are provided.
 This means that, for example, whilst rendering the list view, each instance is checked for the presence of the `AllowableAction.UPDATE` and `AllowableAction.DELETE` action before rendering the buttons to the corresponding pages.
 
+=== Configuring custom views
+
+The default views all have an action configured to access the view.
+When creating custom views, they can be secured by providing an access validator or specifying a required action.
+
+.Providing an access validator
+[source,java,indent=0]
+----
+		configuration.withType( Book.class )
+		             .formView( "custom-view", EntityViewCustomizers.basicSettings() # <1>
+                     				             .adminMenu( "/custom-view" )
+                     				             .accessValidator( ( viewFactory, viewContext ) -> viewContext.getAllowableActions().contains( AllowableAction.ADMINISTER ) ) # <2>
+
+                     		             )
+----
+<1> A custom view is configured with basic view settings.
+`EntityViewCustomizers` provides base consumers that support common scenario's, such as adding an admin menu for the current view.
+<2> An access validator is specified that checks whether the `AllowableAction.ADMINISTER` is available.
+
+In previous example, a menu item was immediately registered for our custom view.
+Both the view and the menu item were secured via the specified access validator.
+
+In the following example, we'll create an equal configuration by specifying the required action for the view.
+The sole difference between the two examples is that the latter will not create a menu item.
+
+.Specifying a required action
+[source,java,indent=0]
+----
+		configuration.withType( Book.class )
+		             .formView( "custom-view", fvb -> fvb.requiredAllowableAction( AllowableAction.ADMINISTER ) ) # <1>
+----
+<1> A custom view is configured, secured with the `AllowableAction.ADMINISTER` action.
+
+When the access to the view is checked, one of the following scenario's applies:
+
+- An instance is present in the current view context, as such the instance will be checked for the required action.
+- No instance is present in the current view context, as such the current `EntityConfiguration` will be checked for the required action.
 
