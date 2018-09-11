@@ -1,6 +1,8 @@
 * xref:index.adoc[Guides & How-tos]
 ** General
 *** xref:general/adding-a-custom-property-to-an-entity.adoc[Creating a custom property]
+*** xref:general/creating-custom-control-for-object-type.adoc[Creating a custom control]
+*** xref:general/registering-attributes-property-of-type.adoc[Registering attributes on properties]
 ** List views
 *** xref:list-view/adding-a-custom-action-to-a-listview.adoc[Adding a row action]
 ** Form views

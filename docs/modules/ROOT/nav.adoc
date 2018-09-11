@@ -21,6 +21,8 @@
 ** xref:customizing-entities/entity-views.adoc[Entity views]
 ** xref:customizing-entities/entity-associations.adoc[Associations]
 
+* xref:securing-entities.adoc[Securing entities]
+
 * xref:building-views/index.adoc[Building entity views]
 ** xref:building-views/list-view.adoc[Creating a list view]
 ** xref:building-views/form-view.adoc[Creating a form view]

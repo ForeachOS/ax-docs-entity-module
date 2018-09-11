@@ -1,0 +1,142 @@
+= Creating a custom control
+
+On this page, you will learn how to create a custom control for rendering properties of a specific object type.
+We'll be doing this in the following steps:
+
+1. Creating a custom ViewElementBuilder that can be specified on a property.
+2. Using the custom ViewElementBuilder when a specific viewElementType is specified.
+3. Automatically using a specific viewElementType for properties of a specific object type.
+
+== Creating a custom ViewElementBuilder
+
+In this section, we'll be creating a custom `ViewElementBuilder` for a specific object type, that can be re-used in various rendering pipelines.
+As an example, we'll be creating a control for a `User` object, so that a read-only value will be rendered as the avatar and the display name.
+
+Starting off, we'll create a custom `ViewElementBuilder` by extending `ViewElementBuilderSupport`.
+
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+public class UserValueViewElementBuilder extends ViewElementBuilderSupport # <1>
+{
+    @Override
+    protected MutableViewElement createElement ( ViewElementBuilderContext builderContext ){
+		User user = EntityViewElementUtils.currentPropertyValue( builderContext, User.class ); # <2>
+		if ( user != null ) {
+			BootstrapUiBuilders.div()
+			                   .css( "user-control" )
+			                   .add( BootstrapUiBuilders.node( "img" )
+			                                            .name( "avatar" )
+			                                            .css( "user-avatar" )
+			                                            .attribute( "src", user.getAvatar() )
+			                                            .add( BootstrapUiBuilders.span()
+			                                                                     .css( "user-name" )
+			                                                                     .add( BootstrapUiBuilders.text( user.getDisplayName() ) ) )
+			                   );
+		}
+		return BootstrapUiBuilders.text( "" ) # <3>
+	}
+}
+----
+<1> The `ViewElementBuilder` extends `ViewElementBuilderSupport`.
+`ViewElementBuilderSupport` provides utility methods for creating a `ViewElement` as well as registering additional resources and processing.
+<2> The property that is being rendered is fetched from the `ViewElementBuilderContext` so that we have access to the properties of the object that is rendered.
+<3> If there is no value present, a default `ViewElementBuilder` is used.
+
+Using the above setup, we could simply render a `User` property with the following configuration.
+
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+	public void configure( EntitiesConfigurationBuilder entities ) { # <1>
+		entities.withType( Book.class )
+		        .properties(
+				        props -> props.property( "author" )
+				                      .viewElementBuilder( ViewElementMode.FORM_READ, new UserValueViewElementBuilder() ) # <2>
+		        );
+	}
+----
+<1> Entities can be configured by implementing the `EntityConfigurer` interface.
+This allows us to modify entities, their properties and their views when the `EntityConfiguration` is being built.
+<2> The created ViewElementBuilder is used when rendering a property.
+
+== Rendering a specified type as a custom ViewElement
+
+Once we have our property available, we can register the `ViewElementBuilder` to be used when a specific view element type is used.
+We'll create an `EntityViewElementBuilderFactory`, which will be used to render the correct `ViewElement` for each `ViewElementMode`.
+
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+	@Component <1>
+	public class UserViewElementBuilderFactory implements EntityViewElementBuilderFactory
+	{
+		public final static String USER_CONTROL = UserViewElementBuilderFactory.class.getName() + ".userControl"; # <2>
+
+		@Override
+		public boolean supports( String viewElementType ) {
+			return StringUtils.equals( USER_CONTROL, viewElementType ); # <2>
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public ViewElementBuilder createBuilder( EntityPropertyDescriptor entityPropertyDescriptor, ViewElementMode viewElementMode, String viewElementType ) {
+			if ( !viewElementMode.isForMultiple() ) { # <3>
+				if ( isReadOnly( entityPropertyDescriptor ) && ViewElementMode.isValue( viewElementMode ) ) { # <4>
+					return new UserValueViewElementBuilder();
+				}
+			}
+			return null;
+		}
+
+		private boolean isReadOnly( EntityPropertyDescriptor entityPropertyDescriptor ) {
+			return !entityPropertyDescriptor.isWritable() && entityPropertyDescriptor.isReadable() && !entityPropertyDescriptor.isHidden();
+		}
+	}
+----
+<1> The `EntityViewElementBuilderFactory` is automatically picked up as a bean.
+<2> When a property is rendered with the specified view element type, this `EntityViewElementBuilderFactory` will generate a control in the specific value mode.
+In this case, the control is prefixed with the fully qualified path of the factory, to ensure a unique view element type is registered.
+<3> We only want to use the control in a case where a single user is rendered.
+<4> We only want to use the specified builder when a readonly value is rendered, e.g. as a value in a list, or as a value in a formGroup.
+
+This allows us to refactor the configuration in the previous section to the following.
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+	public void configure( EntitiesConfigurationBuilder entities ) {
+		entities.withType( Book.class )
+                .properties(
+                        props -> props.property( "author" )
+                                      .viewElementType( ViewElementMode.CONTROL, UserViewElementBuilderFactory.USER_CONTROL  ) # <1>
+                );
+	}
+----
+<1> Instead of specifying a `ViewElementBuilder`, the view element type can be specified.
+
+Finally, we'll be creating a `ViewElementTypeLookupStrategy`, which will automatically use the view element type we've just defined when rendering properties of a given object type.
+
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+	@Order(1) # <1>
+	@Component
+	public class UserViewElementLookupStrategy implements ViewElementTypeLookupStrategy # <2>
+	{
+		@Override
+		public String findElementType ( EntityPropertyDescriptor entityPropertyDescriptor, ViewElementMode viewElementMode ){
+		Class<?> propertyType = entityPropertyDescriptor.getPropertyType();
+		if ( propertyType != null && User.class.isAssignableFrom( propertyType ) ) { # <3>
+			if ( ViewElementMode.isValue( viewElementMode ) ) {
+				return UserViewElementBuilderFactory.USER_CONTROL; # <3>
+			}
+		}
+		return null;
+	}
+----
+<1> Our component is registered with `Order(1)` to ensure that it is used before the default `ViewElementTypeLookupStrategy`.
+<2> A `ViewElementTypeLookupStrategy` is created to automatically resolve the view element type for a given property.
+<3> In this case, we only want to specify the view element type for a property of the object type `User` when it is rendered in a value mode.
+
+This allows us to entirely omit the `EntityConfiguration` that was defined earlier.
+

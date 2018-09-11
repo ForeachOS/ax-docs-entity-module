@@ -1,0 +1,125 @@
+= Securing entities
+
+EntityModule provides base security by integrating with the xref:spring-security-module::allowable-actions.adoc[`AllowableAction`] model of `SpringSecurityModule`.
+Allowable actions define which actions an end user can perform on an item or a type.
+These actions are by default specified in two aspects:
+
+* The allowable actions specified on the `EntityConfiguration`
+* The allowable actions specified on a view
+
+== Allowable actions for an EntityConfiguration
+
+Actions specified on an entity configuration specify which actions a user may perform on an entity type or instance.
+These actions can be fixed, for example no user can delete books via the default interface, as well as depend on custom rules, for example based on the roles of the current user.
+
+The actions on an `EntityConfiguration` are separated on two levels:
+
+* *global actions*: actions that are present for an entity type.
+* *instance actions*: actions that are present based on a specific instance for an entity type.
+
+These can be configured by specifying the `allowableActionsBuilder` when customizing the `EntityConfiguration`.
+
+NOTE: Default allowable actions are specified on each configuration which confirm that any requested action is present.
+
+.Example allowable actions builder
+[source,java,indent=0]
+----
+		configuration.withType( Book.class )
+		             .allowableActionsBuilder( new EntityConfigurationAllowableActionsBuilder()
+		             {
+			             @Override
+			             public AllowableActions getAllowableActions( EntityConfiguration<?> entityConfiguration ) { # <1>
+				             return FixedEntityAllowableActionsBuilder.DEFAULT_ALLOWABLE_ACTIONS; # <2>
+			             }
+
+			             @Override
+			             public <V> AllowableActions getAllowableActions( EntityConfiguration<V> entityConfiguration, V entity ) { # <3>
+				             return new AllowableActionSet( AllowableAction.READ.getId(), AllowableAction.UPDATE.getId() ); # <4>
+			             }
+		             } )
+----
+<1> Configuring the global actions.
+<2> All actions are allowed.
+`FixedEntityAllowableActionsBuilder.DEFAULT_ALLOWABLE_ACTIONS` always acknowledges that the requested action is present.
+<3> Configuring the instance actions.
+<4> The actions are configured based on a custom implementation.
+In this case each instance has the `AllowableAction.READ` and `AllowableAction.UPDATE` action.
+
+.Example allowable actions based on roles
+[source,java,indent=0]
+----
+	    private final CurrentSecurityPrincipalProxy currentSecurityPrincipalProxy;
+
+		configuration.withType( Book.class )
+		             .allowableActionsBuilder( new EntityConfigurationAllowableActionsBuilder()
+		             {
+			             @Override
+			             public AllowableActions getAllowableActions( EntityConfiguration<?> entityConfiguration ) {
+			                 AllowableActionSet allowableActions = new AllowableActionSet();
+			                 if( currentSecurityPrincipalProxy.hasAuthority( "ROLE_ADMIN" ){ # <1>
+			                    allowableActions.add( AllowableAction.CREATE );
+			                 }
+			                 allowableActions.add( AllowableAction.READ );
+				         return allowableActions;
+			             }
+
+			             @Override
+			             public <V> AllowableActions getAllowableActions( EntityConfiguration<V> entityConfiguration, V entity ) {
+			                AllowableActionSet allowableActions = new AllowableActionSet();
+			             	if( currentSecurityPrincipalProxy.hasAuthority( "ROLE_ADMIN" ) ) { # <2>
+			             	    allowableActions.add( AllowableAction.UPDATE );
+			             	    allowableActions.add( AllowableAction.DELETE );
+			             	}
+			                 allowableActions.add( AllowableAction.READ );
+				          return allowableActions;
+			             }
+		             } )
+----
+<1> Only administrators can create new books.
+<2> Only administrators can modify or delete books.
+
+== Allowable action for a view.
+
+The action registered on a view specifies which action must be present for a view to be accessible by a user.
+For each of the default views, a required action is configured.
+
+.Actions on default views
+[cols="1,1,1", options="header"]
+|===
+
+| View name
+| Required action
+| Level
+
+| `listView`
+| `AllowableAction.READ`
+| global
+
+| `createView`
+| `AllowableAction.CREATE`
+| global
+
+| `updateView`
+| `AllowableAction.UPDATE`
+| instance
+
+| `deleteView`
+| `AllowableAction.DELETE`
+| instance
+
+|===
+
+If the current user does not have access to the action required for the view, then he will not have access to the page itself.
+
+.Customizing the required action for a view
+[source,java,indent=0]
+----
+		configuration.withType( Book.class )
+		             .updateFormView( fvb -> fvb.requiredAllowableAction( AllowableAction.ADMINISTER ) ) # <1>
+----
+<1> A custom required action is specified to access the update form view.
+
+When the default views are rendered, these actions are also checked when links to different views are provided.
+This means that, for example, whilst rendering the list view, each instance is checked for the presence of the `AllowableAction.UPDATE` and `AllowableAction.DELETE` action before rendering the buttons to the corresponding pages.
+
+

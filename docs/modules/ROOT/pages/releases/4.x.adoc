@@ -1,0 +1,10 @@
+= 4.x.x release notes
+
+[#4-0-0]
+== 4.0.0.RELEASE
+
+* Behaviour of `EntityLinkBuilder` has been changed due to changes in Spring 5 concerning URL encoding of parameters.
+** All `linkTo` calls in `EntityViewLinks` will automatically URL encode `from` parameters correctly.
+** All calls to `withPartial`, `withFromUrl`, `withViewName`, `withQueryParam` will automatically URL encode `from` parameters correctly.
+** Calls to to `.queryParam` are now seen as literals and will not be url encoded anymore.
+If you want query parameters to be encoded you must use templated variables as seen on https://docs.spring.io/spring/docs/5.0.8.BUILD-SNAPSHOT/spring-framework-reference/web.html#web-uri-encoding.

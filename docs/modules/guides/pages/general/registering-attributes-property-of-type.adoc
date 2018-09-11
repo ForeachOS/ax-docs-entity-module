@@ -1,0 +1,33 @@
+= Registering attributes to a property of a specified type
+
+On this page, you will learn:
+
+* [*] How to register an attribute to all property descriptors of a specific type.
+
+== AbstractEntityPropertyDescriptorEnhancer
+
+Most often, we manually register attributes on a specific property that is rendered, for example to filter values in a dropdown.
+Sometimes however, this attribute should be applied to *all* properties of a given object type.
+Instead of adding the attribute manually to each property that is rendered somewhere, we'll post process the property configuration and ensure that the value is always added.
+In the following example, we'll add an EQL query that only allows users of a specific user directory to be selected.
+
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+@Component
+public class UserPropertyDescriptorEnhancer extends AbstractEntityPropertyDescriptorEnhancer # <1>
+{
+	@Override
+	protected void enhance( Class<?> entityType, MutableEntityPropertyDescriptor descriptor ) {
+		Class<?> propertyType = descriptor.getPropertyType();
+		if ( propertyType != null && User.class.isAssignableFrom( propertyType ) ) { # <2>
+			descriptor.setAttribute( EntityAttributes.OPTIONS_ENTITY_QUERY, EntityQuery.parse("userDirectory = 1")) );
+		}
+	}
+}
+----
+<1> We extend the `AbstractEntityPropertyDescriptorEnhancer` to post process any configured property on the entityRegistry.
+<2> Additional attributes should only be added for properties of the object type `User`.
+
+NOTE: The automatic addition of properties only works when a property is automatically registered and then modified.
+Properties that are manually defined will require these attributes to be specified as well.
