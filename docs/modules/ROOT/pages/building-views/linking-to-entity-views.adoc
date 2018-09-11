@@ -144,13 +144,13 @@ Every method call results in a new instance being created, so you will not make 
 ----
 // append a custom path segment
 .slash( String path )
-// append query parameter
+// append query parameter, url encoded
 .withQueryParam( String param, Object... values )
-// set a from URL ('from' query parameter)
+// set a from URL ('from' query parameter), url encoded
 .withFromUrl( String url )
-// set a partial fragment ('_partial' query parameter)
+// set a partial fragment ('_partial' query parameter), url encoded
 .withPartial( String fragment )
-// set a custom view name ('view' query parameter)
+// set a custom view name ('view' query parameter), url encoded
 .withViewName( String viewName )
 
 // return the unprocessed URI (eg. '@adminWeb:/entities/myEntity')
