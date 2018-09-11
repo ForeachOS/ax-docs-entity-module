@@ -3,6 +3,7 @@
 === Form view
 :chapter-number: 0
 
+[[create-update-view]]
 ==== create and update view
 
 default settings of a form view:
@@ -18,6 +19,20 @@ default settings of a form view:
 - supports global feedback messages set with the `EntityViewPageHelper`
 
 default processors
+
+[[readonly-view]]
+==== Readonly view
+
+A default readonly view is provided which can be further customized using the `readonlyView` builder method on an `EntityConfiguration`.
+The readonly view has the following default settings:
+
+- user must have the READ allowable action.
+- renders in FORM_READ mode
+- shows all readable properties
+- provides a `modify` button if the user has the update action
+
+The readonly view is also accessible through the default list view, if the user has access to the READ but not the UPDATE allowable action.
+This means that by default, a link to the update view will be available if the user can update the item, and a link to the readonly view will only be available if the user may not update but read the item.
 
 
 [[delete-view]]

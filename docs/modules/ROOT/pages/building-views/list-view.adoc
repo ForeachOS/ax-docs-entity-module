@@ -27,6 +27,30 @@ TODO
 Customizing the sort behaviour of a specific property can be done by setting a `Sort.Order.class` attribute on the `EntityPropertyDescriptor`.
 You can use this to sort on a different property instead, or to specify behaviour for null handling and case sensitivity.
 
+[[securing-list-view]]
+.Securing a list view
+By default, list views are accessible via the `AllowableAction.READ` action, and links to the default views are present if their corresponding action is available.
+This means, that regardless of the permissions on a specific item on the list view, the data presented on a list view will be *always* be accessible if the user has access to the list view itself.
+
+To filter these items based on an action, simply specify the `showOnlyItemsWithAction` property on the list view.
+This will filter all items on the view itself, so that only items with the specified `AllowableAction` are accessible.
+
+.Filtering items based on an `AllowableAction`
+[source,java,indent=0]
+----
+@Override
+public void configure( EntitiesConfigurationBuilder configuration ) {
+    configuration.withType( Book.class )
+                 .listView( lvb -> lvb.showOnlyItemsWithAction( AllowableAction.READ ) ); # <1>
+}
+----
+<1> Only items for which the authenticated principal has the `AllowableAction.READ` action will be present in the list view.
+
+The filtering based on allowable actions happens _after_ the various items have been fetched.
+As such, a list view can be filtered to search for specific items, and that result set will then be filtered based on the specified action.
+
+See the relevant chapter in security and permissions to learn more about xref:building-views/security-and-permissions.adoc#securing-views[securing views].
+
 [[list-view-filter]]
 ==== Filtering a list view
 

@@ -80,6 +80,7 @@ In this case each instance has the `AllowableAction.READ` and `AllowableAction.U
 
 NOTE: Actions specified on the configuration can be used by other components of the application, such as the various views provided by `EntityModule`.
 
+[[securing-views]]
 == Securing views
 
 === Actions for default views
@@ -95,19 +96,23 @@ For each of the default views, a required action is configured.
 | Required action
 | Level
 
-| `listView`
+| xref:building-views/list-view.adoc#list-view[List view]
 | `AllowableAction.READ`
 | global
 
-| `createView`
+| xref:building-views/form-view.adoc#create-update-view[Create view]
 | `AllowableAction.CREATE`
 | global
 
-| `updateView`
+| xref:building-views/form-view.adoc#readonly-view[Readonly view]
+| `AllowableAction.READ`
+| instance
+
+| xref:building-views/form-view.adoc#create-update-view[Update view]
 | `AllowableAction.UPDATE`
 | instance
 
-| `deleteView`
+| xref:building-views/form-view.adoc#delete-view[Delete view]
 | `AllowableAction.DELETE`
 | instance
 
@@ -117,6 +122,31 @@ If the current user does not have access to the action required for the view, th
 
 When the default views are rendered, these actions are also checked when links to different views are provided.
 This means that, for example, whilst rendering the list view, each instance is checked for the presence of the `AllowableAction.UPDATE` and `AllowableAction.DELETE` action before rendering the buttons to the corresponding pages.
+
+[NOTE]
+====
+Each of the default views is linked via the list view.
+These links depend on the presence of the required action, except for readonly views:
+
+- If access to the readonly view is allowed, but not to the update view, a link to the readonly view will be available.
+- If access to the update view is allowed, a link to the update view will be available but not to the readonly view.
+====
+
+==== Configuring a list view
+
+By default a list view is configured to be accessible if the global `AllowableAction.READ` action is present.
+If a user does not have access to the other actions, the list view will still be available, but links to the other views will not be provided on the list view.
+This means that even though the user may not have `AllowableAction.READ` access for a specific instance, he can still see the data presented in the list view itself.
+
+By configuring the `showOnlyItemsWithAction` on a list view, the individual entries of the list can also be filtered based on the given action.
+
+.Filtering a list by an action
+[source,java,indent=0]
+----
+		configuration.withType( Book.class )
+		             .listView( lvb -> lvb.showOnlyItemsWithAction( AllowableAction.READ ) ); # <1>
+----
+<1> Only book items for which the current principal has the instance action `AllowableAction.READ` will be visible in the list view.
 
 === Configuring custom views
 
