@@ -42,6 +42,8 @@
 ** xref:property-controls/radio.adoc[Radio button]
 ** xref:property-controls/value.adoc[Readonly property value]
 ** xref:property-controls/textbox.adoc[Textbox]
+** xref:property-controls/creating-a-property-control.adoc[Creating a property control]
+*** xref:property-controls/property-data-binding.adoc[Property data binding]
 
 * xref:entity-query/index.adoc[EntityQuery infrastructure]
 ** xref:entity-query/eql.adoc[EntityQuery Language (EQL)]
