@@ -43,7 +43,7 @@ A create view will have no references to other forms by default, but only contro
 [[detail-view]]
 ==== Detail view
 
-The detail view enables the user to view an existing instance for an entity type, without being able to modify the entity directly.
+The detail view enables a user to view an existing instance for an entity type, without being able to modify the entity directly.
 It can only be accessed if the user has the `AllowableAction.READ` action.
 The detail view is the default entry point to view an instance and provides the following:
 
@@ -71,6 +71,7 @@ A *modify* button is provided when the user has the `AllowableAction` action.
 | `EntityPropertyDescriptor.READABLE`
 
 |===
+
 
 [[update-view]]
 ==== Update view
@@ -104,21 +105,28 @@ A save button is provided which modifies the current entity.
 
 |===
 
-//==== create and update view
-//
-//default settings of a form view:
-//
-//- user must have update allowable action
-//- renders values as LIST_VALUE
-//- shows all readable properties
-//- adds update/delete buttons for every item if the user as update and delete action respectively
-//- supports paging and sorting
-//- allows configuring sortable properties and the default sort
-//- includes a form at the top that can be used for adding filters
-//- a create button for the entity if the user has create action allowed
-//- supports global feedback messages set with the `EntityViewPageHelper`
-//
-//default processors
+
+[NOTE]
+====
+Both the <<detail-view,detail view>> and the <<update-view,update view>> are entry points to access an instance.
+Depending on access permissions, different scenario's will be applied for linking to these views:
+
+.Actions on the listView
+- If a user has access to the read action, but not the update action, a link to the detail view will be present on the row for the instance
+- If a user has access to the read action and the update action, a link to the update view will be present on the row for the instance
+
+.'General' navigation item on form views
+Clicking the 'General' navigation item will
+
+- reload the detail view if the user is on the detail view
+- reload the update view if the user is on the update view
+- redirect to the detail view, if the user is not on the detail or update view and has the read action but not the update action
+- redirect to the update view, if the user is not on the detail or update view and has the read action and the update action
+
+This can also be overriden by specifying the `EntityAttributes.LINK_TO_DETAIL_VIEW` attribute on the `EntityConfiguration`, or the current `EntityViewRequest`.
+If the attribute has value `true`, a list view will link to the detail view but not to the update view for every item, if the read action is present.
+On a form view, the 'General' menu item will always link to the detail view unless the user is on the update view.
+====
 
 
 [[delete-view]]
