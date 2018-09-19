@@ -1,6 +1,5 @@
-:page-partial:
 [[list-view]]
-=== List view
+= List view
 :chapter-number: 0
 
 default settings of a list view:
@@ -17,18 +16,39 @@ default settings of a list view:
 
 default processors
 
-==== Adding a list view
+== Adding a list view
 TODO
 
-==== Customizing a list view
+== Customizing a list view
 TODO
 
 .Custom sorting
 Customizing the sort behaviour of a specific property can be done by setting a `Sort.Order.class` attribute on the `EntityPropertyDescriptor`.
 You can use this to sort on a different property instead, or to specify behaviour for null handling and case sensitivity.
 
-[[securing-list-view]]
-.Securing a list view
+
+
+
+[[list-view-filter]]
+== Filtering a list view
+
+By default a list view is not filtered.
+If your entity has an <<entity-query-executor,`EntityQueryExecutor`>> available you can easily activate a simple yet powerful <<entity-query-language-eql,EQL-based filter>>.
+Activating `EntityQuery` based filtering can be done through the builders:
+
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+// Activate the EQL-based filter on every entity that has an EntityQueryExecutor
+configuration.matching( c -> c.hasAttribute( EntityQueryExecutor.class ) )
+             .listView( lvb -> lvb.entityQueryFilter( true ) );
+----
+
+See <<entity-list-view-custom-filter,this chapter>> for information on how to configure a custom filter for a list view.
+
+[[filter-by-access]]
+=== Filtering by access permissions
+
 By default, list views are accessible via the `AllowableAction.READ` action, and links to the default views are present if their corresponding action is available.
 This means, that regardless of the permissions on a specific item on the list view, the data presented on a list view will be *always* be accessible if the user has access to the list view itself.
 
@@ -51,26 +71,8 @@ As such, a list view can be filtered to search for specific items, and that resu
 
 See the relevant chapter in security and permissions to learn more about xref:building-views/security-and-permissions.adoc#securing-views[securing views].
 
-[[list-view-filter]]
-==== Filtering a list view
-
-By default a list view is not filtered.
-If your entity has an <<entity-query-executor,`EntityQueryExecutor`>> available you can easily activate a simple yet powerful <<entity-query-language-eql,EQL-based filter>>.
-Activating `EntityQuery` based filtering can be done through the builders:
-
-[source,java,indent=0]
-[subs="verbatim,quotes,attributes"]
-----
-// Activate the EQL-based filter on every entity that has an EntityQueryExecutor
-configuration.matching( c -> c.hasAttribute( EntityQueryExecutor.class ) )
-             .listView( lvb -> lvb.entityQueryFilter( true ) );
-----
-
-See <<entity-list-view-custom-filter,this chapter>> for information on how to configure a custom filter for a list view.
-
-
 [[entity-list-view-custom-filter]]
-==== Adding a custom filter to a list view
+=== Adding a custom filter to a list view
 
 A filter on a list view usually consists of 2 parts:
 
@@ -164,7 +166,7 @@ entities.withType( Group.class )
 		);
 ----
 
-==== List summary view
+== List summary view
 
 It is possible to activate a detail view inline in a list view.
 If the `EntityConfiguration` or `EntityAssociation` has a view named *listSummaryView* a summary pane will automatically become available when clicking on the item row in the table.

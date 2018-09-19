@@ -12,8 +12,9 @@
 ** a custom template can be configured on a property using the `ViewElementFieldset.TEMPLATE` attribute
 ** several default templates have been provided with default styling for common form layouts in Admin Web
 ** if no property selector is specified, a fieldset property will select all child properties as its members
-*  added support for xref:building-views/list-view.adoc#securing-list-view[filtering a list view based on `AllowableAction`]
+*  added support for xref:building-views/list-view.adoc#filter-by-access[filtering a list view based on `AllowableAction`]
 ** this can be used to hide items from a list view if the user does not have the correct permissions
+* addition of the xref:building-views/form-view.adoc#detail-view[detail view] which offers a readonly view for entities.
 
 [#3-1-0]
 == 3.1.0.RELEASE

@@ -123,7 +123,7 @@ Clicking the 'General' navigation item will
 - redirect to the detail view, if the user is not on the detail or update view and has the read action but not the update action
 - redirect to the update view, if the user is not on the detail or update view and has the read action and the update action
 
-This can also be overriden by specifying the `EntityAttributes.LINK_TO_DETAIL_VIEW` attribute on the `EntityConfiguration`, or the current `EntityViewRequest`.
+This can also be overridden by specifying the `EntityAttributes.LINK_TO_DETAIL_VIEW` attribute on the `EntityConfiguration`, or the current `EntityViewRequest`.
 If the attribute has value `true`, a list view will link to the detail view but not to the update view for every item, if the read action is present.
 On a form view, the 'General' menu item will always link to the detail view unless the user is on the update view.
 ====
