@@ -50,7 +50,53 @@ If can also be used to reorganize the layout of the form from backend code using
 Full control can be done by registering a custom `EntityViewFactory` implementation.
 
 == Selecting properties
-`EntityPropertySelector`, incremental builders, keep current, select all, select all without default filter, exclude
+//`EntityPropertySelector`, incremental builders, keep current, select all, select all without default filter, exclude
+
+The properties that are rendered on a view can be customized using the `showProperties` method whilst customizing the view on an `EntityConfiguration`.
+`showProperties` takes only strings as it's parameters, which can either be preconfigured selectors, property names or a combination of both.
+
+.Listing of property selectors
+|===
+
+| Selector
+| Description
+
+| `.`
+| Keep all of the previously configured property rules.
+
+| `*`
+| Show all properties present in the property registry, *after* applying the default filter of the registry.
+
+| `**`
+| Show all properties present in the property registry, *without* applying the default filter of the registry.
+
+| `:readable`
+| Show all the properties that are readable
+
+| `:writable`
+| Show all the properties that are writable
+
+| `propertyName`
+| Show the property with name `propertyName`.
+
+| `~propertyName`
+| Do not show the property with name `propertyName`.
+
+|===
+
+.Example property selection
+[source,java,indent=0]
+----
+public void configure( EntitiesConfigurationBuilder configuration ) {
+    configuration.withType( Book.class )
+                 .createFormView( fvb -> fvb.showProperties( ".", "~publisher" ) ) # <1>
+                 .updateFormView( fvb -> fvb.showProperties( ".", "lastModified" ) ) # <2>
+                 .listView( lvb -> lvb.showProperties( "title", "author" ) ); # <3>
+}
+----
+<1> Renders the previous property configuration but removes the `publisher` property.
+<2> Renders the previous property configuration and adds the `lastModified` property
+<3> Renders only the `title` and `author` properties.
 
 [[configuring-views]]
 == Configuring views
