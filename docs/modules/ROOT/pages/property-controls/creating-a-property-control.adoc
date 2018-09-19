@@ -1,0 +1,10 @@
+= Creating a property control
+
+== Property data binding
+
+When rendering forms you often want to use the form data to update the related property value.
+This process is called _data binding_.
+
+EntityModule builds on top of the Spring `WebDataBinder` and provides additional features for binding data to complex property types.
+
+See the xref:property-controls/property-data-binding.adoc[separate section] for a full explanation.

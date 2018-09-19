@@ -1,0 +1,260 @@
+= Property data binding
+
+[abstract]
+--
+Data binding is the process of binding user input to the domain model of your application.
+This is usally done through a Spring `DataBinder` which wraps around a target bean.
+
+In an entity view, the target bean is usually the DTO of your entity.
+
+EntityModule provides an `EntityPropertiesBinder` abstraction that can be used to bind complex value structures, using an `EntityPropertyRegistry` instead of an actual bean `Class`.
+
+This section explains how you can use the `EntityPropertiesBinder` and how it behaves differently from regular data binding.
+--
+
+== Basic data binding explained
+
+== EntityPropertiesBinder
+
+behaves as a map
+does not automatically flush to the underlying entity, requires `bind()` to be called and uses `EntityPropertyController.applyValue()
+
+example caching the value read from a user:
+user.setName(X) -> properties.getValue() == X -> user.setName(Y) -> properties.getValue() == X !
+the real power is that a property does not need to be an actual bean property
+
+To fully understand the possibilities of `EntityPropertiesBinder` you should have a good grasp on the `EntityPropertyRegistry`, `EntityPropertyDescriptor` and especially the `EntityPropertyController`.
+
+very powerful but can be a bit daunting to understand, hence the examples
+
+== Different property types
+
+In order to correctly bind to different property types, it is a matter of generating the correct path to the property value.
+This is pretty straightforward when using regular `DataBinding` but requires you to know the intermediate segments when binding on a `EntityPropertiesBinder` target.
+
+The next chapters provide detailed examples for each type of property:
+
+* single value property
+* collection type property
+* map type property
+
+All examples use the following classes:
+
+.Example classes used throughout the following chapters
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+@Getter
+@Setter
+class User {
+    private String name;
+    private Address address;
+    private List<User> children;
+}
+
+@Getter
+@Setter
+class Address {
+   private String street;
+   private int number;
+}
+----
+
+All the examples in the next chapters also imply that the actual binding happens on a custom binder target class:
+
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+@Getter
+@Setter
+class BinderTarget {
+    private User user;  <1>
+    private EntityPropertiesBinder properties; <2>
+}
+----
+
+<1> Returns the direct entity for binding.
+Would not return `null` but would be intialized with a `User` instance.
+
+<2> Returns an `EntityPropertiesBinder` that wraps around the same `User` instance, but is initialized with the `EntityPropertyRegistry` you want to use.
+
+In the examples it is assumed the property registry is introspected entirely from the `User` class and contains the class property metadata.
+In this case the behaviour of the generated `EntityPropertyController` is most inline with accessing the properties of a bean directly.
+
+For the sake of brevity, all binding value examples are shown in a properties style:
+
+[source,properties]
+----
+user.name=John Doe
+----
+
+As HTML user input from a textbox, this is the equivalent of:
+
+[source,html]
+----
+<input type="text" name="user.name" value="John Doe" />
+----
+
+=== Single value property
+
+Understanding single value property binding is important as it is the basis for more complex type binding.
+
+==== Binding a simple type
+
+Let's start with the most simple example: binding a property value to a simple `String` property.
+
+With the `BinderTarget` defined, binding properties
+
+[source,properties]
+----
+user.name=John Doe
+----
+
+will translate into
+
+[source,java]
+----
+getUser().setName("John Doe")
+----
+
+And immediately after `getUser().getName()` would return `John Doe` as value.
+
+.Binding using the EntityPropertiesBinder
+
+Since the `EntityPropertiesBinder` returned by `BinderTarget.getProperties()` wraps around the same `User` instance, we can also update the same property using the binder.
+
+In that case we would update with:
+
+[source,properties]
+----
+properties[name].value=John Doe
+----
+
+This is the equivalent of the following code:
+
+[source,java]
+----
+getProperties().get("name") <1>
+               .setValue("John Doe"); <2>
+----
+
+<1> returns an `EntityPropertyBinder` for the target property, in this case an instance of `SingleEntityPropertyBinder`
+<2> calls the `setValue()` method on the single property binder
+
+IMPORTANT: Recall that the `EntityPropertiesBinder` does not automatically flush to the target bean.
+This means that after executing the above code, the result of `getUser().getName()` will still return whatever it was before the binding. +
+ +
+It is only when calling `EntityPropertiesBinder.bind()` that the property values will be applied to the target by calling the corresponding `EntityPropertyController.applyValue()`.
+
+==== Type conversion
+
+Assume the following example:
+
+[source,properties]
+----
+user.address=My street 1
+properties[address].value=My street 1
+----
+
+They are each others equivalent for binding a single value either directly or using the `EntityPropertiesBinder`.
+However in our example the `address` property returns an `Address` type, which is a complex type, and automatic casting from `String` to `Address` is not possible.
+
+In such a case, both approaches will perform type conversion using a `ConversionService` - if one is set.
+
+NOTE: Apart from a `ConversionService`, a `DataBinder` can also use `PropertyEditors` for type conversion.
+The `EntityPropertiesBinder` intentionally only supports the more recent `ConversionService`.
+
+==== Nested properties
+
+Binding to nested properties is also supported.
+Using bean data binding this looks like:
+
+[source,properties]
+----
+user.address.street=Some street
+user.address.number=3
+----
+
+Again these modifications would be applied instantaneously on the `Address` instance returned by `getUser().getAddress()`.
+
+For this type of binding to work, it is required that `getUser().getAddress()` does not return `null`.
+If `null` is returned, the Spring `DataBinder` will usually attempt to construct a new `Address` instance by calling a no-args constructor.
+If no instance can be created, an `Exception` will be thrown.
+
+===== Using the EntityPropertiesBinder
+There are no fewer than four different ways to bind to the same nested properties using the `EntityPropertiesBinder`, each having its own distinct behaviour.
+Each approach allows for a different level of control.
+The main difference is in when and how modifications are flushed to the target bean, and what the behaviour should be for creating default values.
+
+====== Approach 1: direct binding on the address property without default value
+[source,properties]
+----
+properties[address].value.street=Some street
+properties[address].value.number=3
+----
+
+In this case `properties[address].value` returns the same `Address` instance as `getUser().getAddress()` and the `street` and `number` properties are bound directly on that instance.
+This means that in this particular case the changes will be immediately bound to the `User` instance, transitively.
+
+Even if `address.street` and `address.number` were to have their own `EntityPropertyDescriptor` and `EntityPropertyController`, these would be ignored as binding of those properties is done directly on the `Address` bean.
+
+A major difference with direct data binding, is the fact that `getValue()` will always return `null` if no `Address` is set on the `User`.
+If you want to automatically create a default value, you must use `getInitializedValue()` instead.
+
+====== Approach 2: direct binding on the address property with default value
+[source,properties]
+----
+properties[address].initializedValue.street=Some street
+properties[address].initializedValue.number=3
+----
+
+Binding of `street` and `number` is still done directly on the `Address` bean, but in this case a new `Address` instance will be created if there is none available yet.
+Creation will be done by calling `createValue()` on the `EntityPropertyController` for the `address` property.
+In our example case this would amount to the same creation strategy as with direct data binding: calling a visible no-args constructor.
+
+There is another subtle difference with direct data binding however:
+
+* if `properties[address].initializedValue` returns an existing value, that existing value will immediately be updated, and the changes will be visible on the `User` instance
+* if `properties[address].initializedValue` returns a new value, the `street` and `number` of the new value will be set, but the `address` on `User` will only be updated when `EntityPropertiesBinder.bind()` is called
+
+====
+If a `DataBinder` will attempt to automatically create a default property value depends on the value of the `autoGrowNestedPaths` property, which defaults to `true` (meaning it will create default values).
+
+Calling `EntityPropertyBinder.getValue()` however will *never* create a default value.
+The caller must use `getInitializedValue()` instead and as such clearly state the intention.
+====
+
+====== Approach 3: using an EntityPropertiesBinder for the street and number properties
+[source,properties]
+----
+properties[address].properties[street].value=Some street
+properties[address].properties[number].value=3
+----
+
+In this case no properties are updated directly on the `User` or existing `Address` instance.
+They are only flushed when `EntityPropertiesBinder.bind()` is called.
+
+This approach will use the registered `EntityPropertyController` for `address.street` and `address.number`.
+
+With regards to default value creation, the behaviour is the same as if using `getInitializedValue()`: if no value is available, a default will get created.
+
+====== Approach 4: using direct property descriptors for the street and number properties
+[source,properties]
+----
+properties[address.street].value=Some street
+properties[address.number].value=3
+----
+
+In this case no properties are updated directly on the `Address` instance either, and the `EntityPropertyController` of the target properties will be used.
+
+This approach behaves the same as the first one regarding default values: an exception will be thrown if no `address` value is available.
+
+==== Deleting a property
+
+// bound! -> implicit delete
+// deleted -> explicit delete
+
+=== Collection type property
+
+=== Map type property
+
