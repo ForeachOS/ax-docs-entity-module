@@ -38,10 +38,10 @@ NOTE: Default allowable actions are specified on each configuration which confir
 			             }
 		             } )
 ----
-<1> Configuring the global actions.
+<1> Configuring the global actions for the `Book` entity.
 <2> All actions are allowed.
 `FixedEntityAllowableActionsBuilder.DEFAULT_ALLOWABLE_ACTIONS` always acknowledges that the requested action is present.
-<3> Configuring the instance actions.
+<3> Configuring the actions for the `Book` instance.
 <4> The actions are configured based on a custom implementation.
 In this case each instance has the `AllowableAction.READ` and `AllowableAction.UPDATE` action.
 
