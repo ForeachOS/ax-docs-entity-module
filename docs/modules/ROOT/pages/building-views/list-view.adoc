@@ -33,15 +33,19 @@ You can use this to sort on a different property instead, or to specify behaviou
 == Filtering a list view
 
 By default a list view is not filtered.
-If your entity has an <<entity-query-executor,`EntityQueryExecutor`>> available you can easily activate a simple yet powerful <<entity-query-language-eql,EQL-based filter>>.
+If your entity has an <<entity-query-executor,`EntityQueryExecutor`>> available, you can easily activate a simple yet powerful <<entity-query-language-eql,EQL-based filter>>.
+
 Activating `EntityQuery` based filtering can be done through the builders:
 
 [source,java,indent=0]
 [subs="verbatim,quotes,attributes"]
 ----
-// Activate the EQL-based filter on every entity that has an EntityQueryExecutor
-configuration.matching( c -> c.hasAttribute( EntityQueryExecutor.class ) )
+@Override
+public void configure( EntitiesConfigurationBuilder entities ) {
+    // Activate the EQL-based filter on every entity that has an EntityQueryExecutor
+    entities.matching( c -> c.hasAttribute( EntityQueryExecutor.class ) )
              .listView( lvb -> lvb.entityQueryFilter( true ) );
+}
 ----
 
 See <<entity-list-view-custom-filter,this chapter>> for information on how to configure a custom filter for a list view.
@@ -59,8 +63,8 @@ This will filter all items on the view itself, so that only items with the speci
 [source,java,indent=0]
 ----
 @Override
-public void configure( EntitiesConfigurationBuilder configuration ) {
-    configuration.withType( Book.class )
+public void configure( EntitiesConfigurationBuilder entities ) {
+    entities.withType( Book.class )
                  .listView( lvb -> lvb.showOnlyItemsWithAction( AllowableAction.READ ) ); # <1>
 }
 ----
@@ -159,11 +163,14 @@ private static class GroupFilteringProcessor extends EntityViewProcessorAdapter
 [source,java,indent=0]
 [subs="verbatim,quotes,attributes"]
 ----
-entities.withType( Group.class )
+@Override
+public void configure( EntitiesConfigurationBuilder entities ) {
+    entities.withType( Group.class )
         .listView( lvb -> lvb
             .entityQueryFilter( false )           // optional - disable the previously activated entity query filter
             .filter( groupFilteringProcessor() )  // register the custom filter
 		);
+}
 ----
 
 == List summary view
@@ -175,7 +182,10 @@ The summary pane is called using AJAX and only the _content_ fragment of the pag
 [source,java,indent=0]
 [subs="verbatim,quotes,attributes"]
 ----
-// Activate a summary view in the main user results table using a custom Thymeleaf template
-configuration.withType( User.class )
-             .view( EntityView.SUMMARY_VIEW_NAME, vb -> vb.template( "th/myModule/userSummary" ) );
+@Override
+public void configure( EntitiesConfigurationBuilder entities ) {
+    // Activate a summary view in the main user results table using a custom Thymeleaf template
+    entities.withType( User.class )
+        .view( EntityView.SUMMARY_VIEW_NAME, vb -> vb.template( "th/myModule/userSummary" ) );
+}
 ----
