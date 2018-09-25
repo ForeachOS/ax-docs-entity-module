@@ -7,8 +7,8 @@ In the following example we will add a property named _customProperty_ of the ty
 [source,java]
 ----
 @Override
-public void configure( EntitiesConfigurationBuilder configuration ) {
-       configuration.withType(MyEntity.class)
+public void configure( EntitiesConfigurationBuilder entities ) {
+       entities.withType(MyEntity.class)
                 .properties(props -> props.property("customProperty")
                            .propertyType(TypeDescriptor.valueOf(String.class))
                            .valueFetcher(entity -> "myCustomString")
@@ -28,8 +28,8 @@ In the following example, we will perform the query of the _customProperty_ on t
 [source,java]
 ----
 @Override
-public void configure( EntitiesConfigurationBuilder configuration ) {
-       configuration.withType(MyEntity.class)
+public void configure( EntitiesConfigurationBuilder entities ) {
+       entities.withType(MyEntity.class)
                 .properties(props -> props.property("customProperty")
                            .propertyType(TypeDescriptor.valueOf(String.class))
                            .valueFetcher((entity) -> "myCustomString")

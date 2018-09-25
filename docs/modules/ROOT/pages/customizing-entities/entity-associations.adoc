@@ -13,9 +13,9 @@ NOTE: If you want to enable management through the association interface, you sh
 [subs="verbatim,quotes,attributes"]
 ----
 @Override
-public void configure( EntitiesConfigurationBuilder configuration ) {
+public void configure( EntitiesConfigurationBuilder entities ) {
     // Groups should be managed through the association instead of the property
-    configuration.withType( MachinePrincipal.class )
+    entities.withType( MachinePrincipal.class )
                  .properties( props -> props.property( "groups" ).hidden( true ) )
                  .association( ab -> ab.name( "machinePrincipal.groups" ).show() );
 }

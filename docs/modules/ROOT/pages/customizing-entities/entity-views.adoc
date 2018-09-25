@@ -87,8 +87,8 @@ The properties that are rendered on a view can be customized using the `showProp
 .Example property selection
 [source,java,indent=0]
 ----
-public void configure( EntitiesConfigurationBuilder configuration ) {
-    configuration.withType( Book.class )
+public void configure( EntitiesConfigurationBuilder entities ) {
+    entities.withType( Book.class )
                  .createFormView( fvb -> fvb.showProperties( ".", "~publisher" ) ) # <1>
                  .updateFormView( fvb -> fvb.showProperties( ".", "lastModified" ) ) # <2>
                  .listView( lvb -> lvb.showProperties( "title", "author" ) ); # <3>
