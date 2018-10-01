@@ -15,6 +15,8 @@
 *  added support for xref:building-views/list-view.adoc#filter-by-access[filtering a list view based on `AllowableAction`]
 ** this can be used to hide items from a list view if the user does not have the correct permissions
 * addition of the xref:building-views/form-view.adoc#detail-view[detail view] which offers a readonly view for entities.
+* link to the delete view has moved from the `EntityAdminMenu` to the detail and update view
+** see the xref:guides:form-view/customize-link-to-delete-view.adoc[customize link to delete view] guide to revert to the previous behaviour.
 
 [#3-1-0]
 == 3.1.0.RELEASE

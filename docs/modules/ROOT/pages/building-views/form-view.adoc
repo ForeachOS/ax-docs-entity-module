@@ -8,7 +8,7 @@ These are divided into types of views:
 
 - *list views*: A list view renders all the existing objects for the current configuration.
 - *form views*: Renders a view to manage a single entity instance.
-A form view always renders within the context of an instance for an entity type.
+A form view always renders within the context of an instance for an entity type and also provides a separate `EntityAdminMenu` for that context.
 
 In the following sections, a more in depth explanation is given on the default views that are available.
 

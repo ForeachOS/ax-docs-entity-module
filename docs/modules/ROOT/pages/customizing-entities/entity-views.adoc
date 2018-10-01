@@ -56,6 +56,7 @@ The properties that are rendered on a view can be customized using the `showProp
 `showProperties` takes only strings as it's parameters, which can either be preconfigured selectors, property names or a combination of both.
 
 .Listing of property selectors
+[cols="1,2",options=header]
 |===
 
 | Selector
