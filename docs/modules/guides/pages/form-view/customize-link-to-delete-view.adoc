@@ -24,7 +24,7 @@ public void customizeEntityMenu( EntityAdminMenuEvent menu ) { # <1>
 
             builder.item( "/advanced-options/delete", # <4>
                           messageCodeResolver.getMessageWithFallback( "menu.delete", "Delete" ),
-                          deleteLink.withFromUrl( ServletUriComponentsBuilder.fromCurrentRequestUri().build().getPath() ).toString() ) )
+                          deleteLink.withFromUrl( ServletUriComponentsBuilder.fromCurrentRequestUri().build().getPath() ).toString() ) ) # <5>
                    .attribute( RequestMenuSelector.ATTRIBUTE_MATCHERS, Collections.singleton( deleteLink.toUriString() ) )
                    .attribute( NavComponentBuilder.ATTR_ICON, new GlyphIcon( GlyphIcon.TRASH ) )
                    .attribute( NavComponentBuilder.ATTR_INSERT_SEPARATOR, NavComponentBuilder.Separator.BEFORE )
@@ -38,6 +38,7 @@ public void customizeEntityMenu( EntityAdminMenuEvent menu ) { # <1>
 This ensures that an entity is available for which the menu is rendered.
 <3> The link should only be added if a user has the `AllowableAction.DELETE` for the instance.
 <4> Provide a menu item that links to the delete view.
+<5> Redirect to the current view if the cancel link is clicked.
 
 == Removing the delete button from the form views
 
