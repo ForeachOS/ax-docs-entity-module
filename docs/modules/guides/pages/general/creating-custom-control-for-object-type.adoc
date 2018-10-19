@@ -23,7 +23,7 @@ public class UserValueViewElementBuilder extends ViewElementBuilderSupport # <1>
     protected MutableViewElement createElement ( ViewElementBuilderContext builderContext ){
 		User user = EntityViewElementUtils.currentPropertyValue( builderContext, User.class ); # <2>
 		if ( user != null ) {
-			BootstrapUiBuilders.div()
+			return BootstrapUiBuilders.div()
 			                   .css( "user-control" )
 			                   .add( BootstrapUiBuilders.node( "img" )
 			                                            .name( "avatar" )
@@ -32,9 +32,9 @@ public class UserValueViewElementBuilder extends ViewElementBuilderSupport # <1>
 			                                            .add( BootstrapUiBuilders.span()
 			                                                                     .css( "user-name" )
 			                                                                     .add( BootstrapUiBuilders.text( user.getDisplayName() ) ) )
-			                   );
+			                   ).build();
 		}
-		return BootstrapUiBuilders.text( "" ) # <3>
+		return BootstrapUiBuilders.text( "" ).build() # <3>
 	}
 }
 ----
