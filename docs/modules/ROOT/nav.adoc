@@ -1,61 +1,93 @@
 * xref:quick-start.adoc[Quick start]
+
 * xref:releases/index.adoc[Releases]
 ** xref:releases/3.x.adoc[3.x]
 ** xref:releases/2.x.adoc[2.x]
 * xref:configuration-properties.adoc[Configuration properties]
 
+// General introduction
 * xref:entity-module-explained/index.adoc[EntityModule explained]
 ** xref:entity-module-explained/entity-configuration.adoc[Entity configuration]
+*** Entity properties and controls
 *** xref:entity-module-explained/entity-configuration.adoc#entity-model[Entity model]
-** xref:entity-module-explained/entity-views.adoc[Entity views]
-** xref:entity-module-explained/associations.adoc[Associations]
+*** xref:entity-module-explained/entity-views.adoc[Entity views]
+*** xref:entity-module-explained/associations.adoc[Associations]
+*** xref:entity-module-explained/permissions.adoc[Permissions: allowable actions]
+** EntityQuery
 
-* xref:registering-entities/index.adoc[Registering entities]
-** xref:registering-entities/manual-registration.adoc[Adding an entity type manually]
-** xref:registering-entities/creating-an-entity-registrar.adoc[Creating an EntityRegistrar]
-** xref:registering-entities/enums-as-entities.adoc[Enums as entities]
+// Configuring entities
+* xref:registering-entities/index.adoc[Configuring entities]
+** xref:registering-entities/manual-registration.adoc[Manually adding an entity type]
+*** xref:customizing-entities/entity-properties.adoc[Registering properties]
+*** xref:customizing-entities/entity-model.adoc[Defining an entity model]
+*** xref:customizing-entities/entity-views.adoc[Configuring entity views]
+*** xref:customizing-entities/entity-associations.adoc[Adding associations]
+** xref:registering-entities/creating-an-entity-registrar.adoc[Automatic registration of entities]
+** xref:customizing-entities/index.adoc[Customizing existing entities]
+** xref:registering-entities/enums-as-entities.adoc[Using enums as entities]
 
-* xref:customizing-entities/index.adoc[Customizing entity configuration]
-** xref:customizing-entities/entity-model.adoc[Entity model]
-** xref:customizing-entities/entity-properties.adoc[Properties]
-** xref:customizing-entities/entity-views.adoc[Entity views]
-** xref:customizing-entities/entity-associations.adoc[Associations]
-
-
+// Entity views
 * xref:building-views/index.adoc[Building entity views]
-** xref:building-views/list-view.adoc[Creating a list view]
-** xref:building-views/form-view.adoc[Creating a form view]
-** xref:building-views/generic-view.adoc[Creating a custom view]
+** How entity views work
+** xref:building-views/list-view.adoc[List views]
+** xref:building-views/form-view.adoc[CRUD views]
+*** Create and update form
+*** xref:building-views/generic-view.adoc[Read/detail view]
+*** Delete form
+** Association views
 ** xref:building-views/linking-to-entity-views.adoc[Linking to entity views]
-** xref:building-views/customizing-views.adoc[Customizing views]
-*** xref:building-views/customizing-views.adoc#view-processors[View processors]
 ** xref:building-views/localization.adoc[Localization & text messages]
 ** xref:building-views/security-and-permissions.adoc[Security and permissions]
+** Admin Web menu
 
+// Entity properties and view elements
 * xref:property-controls/index.adoc[Entity property controls]
-** xref:property-controls/autosuggest.adoc[Autosuggest]
-** xref:property-controls/checkbox.adoc[Checkbox]
-** xref:property-controls/datetime.adoc[Date/Time picker]
-** xref:property-controls/select.adoc[Drop-down select]
-** xref:property-controls/fieldset.adoc[Fieldset]
-** xref:property-controls/numeric.adoc[Numeric]
-** xref:property-controls/radio.adoc[Radio button]
-** xref:property-controls/value.adoc[Readonly property value]
-** xref:property-controls/textbox.adoc[Textbox]
-** xref:property-controls/creating-a-property-control.adoc[Creating a property control]
-*** xref:property-controls/property-data-binding.adoc[Property data binding]
+** Specifying a control type
+** Generating controls for properties
+// Default property types
+** Available controls
+*** xref:property-controls/autosuggest.adoc[Autosuggest]
+*** xref:property-controls/checkbox.adoc[Checkbox]
+*** xref:property-controls/datetime.adoc[Date/Time picker]
+*** xref:property-controls/select.adoc[Drop-down select]
+*** Embedded collection
+*** xref:property-controls/fieldset.adoc[Fieldset]
+*** Form group
+*** Label
+*** Multi-value text
+*** xref:property-controls/numeric.adoc[Numeric]
+*** xref:property-controls/radio.adoc[Radio button]
+*** xref:property-controls/value.adoc[Readonly property value]
+*** Sortable table
+*** xref:property-controls/textbox.adoc[Textbox]
+// Creating a new property type
+** xref:property-controls/creating-a-property-control/index.adoc[Creating a new property control]
+*** Rendering with ViewElements
+*** Accessing entity and property data
+*** Registering a control type
+*** xref:property-controls/creating-a-property-control/property-data-binding.adoc[Property data binding]
 
+// Entity query
 * xref:entity-query/index.adoc[EntityQuery infrastructure]
 ** xref:entity-query/eql.adoc[EntityQuery Language (EQL)]
 *** xref:entity-query/extending-eql.adoc[Extending EQL]
 ** xref:entity-query/filtering-list-views.adoc[Filtering list views]
 
-* xref:integration-with-other-modules.adoc[Integration with other modules]
+// Integration with libraries & modules
+* xref:integration-with-other-modules.adoc[Integrations]
+** Admin Web
+** Spring Data
+** Spring Security
 
-* xref:web-resources/index.adoc[Web resources]
-** xref:web-resources/javascript-plugins.adoc[Javascript plugins]
+* xref:developer-tools.adoc[Developer tools]
+
+// Reference
+
+* xref:glossary.adoc[Glossary]
 
 * xref:services-and-components/index.adoc[Services and components]
+** xref:web-resources/index.adoc[Web resources]
+*** xref:web-resources/javascript-plugins.adoc[Javascript plugins]
 ** xref:services-and-components/attributes-overview.adoc[Attributes overview]
 ** xref:services-and-components/message-codes.adoc[Message codes]
 ** xref:services-and-components/default-entityviewprocessors.adoc[Default EntityViewProcessors]

@@ -1,6 +1,5 @@
-:page-partial:
 [[appendix-attributes-overview]]
-== Attributes overview
+= Attributes overview
 
 Some useful (utility) classes for managing attributes for different EntityModule objects:
 
@@ -10,7 +9,7 @@ Some useful (utility) classes for managing attributes for different EntityModule
 
 [discrete]
 [[appendix-entity-configuration-attributes]]
-=== EntityConfiguration attributes
+== EntityConfiguration attributes
 The following table lists commonly present attributes on an `EntityConfiguration`.
 
 |===
@@ -58,9 +57,8 @@ Will only be used if there is no `OptionGenerator.class` or `OptionIterableBuild
 
 |===
 
-[discrete]
 [[appendix-entity-property-descriptor-attributes]]
-=== EntityPropertyDescriptor attributes
+== EntityPropertyDescriptor attributes
 The following table lists commonly present attributes on an `EntityPropertyDescriptor`.
 
 |===
@@ -89,8 +87,8 @@ If all you want to configure is the list of possible options, set the `OptionIte
 |When set on an `EntityPropertyDescriptor`, this will be the builder used to create the set of options that can be selected for that property.
 
 |`EntityAttributes.OPTIONS_ENTITY_QUERY`
-|When set on an `EntityPropertyDescriptor`, contains the EQL statement or `EntityQuery` that should be used to fetch the selectable options for that property.
-Will only be used if there is no `OptionGenerator.class` or `OptionIterableBuilder.class` attribute set.
+|When set on an `EntityPropertyDescriptor`, contains the EQL statement or `EntityQuery` thWill only be used if there is no `OptionGenerator.class` or `OptionIterableBuilder.class` attribute set.at should be used to fetch the selectable options for that property.
+
 
 |`EntityAttributes.OPTIONS_ALLOWED_VALUES`
 |Only applicable if the property is of an enum type.
@@ -108,11 +106,14 @@ Unless a specific `ViewElement` type has been specified, this will force the con
 |`EntityAttributes.FORM_ENCTYPE`
 |The `enctype` that should be used on a HTML form when a control for this property is present.
 
+|`EntityPropertyRegistry.class`
+|If set, holds the `EntityPropertyRegistry` that should be used for resolving nested properties.
+If not set, the property type will be used to resolve a target `EntityPropertyRegistry`.
+
 |===
 
-[discrete]
 [[appendix-entity-view-factory-attributes]]
-=== EntityViewFactory attributes
+== EntityViewFactory attributes
 The following table lists commonly present attributes on an `EntityViewFactory`.
 
 |===
