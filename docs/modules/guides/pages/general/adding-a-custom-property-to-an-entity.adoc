@@ -18,7 +18,7 @@ public void configure( EntitiesConfigurationBuilder entities ) {
 ----
 
 [discrete]
-=== Configuring the custom property to expand it's search to other properties
+== Configuring the custom property to expand it's search to other properties
 
 To expand the search to other properties, we need to modify the query defined by the custom property.
 To do this we can add an a custom `EntityQueryConditionTranslator` under the `EntityQueryConditionTranslator.class` attribute.

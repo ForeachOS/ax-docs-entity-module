@@ -134,7 +134,7 @@ On a form view, the 'General' menu item will always link to the detail view unle
 
 The delete view allows the deletion of an instance for an entity type.
 If the `AllowableAction.DELETE` is present for the instance, it may be removed via a confirmation page.
-The delete view can by default be accessed through the garbage bin at the top right of the navigation and provides the following:
+The delete view can by default be accessed through the garbage bin at the bottom right of the detail or update view and provides the following:
 
 links to associated entities::
 By default, tabs are generated for properties that are `ManyToOne` / `OneToMany` and `ManyToMany` relationships.
