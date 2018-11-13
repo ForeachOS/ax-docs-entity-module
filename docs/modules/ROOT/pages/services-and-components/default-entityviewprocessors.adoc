@@ -1,7 +1,7 @@
 = Default EntityViewProcessors
 include::{partialsdir}/_attributes.adoc[]
 
-This chapter lists the general purpose `EntityViewProcessor` classes that are provided by EntityModule.
+This section lists the general purpose `EntityViewProcessor` classes that are provided by EntityModule.
 The <<entity-views,default entity views>> are all built on these processors.
 
 You can use these manually to assemble a `DefaultEntityViewFactory`, though some will be configured automatically if you use one of the builders.

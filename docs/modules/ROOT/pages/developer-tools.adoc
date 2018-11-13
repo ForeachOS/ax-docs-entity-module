@@ -1,0 +1,4 @@
+= Developer tools
+
+When integrated with AdminWebModule and development mode is active, an entity registry browser will be added to the _Developer tools_ section of the administration ui.
+The browser allows you to inspect the registered entities along with their views, associations and properties.
