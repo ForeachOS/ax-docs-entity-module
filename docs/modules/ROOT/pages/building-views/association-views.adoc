@@ -1,0 +1,71 @@
+= Association views
+
+== Embedded associations
+
+Embedded associations are entities that are managed within the context of a different entity.
+Associations can be turned into an embedded association by specifying the `associationType` as `EntityAssociation.Type.EMBEDDED`.
+
+.Setting the associationType on an association
+[source,java,indent=0]
+----
+	@Override
+	public void configure( EntitiesConfigurationBuilder entities ) {
+		entities.withType( Author.class )
+                .association(
+		                ab -> ab.name( "blogPost.author" ) # <1>
+		                        .associationType( EntityAssociation.Type.EMBEDDED )
+                );
+	}
+----
+<1> The name of the association is `blogPost.author` because blogPost is the owner of the association.
+
+[#association-header]
+=== Association header
+
+An association header is supported for embedded entities.
+These header are similar to the entity form headers and consist of:
+
+* a title
+* a subtitle
+* Navigation bar
+
+.Presence of header content
+[cols="1,2",opts=header]
+|===
+| Item
+| Availability
+
+| title
+| Always if the header is present.
+If no value can be found for the `titleMessageCode` of the view, an empty string will be rendered.
+The default value for the `titleMessageCode` is `EntityMessages.PAGE_TITLE_VIEW`.
+
+| subtitle
+| Available if a value can be found for the `titleMessageCode` suffixed with `.subText` can be found.
+
+| Navigation bar
+| Available if there is more than one menu item or when the `advanced options` menu item is not empty.
+|===
+
+The association header is added via the `AssociationHeaderViewProcessor`, which builds the menu that should be rendered.
+
+.Configurable options on an `AssociationHeaderViewProcessor`
+[cols="1,1,1",opts=header]
+|===
+
+| Option
+| Description
+| Default value
+
+| addEntityMenu
+| Whether a navigation bar should be available or not.
+| false
+
+| titleMessageCode
+| Message code to resolve as the title of the view
+| `EntityMessages.PAGE_TITLE_VIEW`;
+|===
+
+NOTE: Even though the default value for `addEntityMenu` is false, when an AssociationViewProcessor is initialized for a view, this is set to true.
+
+To remove the association header in it's entirety, simply remove the `AssociationHeaderViewProcessor` from the configured view(s).
