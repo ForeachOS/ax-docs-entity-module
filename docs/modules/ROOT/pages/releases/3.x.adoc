@@ -1,7 +1,10 @@
 = 3.x.x release notes
 
 [#3-2-0]
-== 3.2.0-SNAPSHOT
+== 3.2.0.RELEASE
+
+This release contains a lot of internal changes, specifically related to the addition of the `EntityPropertyController` and the `EntityPropertiesBinder`.
+Overall upgrading from the previous version should be seamless for most applications.
 
 * addition of `EntityAttributes.FORM_ENCTYPE` that can be specified as `EntityViewFactory` or `EntityPropertyDescriptor` attribute
 ** its value should be the actual enctype that should be used for submitting the form of a form view, eg `FormViewElement.ENC_MULTIPART`
@@ -15,8 +18,23 @@
 *  added support for xref:building-views/list-view.adoc#filter-by-access[filtering a list view based on `AllowableAction`]
 ** this can be used to hide items from a list view if the user does not have the correct permissions
 * addition of the xref:building-views/form-view.adoc#detail-view[detail view] which offers a readonly view for entities.
-* link to the delete view has moved from the `EntityAdminMenu` to the detail and update view
+** it's possible to configure an entity to link to the detail view instead of the update view by default
+* link to the delete view (delete button) has moved from the tab menu (`EntityAdminMenu`) to the detail and update view
 ** see the xref:guides:form-view/customize-link-to-delete-view.adoc[customize link to delete view] guide to revert to the previous behaviour.
+* embedded association views now include an inner page (tab) title and menu
+** the sub-menu is only rendered if there are at least 2 menu items
+** this allows an additional level of menu items for managing embedded associations
+* addition of the `EntityPropertiesBinder` which allows more advanced binding of custom properties
+** each property is now backed by an `EntityPropertyController` which can be used to set behaviour (data fetching, writing) on a single property level
+* collections of embedded objects (eg `List<Address>`) are now fully supported and a default UI control will be generated
+* several bugfixes and minor improvements:
+** fixed some issues with using `UUID` or other custom types as id for entities
+** added default control support for `ZonedDateTime` and `Duration
+** added EQL support for `CONTAINS NULL` as an alternative to `IS EMPTY`
+*** this can be used in combination with groups: `CONTAINS (NULL,1)` is the equivalent or `CONTAINS 1 or IS EMPTY`
+*** this also fixes some issues when using a collection type property in a  basic EQL filter
+** improved EQL support for negative operands: `NOT CONTAINS (1,2)` now expands to `NOT CONTAINS 1 AND NOT CONTAINS 2`
+
 
 [#3-1-0]
 == 3.1.0.RELEASE
