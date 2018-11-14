@@ -1,3 +1,3 @@
-:entity-module-version: 3.2.0-SNAPSHOT
+:entity-module-version: 3.2.0.RELEASE
 :entity-module-javadoc: https://across-docs.foreach.be/across-standard-modules/EntityModule/{entity-module-version}/javadoc
 :entity-module-javadoc-processors: http://across-docs.foreach.be/across-standard-modules/EntityModule/{entity-module-version}/javadoc/com/foreach/across/modules/entity/views/processors
