@@ -29,7 +29,7 @@ Overall upgrading from the previous version should be seamless for most applicat
 * collections of embedded objects (eg `List<Address>`) are now fully supported and a default UI control will be generated
 * several bugfixes and minor improvements:
 ** fixed some issues with using `UUID` or other custom types as id for entities
-** added default control support for `ZonedDateTime` and `Duration
+** added default control support for `ZonedDateTime` and `Duration`
 ** added EQL support for `CONTAINS NULL` as an alternative to `IS EMPTY`
 *** this can be used in combination with groups: `CONTAINS (NULL,1)` is the equivalent or `CONTAINS 1 or IS EMPTY`
 *** this also fixes some issues when using a collection type property in a  basic EQL filter

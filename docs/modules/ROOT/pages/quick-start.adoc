@@ -6,12 +6,12 @@ What we’ll do:
 
 * [*] Create a simple application with EntityModule
 * [*] Add a property to an entity
-* [*] Customize views
+* [*] Customize a list and form view
 * [*] Customize a property control
 
 == Create a new web application
 
-In the following sections, we'll start from an application generated through the xref:http://start-across.foreach.be[Across Initializer].
+In the following sections, we'll start from an application generated through the http://start-across.foreach.be[Across Initializer].
 We'll generate an application for Across 2.1.2.RELEASE with the following modules:
 
 * `AcrossWebModule`
@@ -33,14 +33,16 @@ INFO --- c.f.a.c.c.bootstrap.AcrossBootstrapper   : 9 - AcrossContextPostProcess
 
 The generated demo application already contains two entities, `Author` and `BlogPost`.
 By navigating to the administrative section of the application, located at the path `/admin`, you'll immediately discover various views for these entities, available through the menu under the `Entity Management section`.
-Some of these views have already been slightly customized by configuration found in the `DomainConfiguration` class.
+Some of these views have already been slightly customized by configuration which you can find in the `DomainConfiguration` class.
 
 image::qs-blogpost-listview.png[An overview of all blog posts]
 
 == Adding a property
 
-In this section, we'll add a required property to the `BlogPost` entity, being a number of required peer reviews.
-To do so, simply specify the property on the entity.
+In this section, we'll add a property to the `BlogPost` entity, being a number of required peer reviews.
+Of course numbers can also be negative, but you can't have a negative amount of reviews, so we'll add some validation which ensures that only a positive number can be entered.
+
+To add the property, simply specify it on the entity.
 
 .com/example/demo/application/domain/blog/post/BlogPost.java
 [source,java,indent=0]
@@ -54,7 +56,7 @@ public class BlogPost extends SettableIdAuditableEntity<BlogPost>
   	private int requiredPeerReviews;
 }
 ----
-<1> It is not possible to review a blog post less than zero times.
+<1> It should not possible to review a blog post less than zero times.
 
 Before the property is accessible, we'll also require a database column.
 Database modifications are usually managed via liquibase changelogs as they provide more control, but for simplicity we'll let hibernate generate the column for us.
@@ -70,8 +72,8 @@ acrossHibernate:
 ```
 
 By restarting the application and navigating to the update view for a `BlogPost`, we'll see that the property has been added.
-Should we try to enter a negative number, a validation message will be given.
-`EntityModule` will use inspect the metadata for entities and their properties to generate controls and, if necessary, perform validation.
+`EntityModule` will inspect the metadata of entities to generate controls and, if necessary, also perform validation.
+As such, should we try to enter a negative number, a validation message will be given.
 
 image::qs-blogpost-updateview-validation.png[Validation of a blog post containing the new property]
 
@@ -109,7 +111,7 @@ class DemoEntitiesConfiguration implements EntityConfigurer
 	}
 }
 ----
-<1> We've added the `@OrderInModule` annotation to ensure this configuration class will be executed after the other configuration classes in this module.
+<1> We've added the `@OrderInModule` annotation to ensure this configuration class will be executed after the other configuration classes in the xref:across:developing-applications:default-modules.adoc#dynamic-application-module[application module].
 <2> Show all the previously configured properties and render `requiredPeerReviews` as well.
 <3> Add filter controls for author and title.
 
@@ -144,8 +146,8 @@ public class BlogPostUpdateViewProcessor extends EntityViewProcessorAdapter
 }
 ----
 <1> `postRender` is one of the final steps in the rendering process.
-In this step, the xref:across-web:web-views:view-elements.adoc[`ViewElement`s] for the controls should be created and able to be moved to a different column.
-<2> By using a utility class, elements can very easily be moved to a different element.
+In this step, the xref:across:across-web:web-views/view-elements.adoc[view elements] for the controls should be created and able to be moved to a different column.
+<2> ViewElements are moved into a different container element.
 
 We'll reuse the configuration class that we created for modifying the list view to register the view processor to the update view.
 
@@ -171,7 +173,7 @@ image::qs-blogpost-updateview-modified.png[Update view after modifications]
 Last but not least, writing our blog post in plain html is not very user friendly.
 Let's see whether we can use a rich text editor instead of a simple textbox.
 
-In this example, we'll configure a rich text editor using xref:https://www.tiny.cloud/get-tiny/[TinyMCE].
+In this example, we'll configure a rich text editor using https://www.tiny.cloud/get-tiny/[TinyMCE].
 The configuration will be a 2-step process:
 
 * A `ViewElementPostProcessor` will be used to register the required javascript dependencies and a selector on our element.
@@ -197,7 +199,7 @@ public class RichTextViewElementProcessor implements ViewElementPostProcessor<Te
 ----
 <1> A class is configured on the `TextboxFormElement` that is rendered.
 This class will be used as a selector to initialize the rich text editor.
-<2> Via the xref:across-web:web-views:web-resources.adoc[`WebResourceRegistry`] , web resources can be registered.
+<2> Via the xref:across:across-web:web-views/web-resources.adoc[`WebResourceRegistry`] , web resources can be registered.
 Here we add the dependency to TinyMCE as well as some javascript to initialize the control.
 
 Second, we'll create the javascript file that initializes a TinyMCE rich text editor on elements with the css class `js-tinymce`.

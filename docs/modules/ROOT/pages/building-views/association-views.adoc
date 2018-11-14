@@ -1,8 +1,29 @@
 = Association views
 
+Association views are very similar to xref::entity-module-explained/entity-views.adoc[entity views] and are specified through an `AssociationConfiguration` on an `EntityConfiguration`.
+For each association the default entity views are automatically configured, which can be further customized.
+Aside of the default views, additional list and form views can be configured as well.
+Depending on the link type of the association, the behaviour of links on the association views will differ.
+
+Views that are configured on an `EntityAssociation` are created on the source configuration for the entity, prefixed with the name of the association.
+The entry point for these views is by default an additional menu item on the navigation bar for the owning side of the association.
+
+Association views are always rendered within the `EntityViewContext` of the entity they are configured on.
+This means that, given an entity `Book` which has a `@ManyToOne` relationship with the entity `Author`, an association will be configured on the `Author` entity named `book.author`.
+Whenever a view is rendered for the `book.author` association, the available `EntityViewContext` will be for the `Book` entity that is rendered, and will have a parent `EntityViewContext` holding the `Author` entity.
+
+== Linked associations
+
+Linked associations are associations which are of the `AssocationType.Type.LINKED` type, which is the default association type for any association that is created.
+They, as their name says, link to views for the associated entity configuration.
+This means that, when navigating to the association, a xref::building-views/list-view.adoc[list view] will be provided which links to entity views of the target entity configuration.
+
 == Embedded associations
 
-Embedded associations are entities that are managed within the context of a different entity.
+Embedded associations are entities that are managed within the context of the owning entity.
+As such, when navigating to an associated entity, its view will always be rendered within a view of the owning entity.
+The association will then link to the views configured for the association itself.
+
 Associations can be turned into an embedded association by specifying the `associationType` as `EntityAssociation.Type.EMBEDDED`.
 
 .Setting the associationType on an association
@@ -20,9 +41,9 @@ Associations can be turned into an embedded association by specifying the `assoc
 <1> The name of the association is `blogPost.author` because blogPost is the owner of the association.
 
 [#association-header]
-=== Association header
+== Association header
 
-An association header is supported for embedded entities.
+An association header is supported for associated entities.
 These header are similar to the entity form headers and consist of:
 
 * a title
@@ -35,12 +56,12 @@ These header are similar to the entity form headers and consist of:
 | Item
 | Availability
 
-| title
+| Title
 | Always if the header is present.
 If no value can be found for the `titleMessageCode` of the view, an empty string will be rendered.
 The default value for the `titleMessageCode` is `EntityMessages.PAGE_TITLE_VIEW`.
 
-| subtitle
+| Subtitle
 | Available if a value can be found for the `titleMessageCode` suffixed with `.subText` can be found.
 
 | Navigation bar
@@ -66,6 +87,6 @@ The association header is added via the `AssociationHeaderViewProcessor`, which 
 | `EntityMessages.PAGE_TITLE_VIEW`;
 |===
 
-NOTE: Even though the default value for `addEntityMenu` is false, when an AssociationViewProcessor is initialized for a view, this is set to true.
+NOTE: Even though the default value for `addEntityMenu` is false, when an `AssociationHeaderViewProcessor` is initialized for a view, this is set to true.
 
 To remove the association header in it's entirety, simply remove the `AssociationHeaderViewProcessor` from the configured view(s).
