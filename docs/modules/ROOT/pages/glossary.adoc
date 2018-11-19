@@ -1,0 +1,47 @@
+= Glossary
+
+`AllowableAction`::
+Represents an action that can be performed on a single entity or on all entities of a particular type. Also used for access control. +
+See xref:entity-module-explained/permissions.adoc[Permissions: allowable actions].
+
+`EntityAssociation`::
+
+`EntityConfiguration`::
+
+`EntityModel`::
+
+`EntityPropertiesBinder`::
+
+`EntityPropertyController`::
+
+`EntityPropertyDescriptor`::
+
+`EntityPropertyRegistry`::
+
+`EntityQuery`::
+ See also <<eql,Entity Query Language>>.
+
+`EntityQueryExecutor`::
+ See also <<eql,Entity Query Language>>.
+
+`EntityRegistry`::
+
+`EntityViewContext`::
+
+`EntityViewFactory`::
+
+`EntityViewProcessor`::
+
+`EntityViewRequest`::
+
+[eql]
+Entity Query Language::
+
+EQL::
+See <<eql,Entity Query Language>>.
+
+`ViewElement`::
+
+`ViewElementBuilder`::
+
+`ViewElementBuilderContext`::

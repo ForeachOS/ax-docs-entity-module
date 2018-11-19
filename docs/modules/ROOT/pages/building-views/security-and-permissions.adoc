@@ -38,10 +38,10 @@ NOTE: Default allowable actions are specified on each configuration which confir
 			             }
 		             } )
 ----
-<1> Configuring the global actions.
+<1> Configuring the global actions for the `Book` entity.
 <2> All actions are allowed.
 `FixedEntityAllowableActionsBuilder.DEFAULT_ALLOWABLE_ACTIONS` always acknowledges that the requested action is present.
-<3> Configuring the instance actions.
+<3> Configuring the actions for the `Book` instance.
 <4> The actions are configured based on a custom implementation.
 In this case each instance has the `AllowableAction.READ` and `AllowableAction.UPDATE` action.
 
@@ -100,15 +100,15 @@ For each of the default views, a required action is configured.
 | `AllowableAction.READ`
 | global
 
-| xref:building-views/form-view.adoc#create-update-view[Create view]
+| xref:building-views/form-view.adoc#create-view[Create view]
 | `AllowableAction.CREATE`
 | global
 
-| xref:building-views/form-view.adoc#readonly-view[Readonly view]
+| xref:building-views/form-view.adoc#detail-view[Detail view]
 | `AllowableAction.READ`
 | instance
 
-| xref:building-views/form-view.adoc#create-update-view[Update view]
+| xref:building-views/form-view.adoc#update-view[Update view]
 | `AllowableAction.UPDATE`
 | instance
 
@@ -126,10 +126,13 @@ This means that, for example, whilst rendering the list view, each instance is c
 [NOTE]
 ====
 Each of the default views is linked via the list view.
-These links depend on the presence of the required action, except for readonly views:
+These links depend on the presence of the required action, except for detail views:
 
-- If access to the readonly view is allowed, but not to the update view, a link to the readonly view will be available.
+- If access to the detail view is allowed, but not to the update view, a link to the detail view will be available.
 - If access to the update view is allowed, a link to the update view will be available but not to the readonly view.
+
+This can be overridden by setting the `EntityAttributes.LINK_TO_DETAIL_VIEW` to `true`.
+If set, the list view will link to the detail view if the user has the `read` action, but never to the update view by default.
 ====
 
 ==== Configuring a list view

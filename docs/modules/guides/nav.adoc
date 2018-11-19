@@ -8,3 +8,4 @@
 ** Form views
 *** xref:form-view/creating-an-extension-form.adoc[Creating a custom form]
 *** xref:form-view/creating-a-fileupload-form.adoc[Creating a file upload form]
+*** xref:form-view/customize-link-to-delete-view.adoc[Customize link to delete view]

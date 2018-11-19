@@ -19,9 +19,9 @@ Investigate the javadoc of the `EntitiesConfigurationBuilder` and child builders
 public class UserEntitiesConfiguration implements EntityConfigurer
 {
 	@Override
-	public void configure( EntitiesConfigurationBuilder configuration ) {
+	public void configure( EntitiesConfigurationBuilder entities ) {
 		// By default permissions cannot be managed through the user interface
-		configuration.withType( Permission.class ).hide();
+		entities.withType( Permission.class ).hide();
 	}
 }
 ----

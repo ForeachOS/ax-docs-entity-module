@@ -1,0 +1,57 @@
+= Customize link to delete view
+
+As of xref:ROOT:releases/3.x.adoc#3-2-0[3.2.0.RELEASE] the delete menu item has been removed from the `advanced-options` menu and a link has been added to the xref:ROOT:building-views/form-view.adoc#detail-view[detail] and xref:ROOT:building-views/form-view.adoc#update-view[update view].
+To return to the previous behaviour, please see the following steps.
+
+== Add the delete menu item
+
+To add the delete menu item to the advanced menu, simply catch the `EntityAdminMenuEvent` that is published and add an item to the `/advanced-options` group.
+
+[source,java,indent=0]
+----
+@EventListener
+public void customizeEntityMenu( EntityAdminMenuEvent menu ) { # <1>
+    PathBasedMenuBuilder builder = menu.builder();
+    EntityConfiguration<Object> entityConfiguration = entityRegistry.getEntityConfiguration( menu.getEntityType() );
+    EntityMessageCodeResolver messageCodeResolver = entityConfiguration.getEntityMessageCodeResolver();
+
+    if ( menu.isForUpdate() ) { # <2>
+        AllowableActions allowableActions = entityConfiguration.getAllowableActions( menu.getEntity() );
+        val currentEntityLink = menu.getLinkBuilder().forInstance( menu.getEntity() );
+
+        if ( allowableActions.contains( AllowableAction.DELETE ) ) { # <3>
+            val deleteLink = currentEntityLink.deleteView();
+
+            builder.item( "/advanced-options/delete", # <4>
+                          messageCodeResolver.getMessageWithFallback( "menu.delete", "Delete" ),
+                          deleteLink.withFromUrl( ServletUriComponentsBuilder.fromCurrentRequestUri().build().getPath() ).toString() ) ) # <5>
+                   .attribute( RequestMenuSelector.ATTRIBUTE_MATCHERS, Collections.singleton( deleteLink.toUriString() ) )
+                   .attribute( NavComponentBuilder.ATTR_ICON, new GlyphIcon( GlyphIcon.TRASH ) )
+                   .attribute( NavComponentBuilder.ATTR_INSERT_SEPARATOR, NavComponentBuilder.Separator.BEFORE )
+                   .order( Ordered.LOWEST_PRECEDENCE );
+        }
+    }
+}
+----
+<1> Catch all events that render the admin menu for an entity type.
+<2> Check whether the menu is rendered for an existing instance.
+This ensures that an entity is available for which the menu is rendered.
+<3> The link should only be added if a user has the `AllowableAction.DELETE` for the instance.
+<4> Provide a menu item that links to the delete view.
+<5> Redirect to the current view if the cancel link is clicked.
+
+== Removing the delete button from the form views
+
+The delete button on the detail and update view is added via the `DeleteActionFormViewProcessor`.
+To remove it, simply remove the processor from the specified views.
+
+[source,java,indent=0]
+----
+@Override
+public void configure( EntitiesConfigurationBuilder entities ) {
+    entities.all() # <1>
+            .detailView(fvb -> fvb.removeViewProcessor( DeleteActionFormViewProcessor.class.getName() ))
+            .updateFormView(fvb -> fvb.removeViewProcessor( DeleteActionFormViewProcessor.class.getName() ));
+}
+----
+<1> Remove the `DeleteActionFormViewProcessor` from every detail and update view.
