@@ -1,9 +1,9 @@
 = Generating controls for properties
 
 Across platform provides base building blocks to build controls with the`ViewElement` class.
-More information can be found in the xref:ax-docs-across:pages/web-views/view-elements.adoc[ViewElement infrastructure section].
+More information can be found in the xref:across:across-web:web-views/view-elements.adoc[ViewElement infrastructure section].
 
-When the `bootstrap-ui-module` is loaded the basic `ViewElement`representations are enriched with bootstrap 3.
+When the `bootstrap-ui-module` is loaded the basic `ViewElement` representations are enriched with bootstrap 3.
 
 == Generating controls for an entity
 
@@ -24,9 +24,9 @@ NOTE: The `EntityViewElementBuilderHelper` can be used to easly create an `Entit
 
 
 * TODO
-** How does viewElementBatch work (Small explination)
-** EntityPropertyRegistry
-** BuilderContext
-** builderHints: what are these and why are they used
+* [ ] How does viewElementBatch work (Small explination)
+* [ ] EntityPropertyRegistry
+* [ ] BuilderContext
+* [ ] builderHints: what are these and why are they used
 
 
