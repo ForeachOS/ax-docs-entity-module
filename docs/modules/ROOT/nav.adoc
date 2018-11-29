@@ -44,7 +44,8 @@
 // Entity properties and view elements
 * xref:property-controls/index.adoc[Entity property controls]
 ** Specifying a control type
-** Generating controls for properties
+** xref:property-controls/creating-a-property-control/generating-controls-for-properties.adoc[Generating controls for properties]
+
 // Default property types
 ** Available controls
 *** xref:property-controls/autosuggest.adoc[Autosuggest]

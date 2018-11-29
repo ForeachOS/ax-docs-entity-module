@@ -1,0 +1,32 @@
+= Generating controls for properties
+
+Across platform provides base building blocks to build controls with the`ViewElement` class.
+More information can be found in the xref:ax-docs-across:pages/web-views/view-elements.adoc[ViewElement infrastructure section].
+
+When the `bootstrap-ui-module` is loaded the basic `ViewElement`representations are enriched with bootstrap 3.
+
+== Generating controls for an entity
+
+`EntityViewElementBatch` is a helper class that helps you with generating controls for an entity.
+It requires an entity, an `EntityPropertySelector` and a `ViewElementMode`.
+The `EntityViewElementBatch.build()` methods generates a collection of `ViewElement` for all properties specified in the `EntityPropertySelector`.
+
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+EntityViewElementBatch<MyEntity> batch = entityViewElementBuilderHelper.createBatchForEntity(myEntity);
+batch.setPropertySelector(EntityPropertySelector.of("name","email"));
+batch.setViewElementMode(ViewElementMode.FORM_WRITE);
+----
+
+NOTE: The `EntityViewElementBuilderHelper` can be used to easly create an `EntityViewElementBatch`.
+
+
+
+* TODO
+** How does viewElementBatch work (Small explination)
+** EntityPropertyRegistry
+** BuilderContext
+** builderHints: what are these and why are they used
+
+
