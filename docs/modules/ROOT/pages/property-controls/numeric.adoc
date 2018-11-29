@@ -7,6 +7,19 @@ A default configuration will only be created for properties annotated with a Spr
 If a `NumericFormElementConfiguration` is present a more advanced javascript control will be used in the front-end for value input.
 The same configuration will also be used for rendering the *VALUE* mode elements, formatting the output according to the properties configured.
 
+.Example of configuring a numeric property control as `CURRENCY`.
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+entities.withType(Car.class)
+        .properties(props -> props
+                .property("price")
+                .attribute(NumericFormElementConfiguration.class,
+                        NumericFormElementConfiguration.currency(
+                                Currency.getInstance("EUR"), 2, true))
+        );
+----
+
 .Manually configuring percent
 Put a format attribute with value `PERCENT` on the `EntityPropertyDescriptor`.
 This will create a locale specific percentage format with 2 decimals (unless the property type is integer).

@@ -110,6 +110,10 @@ Unless a specific `ViewElement` type has been specified, this will force the con
 |If set, holds the `EntityPropertyRegistry` that should be used for resolving nested properties.
 If not set, the property type will be used to resolve a target `EntityPropertyRegistry`.
 
+|`NumericFormElementConfiguration.class`
+|Can hold the configuration instance that should be used when want to use a currency or percentage control for this property.
+This can add currency or percentage modes based on the JQuery autoNumeric plugin
+
 |===
 
 [[appendix-entity-view-factory-attributes]]
