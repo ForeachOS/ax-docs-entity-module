@@ -5,28 +5,57 @@ More information can be found in the xref:across:across-web:web-views/view-eleme
 
 When the `bootstrap-ui-module` is loaded the basic `ViewElement` representations are enriched with bootstrap 3.
 
-== Generating controls for an entity
-
-`EntityViewElementBatch` is a helper class that helps you with generating controls for an entity.
+== EntityViewElementBatch -Generating controls for an entity
+An `EntityViewElementBatch` is a helper class that helps you with generating controls for an entity.
 It requires an entity, an `EntityPropertySelector` and a `ViewElementMode`.
 The `EntityViewElementBatch.build()` methods generates a collection of `ViewElement` for all properties specified in the `EntityPropertySelector`.
 
+.EntityViewElementBatch example
 [source,java,indent=0]
 [subs="verbatim,quotes,attributes"]
 ----
-EntityViewElementBatch<MyEntity> batch = entityViewElementBuilderHelper.createBatchForEntity(myEntity);
-batch.setPropertySelector(EntityPropertySelector.of("name","email"));
+EntityViewElementBatch<MyEntity> batch = entityViewElementBuilderHelper.createBatchForEntity(userEntity);
+batch.setPropertySelector(EntityPropertySelector.of("gender","name", "email"));
 batch.setViewElementMode(ViewElementMode.FORM_WRITE);
+Map<String, ViewElement> elements = batch.build();
 ----
 
 NOTE: The `EntityViewElementBuilderHelper` can be used to easily create an `EntityViewElementBatch`.
 
+=== BuilderHints
+An `EntityViewElementBatch` can be enriched with a map of builderHints to control the viewElement output.
+The map keys are the property names, the value should be one of the following:
+
+
+[cols="1,4",options="header"]
+|===
+
+| Type
+| Description
+
+| `ViewElementMode`
+| The specific `ViewElementMode` the builder should be retrieved for
+
+| `ViewElementType`
+| A string indicating which element type should be generated for the property.
+By default constants of `StandardViewElements` can be used.
+If `BootstrapUiModule` is present, default constants in `BootstrapUiElements` can be used.
+
+| `ViewElementBuilder`
+| Provide your own custom `ViewElementBuilder` that is used for building the element.
+
+| `ViewElement`
+| Provided a fixed element that should be returned
+
+|===
+
+NOTE: When providing a `ViewElementType` for a property in the builderHints,  a `ViewElement` is created using the `ViewElementMode` set on the `ElementViewBatch`.
+Only the `ViewElement` itself is created and not the label and corresponding formGroup.
 
 
 * TODO
 * [ ] How does viewElementBatch work (Small explanation)
 * [ ] EntityPropertyRegistry
 * [ ] BuilderContext
-* [ ] builderHints: what are these and why are they used
 
 
