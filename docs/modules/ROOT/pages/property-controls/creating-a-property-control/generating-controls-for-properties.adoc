@@ -37,7 +37,8 @@ The map keys are the property names, the value should be one of the following:
 | The specific `ViewElementMode` the builder should be retrieved for
 
 | `ViewElementType`
-| A string indicating which element type should be generated for the property.
+| When providing a `ViewElementType` for a property in the builderHints,  a `ViewElement` is created using the `ViewElementMode` set on the `ElementViewBatch`.
+Only the `ViewElement` itself is created and not the label and corresponding formGroup.
 By default constants of `StandardViewElements` can be used.
 If `BootstrapUiModule` is present, default constants in `BootstrapUiElements` can be used.
 
@@ -48,9 +49,6 @@ If `BootstrapUiModule` is present, default constants in `BootstrapUiElements` ca
 | Provided a fixed element that should be returned
 
 |===
-
-NOTE: When providing a `ViewElementType` for a property in the builderHints,  a `ViewElement` is created using the `ViewElementMode` set on the `ElementViewBatch`.
-Only the `ViewElement` itself is created and not the label and corresponding formGroup.
 
 
 * TODO
