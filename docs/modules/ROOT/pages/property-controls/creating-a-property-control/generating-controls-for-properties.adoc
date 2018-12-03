@@ -19,12 +19,12 @@ batch.setPropertySelector(EntityPropertySelector.of("name","email"));
 batch.setViewElementMode(ViewElementMode.FORM_WRITE);
 ----
 
-NOTE: The `EntityViewElementBuilderHelper` can be used to easly create an `EntityViewElementBatch`.
+NOTE: The `EntityViewElementBuilderHelper` can be used to easily create an `EntityViewElementBatch`.
 
 
 
 * TODO
-* [ ] How does viewElementBatch work (Small explination)
+* [ ] How does viewElementBatch work (Small explanation)
 * [ ] EntityPropertyRegistry
 * [ ] BuilderContext
 * [ ] builderHints: what are these and why are they used
