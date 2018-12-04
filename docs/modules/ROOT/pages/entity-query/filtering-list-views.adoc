@@ -1,14 +1,16 @@
-
 [[entity-query-filtering-on-list-view]]
 == EntityQuery filtering on list view
-Any entity configuration having an `EntityQueryParser` and `EntityQueryExecutor` can enable an EntityQuery based filter on its list views. This can be done through the `entityQueryFilter()` method on the `EntityListViewFactoryBuilder.
+Any entity configuration having an `EntityQueryParser` and `EntityQueryExecutor` can enable an EntityQuery based filter on its list views.
+This can be done through the `entityQueryFilter()` method on the `EntityListViewFactoryBuilder.
 
 An EntityQuery filter supports 2 different modes:
 
 * _basic_ mode allows you to select the property values to filter on using form controls
 * _advanced_ mode give you a textbox for entering any EQL statement to use as filter
 
-By default only advanced mode is active. Basic mode is activated if you configure the properties that should be shown in the filter. You do so by modifying the `EntityQueryFilterConfiguration` that is being used.
+By default only advanced mode is active.
+Basic mode is activated if you configure the properties that should be shown in the filter.
+You do so by modifying the `EntityQueryFilterConfiguration` that is being used.
 
 **Activating the default (advanced mode) EntityQuery filter**
 ```java
@@ -22,36 +24,112 @@ entities.withType( Group.class )
                             eqf -> eqf.showProperties( "name", "active" ) ) );
 ```
 
-By default both basic and advanced mode are available, and the UI allows switching between them. All options are configurable on the `EntityQueryFilterConfiguration`.
+By default both basic and advanced mode are available, and the UI allows switching between them.
+Various options are configurable via the `EntityQueryFilterConfiguration` on a list view.
+
+Filtering is done by via the `EntityQueryFilterProcessor`, which uses an `EntityQueryRequest` model for parsing queries, the current filter being used and whether a query supports basic mode.
+The selected properties are processed via an `EntityQueryRequestValueFetcher`.
 
 === Basic mode
+
 Basic mode enables the use of controls to filter by and will parse the content of the property controls to a valid EQL statement which will then be submitted.
+The EQL statement itself is based on the name of the property, the value in the control and the operand that has been defined for the control.
 
-By default the following controls will be created - depending on property type:
-* textbox controls
-* select controls
+.Default query operands
+[opts="header",cols="1,1"]
+|===
 
-For select controls, you can specify if multiple values can be selected on the `EntityQueryFilterConfiguration`.
+| Property type
+| Operand
 
-Text controls will by default use the `EntityQueryOps.CONTAINS` operand, multi value controls will use the `EntityQueryOps.IN` operand and otherwise the `EntityQueryOps.EQ` operand will be used if none was specified on the property directly.
+| String
+| CONTAINS
 
-For easier switching between basic and advanced mode, it is also possible to define an `EntityAttribute.OPTIONS_ENHANCER` on the property, which allows to define the value to be used for the object (e.g. instead of the id of a group, i'd like to see the name of the group whilst filtering). An `EntityQueryValueEnhancer` however merely defines a label to use. For the statement to be parsed successfully you will also need to register a corresponding `Converter` on the `ConversionService`.
+| Collection
+| CONTAINS
 
-The values of the filter controls will be set using the `EntityQueryRequest` and `EntityQueryRequestValueFetcher`.
+| Default
+| EQ (Single value)
 
-=== Advanced mode
-Advanced mode enables the use of EQL to filter the current view using a simple textbox. If both advanced and basic mode are allowed, and the EQL statement that was last executed is not convertible to basic mode, basic mode will be disabled.
+ IN (Multi value)
 
-**Example EntityQuery filter configuration**
-```java
-entities.withType( WebCmsArticle.class )
-        .listview(
+|===
+
+To divert from the default operands, a custom operand can be set by providing the `EntityAttributes.ENTITY_QUERY_OPERAND` on the property itself.
+
+Two types of elements are supported by default
+
+Select elements::
+used for the following property types:
++
+
+* Class registered in the `EntityRegistry`
+* Boolean
+* Enum
+
+Textbox elements:: default element to be used.
+
+A custom ViewElement can also be used by defining a `ViewElementBuilder` for the `ViewElementMode.FILTER_CONTROL` mode.
+
+.Example basic filter configuration
+[source,java,indent=0]
+----
+entities.withType( Book.class )
+        .listView(
             lvb -> lvb.entityQueryFilter(
-              eqf -> eqf.showProperties("title", "articleType") // create a control for title and articleType
-                        .multiValue("articleType") // It should be possible to filter on multiple article types
+              eqf -> eqf.showProperties( "title", "author") // create a control for title and author
+                        .multiValue( "author" ) // It should be possible to filter on multiple authors
             )
         );
-```
+----
+
+=== Advanced mode
+Advanced mode provides a single textbox in which an EQL query can be used, which allows for more complex queries to be used.
+If both advanced and basic mode are allowed and the EQL statement that was last executed is not convertible to basic mode, basic mode will be disabled.
+
+.Example advanced filter configuration
+[source,java,indent=0]
+----
+entities.withType( Book.class )
+        .listView(
+            lvb -> lvb.entityQueryFilter( true )
+        );
+----
+
+=== Searching on values
+When filtering items, the id is used by default for managed types.
+This works fine for most cases, but isn't very handy when defining more complex queries.
+By defining an `EntityQueryValueEnhancer` as `EntityAttribute.OPTIONS_ENHANCER` on the property, a different, more human-readable value can be used to search on.
+
+.Providing an options enhancer
+[source,java,indent=0]
+----
+entities.withType( Book.class )
+        .listView(
+            lvb -> lvb.entityQueryFilter(
+              eqf -> eqf.showProperties( "author") // create a control for title and author
+                        .properties(
+                            props -> props.property( "author" )
+                                          .attribute(
+                                            EntityAttributes.OPTIONS_ENHANCER,
+                                            EQLStringValueOptionEnhancer.create( Author::getEmail ) # <1>
+                                           )
+                        )
+            )
+        );
+----
+<1> Instead of querying authors by id, we'd prefer to query them by email, which should be unique over all authors.
+This will not change how items are presented in the basic control, but will create a query in which the email is used as a value instead of an id.
+
+
+When filtering on the author `John Smith`, it would result in query similar to `author = 'john.smith@firm.com'`.
+
+[NOTE]
+====
+An `EntityQueryValueEnhancer` influences how basic controls build the EQL statement, which makes it easier for users to switch between basic and advanced modes.
+For the statement to work however, you have to ensure that the value can be correctly converted to an instance.
+As such, in most cases you'll have to register an additional `Converter` on the `ConversionService` that supports conversion from the enhanced value to the object type.
+====
 
 == EQL predicate on list view
 List views also support a base predicate to be configured as an EQL statement.
@@ -64,3 +142,14 @@ entities.withType( Group.class )
 ```
 
 Like EQL based filtering, this requires the entity configuration to have a valid `EntityQueryExecutor` infrastructure.
+
+== Related documentation
+
+xref::entity-query/eql.adoc[Entity Query Language]::
+* Listing of supported operands
+* Listing of default query functions
+
+xref::entity-query/extending-eql.adoc[Customizing entity query filtering]::
+* Creating custom query functions
+* Query translation, for example case insensitive searching or expanding to multiple properties
+* Value conversion
