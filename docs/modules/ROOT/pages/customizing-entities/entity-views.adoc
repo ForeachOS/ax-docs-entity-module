@@ -10,9 +10,9 @@ The following section gives an overview of common customizations for generated e
 
 == Changing entity names, property names or other labels
 All entity names, property names and labels can be customized using message sources.
-For an explanation of the different message codes used, see <<appendix-message-codes,the relevant appendix>>.
+More information can be found in the xref:customizing-entities/index.adoc#_configuring_labels[Customizing existing entities] section.
 
-See also the section on <<configuring-form-text,configuring form controls text>> for common customizations.
+See also the section on xref:building-views/form-view.adoc#configuring-form-text[configuring form controls text] for common customizations.
 
 [[customize-page-layout]]
 == Setting page title or changing page layout
@@ -72,10 +72,10 @@ The properties that are rendered on a view can be customized using the `showProp
 | Show all properties present in the property registry, *without* applying the default filter of the registry.
 
 | `:readable`
-| Show all the properties that are readable
+| Show all the properties that are readable.
 
 | `:writable`
-| Show all the properties that are writable
+| Show all the properties that are writable.
 
 | `propertyName`
 | Show the property with name `propertyName`.
@@ -98,6 +98,25 @@ public void configure( EntitiesConfigurationBuilder entities ) {
 <1> Renders the previous property configuration but removes the `publisher` property.
 <2> Renders the previous property configuration and adds the `lastModified` property
 <3> Renders only the `title` and `author` properties.
+
+=== Nested properties
+Property names can also be a selection of nested properties.
+To select a nested property you can use the `.` notation e.g. `author.name`.
+When rendering a nested property, `EntityModule` renders it as an embedded object by rendering a fieldSet around your property.
+
+You can only render the properties of the nested property by selecting them e.g. `author.*`.
+
+.Example nested property selection
+[source,java,indent=0]
+----
+public void configure( EntitiesConfigurationBuilder entities ) {
+    entities.withType( Book.class )
+                 .createFormView( fvb -> fvb.showProperties( "title", "author" ) ) # <1>
+                 .updateFormView( fvb -> fvb.showProperties( "title", "author.*" ) ) # <2>
+}
+----
+<1> Renders the title property along with the author as an embedded object
+<2> Renders the title property along with the author properties (Without the fieldset)
 
 [[configuring-views]]
 == Configuring views
