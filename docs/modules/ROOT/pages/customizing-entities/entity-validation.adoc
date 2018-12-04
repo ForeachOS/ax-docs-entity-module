@@ -1,0 +1,36 @@
+= Customizing entity validation
+
+By default annotation validation is performed on all entities.
+Customizing validation can be done by simply specifying a `Validator` bean that supports the specific entity type.
+You can use the `EntityValidatorSupport` as a base class to extend the default annotation based entity validation.
+
+.Custom entity validator
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+@Component
+public class SeatValidator extends EntityValidatorSupport<Seat> {
+
+    @Override
+    protected void preValidation(Seat entity, Errors errors, Object... validationHints) { <1>
+        // Trigger validation before the initial enitty validation happens
+    }
+
+    @Override
+    protected void postValidation(Seat entity, Errors errors, Object... validationHints) { <2>
+        if (!errors.hasFieldErrors("seatNumber")) {
+            // Do validation for seatNumber
+        }
+    }
+
+    @Override
+    public boolean supports(Class<?> clazz) { <3>
+        return Seat.class.isAssignableFrom(clazz);
+    }
+}
+----
+<1> Do custom validation before the initial entity validation happens
+<2> Do custom validation after the initial entity validation happens
+<3> Return a boolean indicating if the validation needs to be triggered for that class
+
+NOTE: If more than one `Validator` could be applied, you will manually have to set the `Validator.class` attribute on the `EntityConfiguration` to the correct one.

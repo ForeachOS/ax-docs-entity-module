@@ -78,14 +78,6 @@ If you do not wish to use the *#label* property at all as default entity label, 
 NOTE: As *#label* is a generated property, sorting is not enabled by default.
 If you configure the label using an existing property, the sortable attribute will be copied as well and sorting on label will be possible.
 
-== Customizing entity validation
-
-By default annotation validation is performed on all entities.
-Customizing validation can be done by simply specifying a `Validator` bean that supports the specific entity type.
-You can use the `EntityValidatorSupport` as a base class to extend the default annotation based entity validation.
-
-If more than one `Validator` could be applied, you will manually have to set the `Validator.class` attribute on the `EntityConfiguration` to the correct one.
-
 
 // todo: entity names
 

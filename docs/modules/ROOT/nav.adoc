@@ -24,6 +24,7 @@
 *** xref:customizing-entities/entity-associations.adoc[Adding associations]
 ** xref:registering-entities/creating-an-entity-registrar.adoc[Automatic registration of entities]
 ** xref:customizing-entities/index.adoc[Customizing existing entities]
+** xref:customizing-entities/entity-validation.adoc[Customizing entity validation]
 ** xref:registering-entities/enums-as-entities.adoc[Using enums as entities]
 
 // Entity views
