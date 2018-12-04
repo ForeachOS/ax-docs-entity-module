@@ -1,1 +1,19 @@
 = Customizing entity properties
+
+By default all properties for an entity are added to the `PropertyRegistry`.
+You can however define custom properties on the entity without the need to change the entity itself.
+
+The minimal configuration required to define a custom property is a property, propertyType and a valueFetcher.
+The propertyType takes in a `Class` or `TypeDescriptor` for more complex types.
+
+.Add a list of seats as a custom property to Booking
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+entities.withType(Booking.class)
+    .properties(prop -> prop
+        .property("seats")
+        .propertyType(TypeDescriptor.collection(ArrayList.class, TypeDescriptor.valueOf(Seat.class)))
+        .valueFetcher(seatRepository::findAllByBooking)
+    );
+----
