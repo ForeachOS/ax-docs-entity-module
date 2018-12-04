@@ -116,14 +116,21 @@ configuration
 ```
 
 **Define a search text property that actually searches on other fields**
-```java
+[source,java,indent=0]
+----
 configuration.withType( Note.class )
              .properties( props -> props.property( "text" )
-                                        .valueFetcher( entity -> "" )
-                                        .propertyType( TypeDescriptor.valueOf( String.class ) )
-                                        .viewElementType( ViewElementMode.CONTROL, BootstrapUiElements.TEXTAREA )
+                                        .propertyType( String.class )
                                         .attribute( EntityQueryConditionTranslator.class,
                                                     EntityQueryConditionTranslator.expandingOr( "name", "content" ) )
                                         .hidden( true )
-		             )
-```
+             )
+----
+
+[NOTE]
+====
+An `EntityQueryConditionTranslator` or custom properties to use for filtering should be specified on the `EntityConfiguration` and not through an `EntityQueryFilterConfiguration`.
+The property customizations of the `EntityQueryFilterConfiguration` is only used for building the entity query filter form.
+
+The actual parsing of the query and execution of the query uses the property registry of the `EntityConfiguration`, which is configured via the `EntityQueryFacadeRegistrar`.
+====
