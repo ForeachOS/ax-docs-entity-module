@@ -57,27 +57,79 @@ An `EntityViewRegistry` (like `EntityConfiguration` or `EntiyAssociation`) is no
 An `EntityViewFactory` is a stateless controller with 4 controller methods that are expected to be called in a specific order.
 Please refer to the link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/EntityViewFactory.html[javadoc] for an overview of the different controller methods and their purpose.
 
-=== DispatchingEntityViewFactory and EntityViewProcessor
+=== DispatchingEntityViewFactory
 EntityModule has only a single implementation of `EntityViewFactory` in the form of the `DefaultEntityViewFactory`.
 The `DefaultEntityViewFactory`:
 
 * supports `ViewElement` based rendering model - heavily used by EntityModule for building the HTML markup
 * dispatches its controller methods in a more fine-grained manner to a list of registered and ordered `EntityViewProcessor` instances.
 
-The default builders when <<configuring-views,configuring views>> only register `EntityViewProcessor` beans on the factory.
+The default builders when <<configuring-views,configuring views>> only register <<entity-view-processor,`EntityViewProcessor`>> beans on the factory.
 When an `EntityViewFactory` controller method is being called, it will be translated into one or more processor methods and those method calls will be dispatched to all processors in order.
 
-Several adapter `EntityViewProcessor` classes are available:
+NOTE: The `DefaultEntityViewFactory` will not execute any of the rendering related methods if any of the previous methods has marked the `EntityView` as being a redirect or have specified their own `ResponseEntity`.
 
-* use `EntityViewProcessorAdapter` for most use cases, it provides several adapter methods that also allow you to hook into the `ViewElement` generation lifecycle
-* use `SimpleEntityViewProcessorAdapter` if you do not need to hook into the `ViewElement` generation lifecycle
-* use `ExtensionViewProcessorAdapter` if you want to create a custom view/form that represents a so-called extension object
+[#entity-view-processor]
+=== EntityViewProcessor
+
+`EntityViewProcessor` classes allow to hook into the execution of a view request.
+Most, if not all of the logic executed during a request is done by using view processors.
+View processors give access to the configuration of the context for the request and the actual execution of the request.
+
+==== Configuring the context
+
+Initialization of the `EntityViewContext`::
+`prepareEntityViewContext` allows for modifications to the `EntityViewContext` which holds information about the entity configuration or entity that is viewed.
+
+Authorization of the request::
+An `authorizeRequest` method is provided that should throw a relevant exception if the request is invalid.
+
+Initialization of the `EntityViewCommand`::
+Initializes the `EntityViewCommand` for the current request.
+The `EntityViewCommand` represents the command object to handle the form data.
+It will hold the DTO for the entity that is being created or updated and supports the configuration of additional extension objects that should be bound and validated as well.
+`initializeCommandObject` allows you configure the `EntityViewCommand` for use in the remainder of the request lifecycle.
+
+==== Executing a request
+
+The execution of the view request has two aspects, executing the request and rendering elements.
+A request is handled in various lifecycle steps.
+
+Preprocessing::
+Actions that should be taken before the request is handled, such as validating the command object.
+This is done in the `preProcess` step of an EntityViewProcessor.
+
+Executing the request::
+The actual execution of the request, performed via the `doControl` step.
+In this step, the controller logic is executed, such as saving an entity and building a response.
+
+Rendering::
+An optional step.
+If rendering should be applied, three additional methods are used to build the elements that should be rendered on the view.
++
+
+* `preRender`: This is the point where the `ViewElementBuilderContext` is configured and `ViewElementBuilders` are created.
+* `render`: Where the initial rendering happens.
+At this point, most of the configuration has been executed and the elements that should be rendered are finalized.
+* `postRender`: Perform render related postprocessing.
+This step is commonly used to modify the view after all the elements have been created, such as moving items within the layout.
+
++
+Various utility methods are available through the `ContainerViewElementUtils`, for manipulating container view elements, and `EntityViewElementUtils` for working with view elements and view building.
+
+Postprocessing::
+General purpose postprocessing of the request when the view has been fully processed and is ready to be returned to the user.
+`postProcess` is the final step in the execution of a view and is always executed.
+
+For ease of use, several specialized adapter classes have been provided to hook into the rendering process:
+
+* `EntityViewProcessorAdapter` for most use cases, it provides several adapter methods that also allow you to hook into the `ViewElement` generation lifecycle
+* `SimpleEntityViewProcessorAdapter` if you do not need to hook into the `ViewElement` generation lifecycle
+* `ExtensionViewProcessorAdapter` if you want to create a custom view/form that represents a so-called extension object
 ** the view is part of the entity configuration but often does not manage properties of the actual entity type
 
-NOTE: The `DefaultEntityViewFactory` will not execute any of the rendering related methods if any of the previous methods has marked the `EntityView` as being a redirect.
-
-Please refer to the link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/EntityViewProcessor.html[EntityViewProcessor], link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/processors/EntityViewProcessorAdapter.html[EntityViewProcessorAdapter] and link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/processors/SimpleEntityViewProcessorAdapter.html[SimpleEntityViewProcessorAdapter] for more details on the available processor methods.
-The appendix also provides a <<appendix-view-processors,list of all available general purpose processors>>.
+Please refer to the link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/EntityViewProcessor.html[EntityViewProcessor], link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/processors/EntityViewProcessorAdapter.html[EntityViewProcessorAdapter] and link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/processors/SimpleEntityViewProcessorAdapter.html[SimpleEntityViewProcessorAdapter] javadoc for more details on the available processor methods.
+The appendix also provides a xref::services-and-components/default-entityviewprocessors.adoc[list of all available general purpose processors].
 
 [[transaction-support]]
 === Transaction support
