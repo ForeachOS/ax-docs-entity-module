@@ -38,10 +38,10 @@ Example: _{0,date,medium} {0,time,short} by \{1}_
 |_ModuleName_.adminMenu
 |Title of the menu group for the entities of that module.
 
-| enums.*EnumName*.*EnumValue*
+| _ModuleName_.entities.enums.*EnumName*.*EnumValue*
 | Message code for a single enum value label.
 
- Example: _enums.Numbers.ONE_
+ Example: _BookingApplicationModule.entities.enums.TicketType.VIP_
 
 | *EntityPrefix*.name.singular
 | Label for an entity in singular form, for use outside or at the beginning of a sentence.
