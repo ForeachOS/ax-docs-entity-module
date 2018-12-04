@@ -49,6 +49,7 @@ The `EntityViewCommand` will be validated for every state modifying request: web
 
 Please refer to the link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/request/EntityViewCommand.html[`EntityViewCommand` javadoc] for a description of all available properties.
 
+[#entity-view-factory]
 == EntityViewFactory
 Every view is built by an `EntityViewFactory`.
 An `EntityViewRegistry` (like `EntityConfiguration` or `EntiyAssociation`) is nothing but a map of `EntityViewFactory` by view name.
