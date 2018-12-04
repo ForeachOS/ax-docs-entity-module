@@ -168,7 +168,7 @@ public void configure( EntitiesConfigurationBuilder entities ) {
         .listView( lvb -> lvb
             .entityQueryFilter( false )           // optional - disable the previously activated entity query filter
             .filter( groupFilteringProcessor() )  // register the custom filter
-		);
+        );
 }
 ----
 
@@ -176,7 +176,7 @@ public void configure( EntitiesConfigurationBuilder entities ) {
 
 It is possible to activate a detail view inline in a list view.
 If the `EntityConfiguration` or `EntityAssociation` has a view named *listSummaryView* a summary pane will automatically become available when clicking on the item row in the table.
-The summary pane is called using AJAX and only the _content_ fragment of the page will be rendered.
+The summary pane itself is rendered by fetching the _content_ fragment of the page using xref:across:across-web:web-views/partial-rendering.adoc[partial rendering] and ajax.
 
 [source,java,indent=0]
 [subs="verbatim,quotes,attributes"]
