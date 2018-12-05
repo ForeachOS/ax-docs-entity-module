@@ -13,13 +13,11 @@ public class SeatValidator extends EntityValidatorSupport<Seat> {
 
     @Override
     protected void preValidation(Seat entity, Errors errors, Object... validationHints) { <1>
-        // Trigger validation before the initial enitty validation happens
     }
 
     @Override
     protected void postValidation(Seat entity, Errors errors, Object... validationHints) { <2>
         if (!errors.hasFieldErrors("seatNumber")) {
-            // Do validation for seatNumber
         }
     }
 
