@@ -43,7 +43,12 @@ In case a property is writable but not readable, the property can only be includ
 WARNING: The `hidden` state has no correlation with a hidden form control.
 Setting a property to be rendered as a hidden form control can only be done through configuring the right `ViewElement` information for that property.
 
-=== Configuring a label
+== Configuring labels
+=== General label configuration
+You can customize all labels, placeholders, tooltips, helper texts, ... for properties by setting the right message codes.
+Consult the xref:services-and-components/message-codes.adoc[messageCode section] for more information.
+
+=== Configuring the label with an EntityConfiguration
 An entity with a corresponding `EntityConfiguration` always has a label, this is a textual representation of the entity in for example lists.
 This could be the *name* or the * title* property for example.
 By default the label corresponds to a custom generated property *#label* that defaults to calling `toString()` on the entity.
@@ -72,14 +77,6 @@ If you do not wish to use the *#label* property at all as default entity label, 
 
 NOTE: As *#label* is a generated property, sorting is not enabled by default.
 If you configure the label using an existing property, the sortable attribute will be copied as well and sorting on label will be possible.
-
-== Customizing entity validation
-
-By default annotation validation is performed on all entities.
-Customizing validation can be done by simply specifying a `Validator` bean that supports the specific entity type.
-You can use the `EntityValidatorSupport` as a base class to extend the default annotation based entity validation.
-
-If more than one `Validator` could be applied, you will manually have to set the `Validator.class` attribute on the `EntityConfiguration` to the correct one.
 
 
 // todo: entity names

@@ -55,6 +55,9 @@ If all you want to configure is the list of possible options, set the `OptionIte
 |When set on an `EntityConfiguration`, contains the EQL statement or `EntityQuery` that should be used to fetch the selectable options for a property that points to the entity configuration.
 Will only be used if there is no `OptionGenerator.class` or `OptionIterableBuilder.class` attribute set.
 
+|`EntityAttributes.LINK_TO_DETAIL_VIEW`
+|When set to true the list view will link to the detail view if the user has the read action, but never to the update view by default.
+
 |===
 
 [[appendix-entity-property-descriptor-attributes]]

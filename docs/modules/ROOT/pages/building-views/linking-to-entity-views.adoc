@@ -168,6 +168,13 @@ Every method call results in a new instance being created, so you will not make 
 .root()
 ----
 
+== ListView default link generation
+By default if you have the right permissions to update an entity the listView for that entity wil show a link to the updateView.
+If you only have read permissions on the entity, the listView will generate a link to to detailView.
+
+If you want the listView to always link to the detailView you can set the `LINK_TO_DETAIL_VIEW` attribute to `true`.
+More information can be found in the xref:services-and-components/attributes-overview.adoc[attributes overview] section.
+
 == Common URL parameters
 The following is a list of query string parameters often used with entity views:
 

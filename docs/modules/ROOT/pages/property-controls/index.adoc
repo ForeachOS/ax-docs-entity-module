@@ -13,3 +13,64 @@ There are 3 ways you can influence the default behaviour:
 ** these `ViewElementPostProcessor` instances will be added to the default builder, in the order they were registered
 * specify a custom  `viewElementBuilder()` for a given mode
 ** the default building will be ignored and only your custom builder will be used
+
+== ViewElementMode of properties
+Properties are rendered using the `ViewElementMode` that has been configured on the view that is requested.
+How the property is rendered can be overridden by customizing the element that is rendered for a specific mode, for example, by specifying the element type that should be used.
+So the `ViewElementMode` determines which controls are used to render the property.
+For example the FROM_WRITE/FORM_READ `ViewElementMode` will render a formGroup containing a label and control for that property.
+
+The default configured `ViewElementMode` can be overwritten for a specific view or property.
+
+.Example of setting a viewElementMode
+[source,java,indent=0]
+----
+entities.withType(Booking.class)
+   .updateFormView(uvb -> uvb
+       .viewElementMode(ViewElementMode.FORM_READ) <1>
+       .properties(props -> props
+           .property("name")
+           .viewElementType(ViewElementMode.FORM_READ, BootstrapUiElements.TEXTBOX) <2>
+       )
+   );
+----
+<1> Render the updateForm with the FORM_READ ViewElementMode
+<2> When this property is rendered with the FORM_READ ViewElementMode, use a textbox as control
+
+
+.Default ViewElementModes
+[cols="1,5"]
+|===
+|ViewElementModes
+|Output
+
+|`VALUE`
+|Value of the property (e.g. John Doe).
+
+|`LABEL`
+|Label of the property (e.g. Username)
+
+|`CONTROL`
+|Control to update the value (e.g. a textbox).
+
+|`FORM_READ`
+|Typical combination of `LABEL` and `VALUE`.
+
+|`FORM_WRITE`
+|Typical combination of `LABEL` and `CONTROL`.
+
+
+|`LIST_LABEL`
+|Label of the property used in a tabular view (Column header).
+
+|`LIST_VALUE`
+|Value of the property used in a tabular view (Cell value).
+
+|`LIST_CONTROL`
+|Control to update the value in a tabular view inline.
+
+|`FILTER_CONTROL`
+|Control used to select a value in a filter.
+
+|===
+
