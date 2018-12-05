@@ -19,7 +19,20 @@ default processors
 == Adding a list view
 TODO
 
+Adding a list view is as simple as specifying a listView
+////
+- configure listviewentityfactorybuilder with specific name
+- cfr normal listview
+- link to list view using entityviewlinks to listview with viewname
+////
+
 == Customizing a list view
+
+////
+- customize sortabletablebuilder
+-
+- customize header?
+////
 TODO
 
 .Custom sorting

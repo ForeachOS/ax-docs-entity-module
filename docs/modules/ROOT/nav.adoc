@@ -18,8 +18,9 @@
 
 // Configuring entities
 * xref:registering-entities/index.adoc[Configuring entities]
+** xref:customizing-entities/entity-properties.adoc[Configuring properties]
 ** xref:registering-entities/manual-registration.adoc[Manually adding an entity type]
-*** xref:customizing-entities/entity-properties.adoc[Registering properties]
+*** xref:registering-entities/entity-properties.adoc[Registering properties]
 *** xref:customizing-entities/entity-model.adoc[Defining an entity model]
 *** xref:customizing-entities/entity-views.adoc[Configuring entity views]
 *** xref:customizing-entities/entity-associations.adoc[Adding associations]
@@ -31,11 +32,17 @@
 // Entity views
 * xref:building-views/index.adoc[Building entity views]
 ** How entity views work
-** xref:building-views/list-view.adoc[List views]
-** xref:building-views/form-view.adoc[CRUD views]
-*** Create and update form
-*** xref:building-views/generic-view.adoc[Read/detail view]
-*** Delete form
+** Creating views
+*** List views
+*** Form views
+*** Generic views
+** Customizing existing views
+*** xref:building-views/list-view.adoc[List views]
+*** xref:building-views/form-view.adoc[CRUD views]
+**** Create and update form
+**** xref:building-views/generic-view.adoc[Read/detail view]
+**** Delete form
+*** Common tasks
 ** xref:building-views/association-views.adoc[Association views]
 ** xref:building-views/linking-to-entity-views.adoc[Linking to entity views]
 ** xref:building-views/localization.adoc[Localization & text messages]
