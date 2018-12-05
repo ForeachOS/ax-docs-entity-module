@@ -27,6 +27,7 @@ Wraps together all the information of a specific entity view request:
 
 Please refer to the link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/request/EntityViewRequest.html[`EntityViewRequest` javadoc] for a description of all available properties.
 
+[#entity-view-context]
 == EntityViewContext
 The `EntityViewContext` contains contextual information and provides access to components that should be used for building a view.
 Contextual information is for example the entity type, specific entity or entity association being viewed.
@@ -38,6 +39,7 @@ NOTE: `EntityViewContext` is available as a request-scoped bean but only in case
 Loading the `EntityViewContext` attributes manually  can be done by using the `EntityViewContextLoader` bean.
 You should use the `ConfigurableEntityViewContext` interface to modify a view context.
 
+[#entity-view-command]
 == EntityViewCommand
 The `EntityViewCommand` represents the command that should be executed on the `EntityViewFactory` to create the corresponding `EntityView`.
 Most often the command represents the form of a view where the request parameters are bound to.
@@ -73,19 +75,19 @@ NOTE: The `DefaultEntityViewFactory` will not execute any of the rendering relat
 === EntityViewProcessor
 
 `EntityViewProcessor` classes allow to hook into the execution of a view request.
-Most, if not all of the logic executed during a request is done by using view processors.
 View processors give access to the configuration of the context for the request and the actual execution of the request.
+This enables us to perform most, if not all, of the logic executed during a request by using view processors.
 
 ==== Configuring the context
 
 Initialization of the `EntityViewContext`::
-`prepareEntityViewContext` allows for modifications to the `EntityViewContext` which holds information about the entity configuration or entity that is viewed.
+`prepareEntityViewContext` allows for modifications to the <<entity-view-context,`EntityViewContext`>> which holds information about the entity configuration or entity that is viewed.
 
 Authorization of the request::
 An `authorizeRequest` method is provided that should throw a relevant exception if the request is invalid.
 
 Initialization of the `EntityViewCommand`::
-Initializes the `EntityViewCommand` for the current request.
+Initializes the <<entity-view-command,`EntityViewCommand`>> for the current request.
 The `EntityViewCommand` represents the command object to handle the form data.
 It will hold the DTO for the entity that is being created or updated and supports the configuration of additional extension objects that should be bound and validated as well.
 `initializeCommandObject` allows you configure the `EntityViewCommand` for use in the remainder of the request lifecycle.
@@ -123,13 +125,12 @@ General purpose postprocessing of the request when the view has been fully proce
 
 For ease of use, several specialized adapter classes have been provided to hook into the rendering process:
 
-* `EntityViewProcessorAdapter` for most use cases, it provides several adapter methods that also allow you to hook into the `ViewElement` generation lifecycle
-* `SimpleEntityViewProcessorAdapter` if you do not need to hook into the `ViewElement` generation lifecycle
-* `ExtensionViewProcessorAdapter` if you want to create a custom view/form that represents a so-called extension object
+* link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/EntityViewProcessor.html[`EntityViewProcessorAdapter`] for most use cases, it provides several adapter methods that also allow you to hook into the `ViewElement` generation lifecycle
+* link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/processors/EntityViewProcessorAdapter.html[`SimpleEntityViewProcessorAdapter`] if you do not need to hook into the `ViewElement` generation lifecycle
+* link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/processors/SimpleEntityViewProcessorAdapter.html[`ExtensionViewProcessorAdapter`] if you want to create a custom view/form that represents a so-called extension object
 ** the view is part of the entity configuration but often does not manage properties of the actual entity type
 
-Please refer to the link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/EntityViewProcessor.html[EntityViewProcessor], link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/processors/EntityViewProcessorAdapter.html[EntityViewProcessorAdapter] and link:{entity-module-javadoc}/com/foreach/across/modules/entity/views/processors/SimpleEntityViewProcessorAdapter.html[SimpleEntityViewProcessorAdapter] javadoc for more details on the available processor methods.
-The appendix also provides a xref::services-and-components/default-entityviewprocessors.adoc[list of all available general purpose processors].
+Please refer to the appendix for a xref::services-and-components/default-entityviewprocessors.adoc[list of all available general purpose processors].
 
 [[transaction-support]]
 === Transaction support
