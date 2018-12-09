@@ -1,0 +1,108 @@
+= CRUD views
+
+EntityModule provides four form views by default to support CRUD operations on an entity.
+These views are initially configured using a specific view initializer and will all register a `SingleEntityPageStructureViewProcessor`.
+They can be customized by configuring additional `EntityViewFactoryBuilders` for the `EntityConfiguration` of that type.
+
+The `SingleEntityPageStructureViewProcessor` builds upon the `PageContentStructure.TEMPLATE` of `AdminWebModule` and ensures that each of these views has a breamcrumb, header and content part for the view.
+The header contains a title, subtitle and navigation bar element.
+The navigation bar for an entity type can be customized by intercepting `EntityAdminMenuEvents`.
+
+By default, the following views are available:
+
+xref::building-views/customizing-views/create-update-view.adoc#create-view[Create view]::
+Allows to create a new instance for the type.
+A create view will usually have one menu item available, being the `General` tab which holds the properties for the view itself.
+
+xref::building-views/customizing-views/detail-view.adoc[Detail view]::
+Supports a read-only view for the instance of an entity.
+This view will by default link to associated entities to which can be navigated via additional menu items that have been registered on the navigation bar.
+If a user has the `AllowableAction.UPDATE` action, it will provide a link to the update view.
+The `AllowableAction.DELETE` action will provide a link to the delete view.
+
+xref::building-views/customizing-views/create-update-view.adoc#update-view[Update view]::
+Provides the ability to modify an instance for an entity type.
+This view is similar to the detail view.
+
+xref::building-views/customizing-views/delete-view.adoc[Delete view]::
+Provides the ability to delete an instance.
+
+== Navigating to an entity instance
+
+Both the xref::building-views/customizing-views/detail-view.adoc[detail view] and the xref::building-views/customizing-views/create-update-view.adoc#update-view[update view] are entry points to access an instance.
+Depending on access permissions, different scenario's will be applied for linking to these views:
+
+Actions on the default listView::
+- If a user has access to the read action, but not the update action, a link to the detail view will be present on the row for the instance
+- If a user has access to the read action and the update action, a link to the update view will be present on the row for the instance
+
+'General' navigation item on form views::
+Clicking the 'General' navigation item will
+
+- reload the detail view if the user is on the detail view
+- reload the update view if the user is on the update view
+- redirect to the detail view, if the user is not on the detail or update view and has the read action but not the update action
+- redirect to the update view, if the user is not on the detail or update view and has the read action and the update action
+
+This can also be overridden by specifying the `EntityAttributes.LINK_TO_DETAIL_VIEW` attribute on the `EntityConfiguration` or the current `EntityViewRequest`.
+If set to `true`, a list view will link to the detail view for every instance, if the read action is present, and never to the update view.
+On a form view, the 'General' menu item will always link to the detail view unless the user is on the update view.
+
+
+[[configuring-form-text]]
+== Configuring form controls text
+
+Usually a property is rendered in either in a xref:bootstrap-ui-module::form-controls/form-group.adoc[form group], which is a combination of a label and a control, or a xref:property-controls/fieldset.adoc[fieldset].
+By default, a property like this would be rendered as a form group (`FormGroupElement` which is usually a combination of the label and the control for the property) or a xref:property-controls/fieldset.adoc[fieldset] (`FieldsetFormElement`).
+
+Depending on the `ViewElementMode` that the property is rendered in, various text messages can be modified.
+
+=== Read mode
+
+In `FORM_READ` (readonly) mode, the default form renders only the label and the value of a property.
+You can customize the label by configuring the corresponding xref:services-and-components/message-codes.adoc[message code], for example: `UserModule.entities.user.properties.username=Name of the user`.
+
+=== Write mode
+
+In `FORM_WRITE` mode several other message codes will be resolved as well, and if they return values, additional content will be shown on the form.
+
+Description text::
+A description provides additional context for the property being shown.
+It is rendered above the control of a form group, or above the content of a fieldset.
+
+[source=properties]
+----
+UserModule.entities.user.properties.username[description]=The username must be unique.
+----
+
+Help text::
+Help text is rendered below the control of a form group, or below the content of a fieldset.
+It usually provides a (less important) hint for updating the value.
+
+[source=properties]
+----
+UserModule.entities.user.properties.username[help]=Try to pick something you will remember.
+----
+
+Tooltip text::
+Tooltip text is added as a separate icon (question mark) that will only show the actual tooltip when you hover over it with the mouse cursor.
+Tooltips are often used as an alternative for help text.
+The difference is that help text is always visible, whereas to see the tooltip a used will need to take an extra action.
+
+The tooltip icon is added to the label of a form group or to the legend of a fieldset.
+
+[source=properties]
+----
+UserModule.entities.user.properties.username[tooltip]=You will receive an error when saving if your username is already taken.
+----
+
+By default all message codes allow HTML entities, so you can add additional links or markup to them.
+
+NOTE: In case of a form group you can also manually set the different text components from code.
+Values set from code will take precedence and will never be replaced by the values resolved from message codes.
+
+A more detailed explanation of how message codes are resolved and which codes are possible can be found in the xref:services-and-components/message-codes.adoc[message codes overview].
+
+== Related Documentation
+
+* xref::building-views/customizing-views/customizing-views.adoc[Customizing views]
