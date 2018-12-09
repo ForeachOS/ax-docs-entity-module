@@ -35,12 +35,12 @@
 *** List views
 *** Form views
 *** Generic views
-** Customizing existing views
-*** xref:building-views/list-view.adoc[List views]
-*** xref:building-views/form-view.adoc[CRUD views]
-**** Create and update form
-**** xref:building-views/generic-view.adoc[Read/detail view]
-**** Delete form
+** xref:building-views/customizing-views/customizing-views.adoc[Customizing existing views]
+*** xref:building-views/customizing-views/list-view.adoc[List views]
+*** xref:building-views/customizing-views/form-view.adoc[CRUD views]
+**** xref:building-views/customizing-views/create-update-view.adoc[Create and update form]
+**** xref:building-views/customizing-views/detail-view.adoc[Read/detail view]
+**** xref:building-views/customizing-views/delete-view.adoc[Delete form]
 *** Common tasks
 ** xref:building-views/association-views.adoc[Association views]
 ** xref:building-views/linking-to-entity-views.adoc[Linking to entity views]

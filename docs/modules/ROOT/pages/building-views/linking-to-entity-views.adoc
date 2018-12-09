@@ -69,6 +69,7 @@ The following paths would render the exact same view:
 * `@adminWeb:/entities/\{entityName}/\{id}?view=myCustomView`
 * `@adminWeb:/entities/\{entityName}/\{id}/update?view=myCustomView`
 
+[#building-view-links]
 == Building view links
 An `EntityViewLinks` component is available to generate links to entity views from anywhere in your code.
 This component will inspect the `EntityRegistry` to find corresponding configurations and determine how links should be built.

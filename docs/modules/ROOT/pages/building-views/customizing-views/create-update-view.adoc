@@ -1,0 +1,116 @@
+= Create and update view
+
+The create and update views allow users to create and modify instances for entity types.
+In the following sections, you'll find a more in depth explanation of how these views are configured and customized.
+As the configuration of these views can overlap, configuration can also be applied to both of these views at the same time.
+To do so, you can use the `createOrUpdateView` method on the `EntityConfigurationBuilder` or `EntityAssociationBuilder`.
+
+[source,java,indent=0]
+----
+public void configure(EntitiesConfigurer entities)
+{
+    entities.withType( Book.class )
+            .createOrUpdateFormView( fvb -> fvb.showProperties( ".", "~publication" ) ); # <1>
+}
+----
+<1> Show the previously selected properties but exclude publication.
+
+[[create-view]]
+== Create view
+
+A create view enables the user to create a new instance for an entity type.
+This view can only be accessed if the user has the `AllowableAction.CREATE` action on the `EntityConfiguration` of the type.
+By default, it will render all the writable properties in ViewElementMode.FORM_WRITE.
+
+A create view will have no references to other forms by default, but only controls for the properties that should be rendered and the ability to save.
+
+.Configuring a create view
+[source,java,indent=0]
+----
+public void configure(EntitiesConfigurer entities)
+{
+    entities.withType( Book.class )
+            .createFormView( fvb -> fvb.showProperties( ".", "~publication" ) ); # <1>
+}
+----
+<1> Show the previously selected properties but exclude publication.
+
+.Default settings
+[cols="1,1", opts="header"]
+|===
+
+| View name
+| createView
+
+| Required action
+| `AllowableAction.READ`
+
+| ViewElementMode
+| `ViewElementMode.FORM_WRITE`
+
+| Default property selector
+| `EntityPropertyDescriptor.WRITABLE`
+
+|===
+
+[[update-view]]
+== Update view
+
+The update view enables the user to modify an existing instance for an entity type.
+It can only be accessed if the user has the `AllowableAction.UPDATE` action.
+It is the default entry point to manage the instance for an entity and provides the following:
+
+links to associated entities::
+By default, tabs are generated for properties that are `ManyToOne` / `OneToMany` and `ManyToMany` relationships.
+link to the deleteView for the instance::
+Usually visualized as a garbage-bin icon at the top right of the navigation bar.
+ability to modify the current entity::
+A save button is provided which modifies the current entity.
+links to other registered views/urls::
+By intercepting the `EntityAdminMenuEvent` additional menu items can be configured which will be accessible via the navigation bar.
+
+//See xref::building-views/linking-to-entity-views.adoc#[Building view links] for more information on customizing the entity admin menu.
+// TODO refer to documentation on customizing the entity admin menu
+
+
+.Configuring an update view
+[source,java,indent=0]
+----
+public void configure(EntitiesConfigurer entities)
+{
+    entities.withType( Book.class )
+            .updateFormView(
+                fvb -> fvb.properties(
+                            props -> props.property( "author" ).writable( false ) # <1>
+                          )
+                          .showProperties( ".", "author" ) # <2>
+            );
+}
+----
+<1> Author may not be modified on the update view.
+By making the author non-modifiable it will not be shown on the form by default, as the view is configured with `ViewElementMode.FORM_WRITE`
+<2> Show all the previously configured properties and also show author.
+This will render a read-only version of author.
+
+
+.Default settings
+[cols="1,1", opts="header"]
+|===
+
+| View name
+| updateView
+
+| Required action
+| `AllowableAction.UPDATE`
+
+| ViewElementMode
+| `ViewElementMode.FORM_WRITE`
+
+| Default property selector
+| `EntityPropertyDescriptor.WRITABLE`
+
+|===
+
+== Related documentation
+
+* To learn more about configuring a form view, please see xref::building-views/customizing-views/form-view.adoc[CRUD views]
