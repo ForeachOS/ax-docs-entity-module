@@ -17,6 +17,7 @@
 
 EntityModule follows a https://semver.org[semantic versioning] scheme.
 
+* xref:releases/3.x.adoc#3-3-0[3.3.0]
 * xref:releases/3.x.adoc#3-2-0[3.2.0]
 * xref:releases/3.x.adoc#3-1-0[3.1.0]
 * xref:releases/2.x.adoc#2-2-0[2.2.0]

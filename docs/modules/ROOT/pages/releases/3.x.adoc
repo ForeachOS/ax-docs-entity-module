@@ -1,5 +1,14 @@
 = 3.x.x release notes
 
+[#3-3-0]
+== 3.3.0-SNAPSHOT
+
+* bugfix related to the entity of a parent `ViewElementBuilderContext` seeping down
+* improments made to the `CollectionEntityQueryExecutor`
+** now supports `Supplier`s
+* improved exception handling
+** uncaught exceptions are now registered as global validation errors and are shown on the regular crud views
+
 [#3-2-0]
 == 3.2.0.RELEASE
 
