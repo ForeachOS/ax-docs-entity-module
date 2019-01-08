@@ -81,6 +81,7 @@
 * xref:entity-query/index.adoc[EntityQuery infrastructure]
 ** xref:entity-query/eql.adoc[EntityQuery Language (EQL)]
 *** xref:entity-query/extending-eql.adoc[Extending EQL]
+*** xref:entity-query/eql-date.adoc[EQL date and time functions]
 ** xref:entity-query/filtering-list-views.adoc[Filtering list views]
 
 // Integration with libraries & modules
