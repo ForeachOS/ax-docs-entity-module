@@ -1,0 +1,144 @@
+== EQL date and time functions
+EntityModule provides an extensive list of `EQL functions` to handle the specification of dates and times.
+The creation of all date and times you need for filtering can be facilitated by providing the necessary date and time specifications to these functions.
+
+These functions will use your `Locale.default()` to determine daylight saving time and the day the week start at.
+You can set up your Locale by setting the `spring.mvc.locale` property in you application property file.
+
+=== Default EQL date and time functions
+The following `EQL functions` are provided by default:
+
+[cols="1,2",opts=header]
+|===
+|Function
+|Output
+
+|now(x)
+|Current date & time
+
+|today(x)
+|The current day at midnight
+
+|monday(x)
+|The previous monday at midnight.
+If the current day is monday, the output will be equal to the current day at midnight.
+
+|tuesday(x)
+|The previous tuesday at midnight.
+If the current day is tuesday, the output will be equal to the current day at midnight.
+
+|wednesday(x)
+|The previous wednesday at midnight.
+If the current day is wednesday, the output will be equal to the current day at midnight.
+
+|thursday(x)
+|The previous thursday at midnight.
+If the current day is thursday, the output will be equal to the current day at midnight.
+
+|friday(x)
+|The previous friday at midnight.
+If the current day is friday, the output will be equal to the current day at midnight.
+
+|saturday(x)
+|The previous saturday at midnight.
+If the current day is saturday, the output will be equal to the current day at midnight.
+
+|sunday(x)
+|The previous sunday at midnight.
+If the current day is sunday, the output will be equal to the current day at midnight.
+
+|day(x)
+|The current day at midnight.
+
+|week(x, dayOfTheWeek)
+|First day of the current week at midnight without parameters.
+Uses the `Locale.default()` to determine if the week starts on sunday or monday.
+You can provide an optional dayOfTheWeek paramater ("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY" ,"SUNDAY") that get that day at midnight.
+For example week("SATURDAY") give you the saterday of the current week at midnight.
+
+|weekNumber(x)
+|The current weekNumber
+
+|month(x, month)
+|First day of the current month at midnight.
+You can provided an option month parameter ("JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER", "DECEMBER")
+For example `month("FEBRUARY", "+2D)`
+
+|year(x)
+|First day of the current year at midnight.
+|===
+
+NOTE: All possible values for x can be found in the Date and time specifications chapter.
+You have to use the `now()` function to include the current time.
+The rest of the functions will reset the time to midnight for convenience.
+
+=== Date and time specifications
+Each function accepts one or more date and time specifications that can alter the date/time used.
+The date and time specifications are represented by an integer followed by (one or more) characters starting with a case-sensitive `date and time specification`.
+The possible `date and time specifications` are:
+
+[cols="1,2,3",opts=header]
+|===
+|Parameter
+|Date and time specification starting character
+|Example
+
+|Seconds
+|s or S
+| The next second: `now("+1 second")`
+
+|Minutes
+|m
+| Five minutes ago: `now("-5m")`
+
+|Hours
+|h or H
+| Four hours and 15 minutes ago: `now("-4hours -15minutes")`
+
+|Days
+|d or D
+| Tomorrow at midnight: `today("+1d")`
+
+|Weeks
+|w or W
+| First day of the next week at midnight: `week("+ 1 week")`
+
+|Months
+|M
+| First day of next month at midnight: `month("+1M")`
+
+|Years
+|y or Y
+| Second day of the previous year `year("-1y +1d")`
+
+|===
+
+NOTE: It is possible to customize the date and time specifications by adding your own mapping.
+
+=== Examples
+Some more examples:
+
+[cols="1,2",opts=header]
+|===
+|Description
+|EQL function
+
+|Start of week
+|`week()`
+
+|Exactly one week ago (including time)
+|`now("-1w")`
+
+|Exactly one week ago (not including time)
+|`today("-1w")`
+
+|Two weeks, 3 days and 50 minutes ago
+|`now("+2w +3d +50m")`
+
+|Two weeks, 3 days and 50 minutes ago (Full text)
+|`now("+2 weeks +3 days +50 minutes")`
+
+|Monday of next week
+|`monday(week("+1w"))`
+
+|===
