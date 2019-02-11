@@ -16,37 +16,82 @@ For example association views use `EntityQuery` to retrieve the entities associa
 An executor is automatically registered if one can be determined based on the backing data repository, see <<default-support,default support>>.
 
 == EntityQuery Language
+EQL is an SQL-like syntax for defining `EntityQueries`.
+It is converted to an `EntityQuery` for execution.
 
+.Example EQL statement parsing
+[source,java]
+----
+EntityQuery query = EntityQuery.parse( "name = 'john' order by birthday desc, registrationDate asc" );
+----
+
+Behind the scenes specific `EntityQueryParser` implementations can be used to convert an EQL statement to an `EntityQuery`.
 
 == Executing a query
+An `EntityQuery` is executed by an `EntityQueryExecutor`.
 
-== Performance
-
+.Example query execution methods
+[source,java]
+----
+List<Item> items = entityQueryExecutor.findAll( query );
+Page<Item> itemsOnPage = entityQueryExecutor.findAll( query, pageable );
+----
 
 [#default-support]
 == Default support
-
-Any automatically registered Spring Data repository that implements either of the following will have automatic `EntityQuery` support:
-
-* `JpaSpecificationExecutor`
-* `QueryDslPredicateExecutor`
-
+Support for `EntityQuery` is added automatically for any Spring Data repository.
 Depending on the actual repository implementation, some query operations may or may not be supported.
+
+See <<default-implementations,default implementations for more details>>.
 
 == Adding EntityQuery support
 
+The minimum action required for enabling `EntityQuery` support on an entity, is registering an `EntityQueryExecutor` attribute on the entity configuration.
 
 [[entity-query-executor]]
-== EntityQueryExecutor
+=== EntityQueryExecutor
 The `EntityQueryExecutor` is responsible for executing an `EntityQuery` and returning the entities requested.
 An `EntityConfiguration` can have a single `EntityQueryExecutor.class` attribute holding the executor instance.
 
-Default implementations exist for `JpaSpecificationExecutor` and `QueryDslPredicateExecutor`.
-This means that any entity configurations having a repository of this type will get an `EntityQueryExecutor` created automatically.
-
-> Since the `EntityQueryExecutor` is backed by a specific repository implementation, supported functionality also depends on the actual backing repository.
-
 The presence of the `EntityQueryExecutor` is a requirement for the default <<entity-views,entity views>>.
+
+An `EntityQueryExecutor` is registered automatically for supported Spring Data `Repository` implementations.
+
+[#default-implementations]
+==== Default implementations
+
+The supported `EntityQuery` features depend on the specific implementation of the `EntityQueryExecutor`.
+
+The following implementations are available by default:
+
+`EntityQueryQueryDslExecutor`::
+Automatically registered for any repository implementing `QueryDslPredicateExecutor`.
+Executes queries directly against the repository as QueryDsl predicates.
+
+`EntityQueryJpaExecutor`::
+Automatically registered for any repository implementing `JpaSpecificationExecutor`.
+Executes queries directly against the repository as JPA specifications.
+
+`CollectionEntityQueryExecutor`::
+Automatically registered for any repository implementing `CrudRepository`.
+The repository is only used to fetch all items, the filter query is performed by the application code.
++
+NOTE: Using a specific (repository-aware) query executor will usually yield much better performance.
+
+[[registering-entity-query-executor]]
+==== Registering an EntityQueryExecutor
+Any `EntityQueryExecutor` implementation can be registered simply be setting the `EntityQueryExecutor.class` attribute on the `EntityConfiguration`.
+Utility class `EntityConfigurationCustomizers` contains several helper methods for easy registration of an executor during configuration building.
+
+.Example registering an EntityQueryExecutor
+[source,java]
+----
+entities.withType( Category.class )
+        .and( EntityConfigurationCustomizers.registerEntityQueryExecutor( categoryClient::fetchAll ) );
+----
+
+The `CollectionEntityQueryExecutor` (used behind the scenes in the above example) is useful to activate in-memory `EntityQuery` support for any collection of items.
+This implementation also supports manually registered properties that not necessarily correspond with single properties in the data store.
 
 === AssociatedEntityQueryExecutor
 Like `EntityQueryExecutor` that is registered on the `EntityConfiguration`, every `EntityAssociation` can have an `AssociatedEntityQueryExecutor` registered.
@@ -55,3 +100,9 @@ The `AssociatedEntityQueryExecutor` allows executing queries in the context of a
 Like the `EntityQueryExecutor`, the `AssociatedEntityQueryExecutor` is usually added automatically.
 
 The presence of the `AssociatedEntityQueryExecutor` is a requirement for the default association <<entity-views,entity views>>.
+
+== Performance
+As `EntityQuery` is an abstraction layer it is usually somewhat less performant than native repository implementations.
+The actual performance greatly depends on the specific `EntityQueryExecutor` being used.
+
+By default repositories implemented as `JpaSpecificationExecutor` or `QueryDslPredicateExecutor` yield best performance, as they allow queries to be executed directly on the datastore using either JPA or QueryDsl as go-between.
