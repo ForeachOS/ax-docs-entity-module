@@ -3,11 +3,18 @@
 [#3-3-0]
 == 3.3.0-SNAPSHOT
 
-* bugfix related to the entity of a parent `ViewElementBuilderContext` seeping down
-* improments made to the `CollectionEntityQueryExecutor`
-** now supports `Supplier`s
-* improved exception handling
-** uncaught exceptions are now registered as global validation errors and are shown on the regular crud views
+`EntityQuery` infrastructure changes:
+
+* `CollectionEntityQueryExecutor` now supports a `Supplier` for the collection
+* an `EntityQueryExecutor` will now be registered automatically for any Spring Data `CrudRepository`
+** the default implementation is a `CollectionEntityQueryExecutor` using the repository to fetch all items
+** previously only `JpaSpecificationExecutor` and `QueryDslPredicateExecutor` would register an `EntityQueryExecutor`
+
+
+Bug-fixes and minor improvements:
+
+* fixed bug where list actions were added to table header row on a list view
+* uncaught exceptions are now registered as global validation errors on CRUD views
 
 [#3-2-0]
 == 3.2.0.RELEASE
