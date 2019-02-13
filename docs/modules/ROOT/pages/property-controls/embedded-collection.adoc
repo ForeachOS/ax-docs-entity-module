@@ -1,0 +1,33 @@
+= Embedded collection
+
+[#template-values]
+== Specifying template values
+
+An embedded collection builds a template control for a new collection member.
+This template is rendered inside a `<script type="text/html>` in the output, and processed by javascript when adding a member.
+
+By default no values will be present in the template controls.
+
+If you want to pre-configure the template controls with values, you can do so by adding a `EntityPropertyTemplateValueResolver` attribute on the corresponding `EntityPropertyDescriptor`.
+See also `EntityAttributeRegistrars.templateValue()` for short-hand methods.
+
+.Example configuring list member template values
+[source,java]
+----
+public void configure( EntitiesConfigurationBuilder entities ) {
+    Author authorTemplate = new Author();
+    authorTemplate.setName( "John Doe" );
+
+    entities.withType( Book.class )
+            .properties(
+                 props -> props.property( "author[]" ) <1>
+                               .attribute( EntityAttributeRegistrars.templateValue( authorTemplate ) ) <2>
+            );
+}
+----
+
+<1> property `author[]` represents a single member of the `author` collection
+<2> configure a fixed value that should be used for pre-filling the template controls
+
+NOTE: For more complex scenario's, you can also set the base `EntityPropertyTemplateValueResolver` to be used on the `EntityPropertiesBinder`.
+See the javadoc or source code for more details.
