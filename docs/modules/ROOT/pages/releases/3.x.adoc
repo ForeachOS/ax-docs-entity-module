@@ -10,6 +10,9 @@
 ** the default implementation is a `CollectionEntityQueryExecutor` using the repository to fetch all items
 ** previously only `JpaSpecificationExecutor` and `QueryDslPredicateExecutor` would register an `EntityQueryExecutor`
 
+New features:
+
+* it is now possible to xref:property-controls/embedded-collection.adoc#template-values[specify default values for the template controls of embedded collections]
 
 Bug-fixes and minor improvements:
 

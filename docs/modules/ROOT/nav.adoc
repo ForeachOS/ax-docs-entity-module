@@ -60,7 +60,7 @@
 *** xref:property-controls/checkbox.adoc[Checkbox]
 *** xref:property-controls/datetime.adoc[Date/Time picker]
 *** xref:property-controls/select.adoc[Drop-down select]
-*** Embedded collection
+*** xref:property-controls/embedded-collection.adoc[Embedded collection]
 *** xref:property-controls/fieldset.adoc[Fieldset]
 *** Form group
 *** Label
