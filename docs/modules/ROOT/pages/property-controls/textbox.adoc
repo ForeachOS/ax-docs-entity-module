@@ -4,7 +4,7 @@
 If set and the property is generated as a `TextboxFormElement`, that type will be used.
 
 .Example
-Render the code property as a textbox
+Change the multiline textarea into a singleline textbox for the code property.
 [source,java,indent=0]
 [subs="verbatim,quotes,attributes"]
 ----
