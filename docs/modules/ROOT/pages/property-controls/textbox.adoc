@@ -3,4 +3,15 @@
 `TextboxFormElement.Type` can be set as an attribute on the `EntityPropertyDescriptor`.
 If set and the property is generated as a `TextboxFormElement`, that type will be used.
 
+.Example
+Render the code property as a textbox
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+.properties( props -> props
+    .property( "code" )
+    .attribute( TextboxFormElement.Type.class, TextboxFormElement.Type.TEXT)	
+)
+----
+
 You can add default post processors to the `TextboxFormElementBuilderFactory` to customize the autodetection.
