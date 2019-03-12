@@ -32,7 +32,7 @@ This can be customized by either specifying the `ParentDeleteMode` on the associ
 private void configure( EntitiesConfigurationBuilder entities ){
     entities.withType( Author.class )
             .association( ab -> ab.name( "book.author" )
-                .parenDeleteMode( EntityAssociation.ParentDeleteMode.WARN ) #<1>
+                .parentDeleteMode( EntityAssociation.ParentDeleteMode.WARN ) #<1>
             );
 }
 ----
