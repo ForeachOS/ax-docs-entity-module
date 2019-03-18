@@ -1,19 +1,29 @@
 = EntityModule
-:toc: left
-:toclevels: 2
-:sectanchors:
-include::variables.adoc[]
 
-:!sectnums:
-[discrete]
-====== Authors
+EntityModule provides the developer with infrastructure for building user interfaces to manage the entities of an application.
+Combined with xref:admin-web-module::index.adoc[AdminWebModule] it attempts to automatically generate a UI based on entity metadata.
 
-Arne Vandamme, Steven Gentens
+== How it works
+At the heart is the `EntityRegistry`, which contains a map of all available entities in the application.
+An entity is backed by an `EntityConfiguration`, which is a full meta model of what makes up the entity and possibly how it can be identified, fetched and persisted.
+Based on the available entity model, default administration screens in xref:admin-web-module::index.adoc[Admin Web] can be generated.
+These can also be fully customized and extended using configuration classes and custom components.
 
-== About
+== Spring Data support
+EntityModule has built-in support for Spring Data repositories.
+All Spring Data repositories in an application will be detected and registered.
+A CRUD UI for those entities will be available with sorting and searching capabilities where possible.
 
-The EntityModule is responsible for automatically generating an administration UI of entities built.
-It provides infrastructure to define an entity model and to generate default web pages based on that model.
-By default all Spring Data repositories are introspected and corresponding entity models are built for every repository.
+== Dependency
+The EntityModule dependency is present in xref:across:releases:platform/release-notes.adoc[Across Platform].
 
-Module website: {url-EntityModule}
+[source,xml]
+----
+<dependency>
+    <groupId>com.foreach.across.modules</groupId>
+    <artifactId>entity-module</artifactId>
+</dependency>
+----
+
+== Getting started
+A good introduction can be found in the xref:quick-start.adoc[quick start].
