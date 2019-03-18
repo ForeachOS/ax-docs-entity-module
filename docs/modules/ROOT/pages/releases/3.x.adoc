@@ -64,22 +64,22 @@ Overall upgrading from the previous version should be seamless for most applicat
 * configuration & view builders support `AttributeRegistrar` for registering or removing attributes
 ** using `AttributeRegistrar` is useful if you want to use the owner of the attribute collection (eg. the `EntityConfiguration`)
 ** common default registrars can be found in the `EntityAttributeRegistrars` utility class
-* entity views can now have a <<appendix-entity-view-factory-attributes,collection of configuration attributes>>
+* entity views can now have a xref:services-and-components/attributes-overview.adoc#appendix-entity-view-factory-attributes[collection of configuration attributes]
 ** attributes can be used to influence or extend default behaviour, new attributes are available for permission checking and admin menu rendering
 ** during view rendering attributes are accessible (and can be modified) using `EntityViewRequest.getConfigurationAttributes()`
 * improvements to view configuration
 ** `EntityViewFactoryAttributes.ADMIN_MENU` attribute can be used to specify if a view should have an admin menu item added
 ** `EntityViewFactoryAttributes.ACCESS_VALIDATOR` attribute can be used to determine how access to the view should be validated
-* added an `ExtensionViewProcessorAdapter` base class for easily creating a view for a custom extension class (see <<howto-extension-form,how-to>>)
+* added an `ExtensionViewProcessorAdapter` base class for easily creating a view for a custom extension class (see xref:guides:form-view/creating-an-extension-form.adoc[how-to])
 * added `EntityViewCustomizers` utility class providing some helpers for customizing `EntityViewFactoryBuilder` in a chainable fashion
 * EntityModule no longer creates its own `Validator` instance, the `registerForMvc` related settings have been removed
 ** the validator used by EntityModule is the default MVC validator
-* it's now possible to <<customizing-message-code-prefix,define a different message code prefix>> for module entities using properties
+* it's now possible to xref:services-and-components/message-codes.adoc#customizing-message-code-prefix[define a different message code prefix] for module entities using properties
 * you can now force the required status of a control by setting the `EntityAttributes.REQUIRED_PROPERTY` attribute to `true` or `false` on an `EntityPropertyDescriptor`
 * message codes for form groups and fieldsets have been extended, apart from `[description]`, there is now also built-in support for `[help]` and `[tooltip]`
 ** this constitutes a minor breaking change in that `[description]` content is now always rendered above the control of a form group.
 Previously this could be different depending on the type of control inside the form group.
-** see the section <<configuring-form-text,configuring form controls text>> for a full explanation of the new message codes
+** see the section xref:building-views/form-view.adoc#configuring-form-text[configuring form controls text] for a full explanation of the new message codes
 * the behaviour of when controls are prefixed with `entity.` has been changed
 ** when using `EntityViewCommand` all property controls of the base entity will should be prefixed with `entity.` in order to map on the `EntityViewCommand.entity` values
 ** previously this was done always when an `EntityViewCommand` was found on the `ViewElementBuilderContext`
@@ -88,4 +88,4 @@ Previously this could be different depending on the type of control inside the f
 ** though not intentionally breaking, this change can have side effects with controls no longer being prefixed, developers are encouraged to test the custom forms they have
 * new components for linking to entity views have been introduced
 ** the old `EntityLinkBuilder` interface and attributes are deprecated, but should still work as before
-** see the chapter on <<entity-view-links,linking to entity views>> for an overview of the new components
+** see the chapter on xref:building-views/linking-to-entity-views.adoc[linking to entity views] for an overview of the new components
