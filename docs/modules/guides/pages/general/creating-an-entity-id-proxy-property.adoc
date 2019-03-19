@@ -97,7 +97,7 @@ Because the latter is a `List`, the new property will have type `List<Author`>.
 
 The target properties will be hidden automatically, and the newly defined properties will inherit basic settings (read/write/hidden) from the original target property.
 
-This is usually fine for basic cases, but when necessary the it's possible to customize the newly created property descriptor as with any property.
+If required however, it is possible to customize the newly created property descriptor just like any other property.
 
 When rendering a form for `Book` now, the UI will show:
 
