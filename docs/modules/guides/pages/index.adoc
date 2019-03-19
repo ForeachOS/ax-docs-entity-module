@@ -4,6 +4,7 @@
 * xref:guides:general/adding-a-custom-property-to-an-entity.adoc[Adding a custom property to an entity]
 * xref:guides:general/creating-custom-control-for-object-type.adoc[Creating a custom control]
 * xref:guides:general/registering-attributes-property-of-type.adoc[Registering attributes on all properties of a specific type]
+* xref:guides:general/creating-an-entity-id-proxy-property.adoc[Mapping id properties to their entity]
 
 == List views
 * xref:guides:list-view/adding-a-custom-action-to-a-listview.adoc[Adding a custom actions to the rows of a list view]

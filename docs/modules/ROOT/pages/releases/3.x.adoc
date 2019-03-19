@@ -13,11 +13,19 @@
 New features:
 
 * it is now possible to xref:property-controls/embedded-collection.adoc#template-values[specify default values for the template controls of embedded collections]
+* an `EntityPropertyRegistrationHelper` component is now available which allows you to easily xref:guides:general/creating-an-entity-id-proxy-property.adoc[map an id property to its target entity]
+** this can be especially helpful when building a UI for entities spanning multiple datasources or from webservice APIs
 
 Bug-fixes and minor improvements:
 
 * fixed bug where list actions were added to table header row on a list view
 * uncaught exceptions are now registered as global validation errors on CRUD views
+* association tabs are now hidden if the user does not have the required `AllowableAction` on the target entity configuration
+* fixed bug where a `NullPointerException` was thrown if an invalid EQL expression was entered in an advanced filter
+* simple value types (eg a domain-specific id type like `AuthorId`) will now render a textbox as control
+** general rule is that any custom type without readable/writable properties will yield a textbox control
+* fixed some issues where the `ConversionService` was being ignored when working with custom id types
+
 
 [#3-2-0]
 == 3.2.0.RELEASE
