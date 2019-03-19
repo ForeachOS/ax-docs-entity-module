@@ -1,7 +1,7 @@
-== Extending EQL
+= Extending EQL
 The `EntityQuery` infrastructure provides some hooks you can use to extend the EQL support with application specific methods.
 
-=== Custom value conversion
+== Custom value conversion
 When converting an EQL query all value arguments are first converted to an `EQType` representation before being converted into their respective Java type.
 Actual type conversion is then done via the Spring `ConversionService`.
 To create a custom conversion you can simply register a `Converter` that converts from the relevant `EQType` to the property type.
@@ -67,7 +67,7 @@ The example above would only work if the username can never contain any whitespa
 If it can, then we would have to specify it as a String instead and write a converter for `EQString` instead of `EQValue`.
 
 
-=== Adding custom functions
+== Adding custom functions
 
 An EQL function is represented by a unique name and can optionally take a number of arguments for its execution.
 Adding custom functions is as easy as simply defining a `@Component` that implements the `EntityQueryFunctionHandler` interface.
@@ -102,7 +102,7 @@ public class HelloFunction implements EntityQueryFunctionHandler
 }
 ```
 
-=== Custom EQL translation
+== Custom EQL translation
 You can register an `EntityQueryConditionTranslator` attribute on any entity property.
 If a translator instance is present, it will be called during the parsing phase of an EQL statement into an `EntityQuery`.
 

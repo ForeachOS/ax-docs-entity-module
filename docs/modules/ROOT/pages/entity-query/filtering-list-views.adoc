@@ -1,5 +1,5 @@
 [[entity-query-filtering-on-list-view]]
-== EntityQuery filtering on list view
+= EntityQuery filtering on list view
 Any entity configuration having an `EntityQueryParser` and `EntityQueryExecutor` can enable an EntityQuery based filter on its list views.
 This can be done through the `entityQueryFilter()` method on the `EntityListViewFactoryBuilder.
 
@@ -30,7 +30,7 @@ Various options are configurable via the `EntityQueryFilterConfiguration` on a l
 Filtering is done by via the `EntityQueryFilterProcessor`, which uses an `EntityQueryRequest` model for parsing queries, the current filter being used and whether a query supports basic mode.
 The selected properties are processed via an `EntityQueryRequestValueFetcher`.
 
-=== Basic mode
+== Basic mode
 
 Basic mode enables the use of controls to filter by and will parse the content of the property controls to a valid EQL statement which will then be submitted.
 The EQL statement itself is based on the name of the property, the value in the control and the operand that has been defined for the control.
@@ -83,7 +83,7 @@ entities.withType( Book.class )
         );
 ----
 
-=== Advanced mode
+== Advanced mode
 Advanced mode provides a single textbox in which an EQL query can be used, which allows for more complex queries to be used.
 If both advanced and basic mode are allowed and the EQL statement that was last executed is not convertible to basic mode, basic mode will be disabled.
 
@@ -96,7 +96,7 @@ entities.withType( Book.class )
         );
 ----
 
-=== Searching on values
+== Searching on values
 When filtering items, the id is used by default for managed types.
 This works fine for most cases, but isn't very handy when defining more complex queries.
 By defining an `EntityQueryValueEnhancer` as `EntityAttribute.OPTIONS_ENHANCER` on the property, a different, more human-readable value can be used to search on.

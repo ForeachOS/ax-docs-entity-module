@@ -1,10 +1,14 @@
-:page-partial:
-= How-tos
-:sectnums:
-:chapter-number: 0
+= Guides & How-tos
 
-include::adding-a-custom-property-to-an-entity.adoc[]
-include::adding-a-custom-action-to-a-listview.adoc[]
-include::creating-an-extension-form.adoc[]
+== General
+* xref:guides:general/adding-a-custom-property-to-an-entity.adoc[Adding a custom property to an entity]
+* xref:guides:general/creating-custom-control-for-object-type.adoc[Creating a custom control]
+* xref:guides:general/registering-attributes-property-of-type.adoc[Registering attributes on all properties of a specific type]
 
-:!sectnums:
+== List views
+* xref:guides:list-view/adding-a-custom-action-to-a-listview.adoc[Adding a custom actions to the rows of a list view]
+
+== Form views
+* xref:guides:form-view/creating-an-extension-form.adoc[Creating a custom form view (working with extensions)]
+* xref:guides:form-view/creating-a-fileupload-form.adoc[Add a custom form with a file upload]
+* xref:guides:form-view/customize-link-to-delete-view.adoc[Customize the link to delete an item]

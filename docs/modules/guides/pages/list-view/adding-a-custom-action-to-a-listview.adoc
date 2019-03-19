@@ -1,8 +1,13 @@
-= Adding a custom action to the items on a list view
+= How-to: Adding a custom action to the items on a list view
 
+[abstract]
+--
 What we'll do:
 
 * [*] add a custom action button to each row of a list view
+--
+
+== Example
 
 In the case where we want to add a custom action to each instance of our entity on a list view, we have to register a viewprocessor (usually an `EntityViewProcessorAdapter`) on the listview of its entityconfiguration.
 Then in either the `createViewElementBuilders` or `render` method, we can edit the configured columns of each instance on the listview using the `ViewElementBuilderMap`.
