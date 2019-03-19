@@ -1,4 +1,4 @@
 = Localization and text messages
 
 You can customize all labels, placeholders, tooltips, helper texts, ... for properties by setting the right message codes.
-Consult the xref:services-and-components/message-codes.adoc[messageCode section] for more information.
+Consult the xref:services-and-components/message-codes.adoc[message codes section] for more information.

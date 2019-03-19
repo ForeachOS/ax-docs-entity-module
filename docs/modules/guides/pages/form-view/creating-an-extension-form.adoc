@@ -1,5 +1,5 @@
 [[howto-extension-form]]
-= Creating a custom form view
+= How-to: Creating a custom form view
 
 [abstract]
 --

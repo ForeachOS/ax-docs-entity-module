@@ -36,6 +36,10 @@ See xref:entity-module-explained/permissions.adoc[Permissions: allowable actions
 
 [eql]
 Entity Query Language::
+An SQL-like abstraction that EntityModule uses internally for querying entity data.
+Easily extensible and customizable. +
++
+See xref:entity-query/index.adoc[EntityQuery infrastructure].
 
 EQL::
 See <<eql,Entity Query Language>>.
