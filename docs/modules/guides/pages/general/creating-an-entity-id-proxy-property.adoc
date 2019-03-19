@@ -113,7 +113,7 @@ will automatically be translated to
 
  authorId = 1 or reviewerIds contains 1
 
-NOTE: Any value specification of an `Author` and will eventually be translated into its id for the target property.
+NOTE: Any value specification of an `Author` should work and will eventually be translated into its id for the target property.
 
 == Performance
 EntityModule uses the target `EntityModel` to load entities by its id.
