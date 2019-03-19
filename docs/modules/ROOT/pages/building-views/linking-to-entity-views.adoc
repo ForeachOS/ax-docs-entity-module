@@ -4,7 +4,7 @@
 
 == Default views
 If AdminWebModule is enabled and you have an auto-detected entity type (eg. from a Spring Data repository), the default views are usually enabled.
-Every view has a base URL path, see the chapter <<default-views,default views>> for more information on the view types.
+Every view has a base URL path, see the chapter xref:entity-module-explained/entity-views.adoc[default views] for more information on the view types.
 
 .Default view paths
 [cols="1,5"]

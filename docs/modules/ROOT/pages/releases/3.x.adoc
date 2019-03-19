@@ -34,9 +34,9 @@ Overall upgrading from the previous version should be seamless for most applicat
 ** a custom template can be configured on a property using the `ViewElementFieldset.TEMPLATE` attribute
 ** several default templates have been provided with default styling for common form layouts in Admin Web
 ** if no property selector is specified, a fieldset property will select all child properties as its members
-*  added support for xref:building-views/list-view.adoc#filter-by-access[filtering a list view based on `AllowableAction`]
+*  added support for xref:building-views/customizing-views/list-view.adoc#filter-by-access[filtering a list view based on `AllowableAction`]
 ** this can be used to hide items from a list view if the user does not have the correct permissions
-* addition of the xref:building-views/form-view.adoc#detail-view[detail view] which offers a readonly view for entities.
+* addition of the xref:building-views/customizing-views/form-view.adoc#detail-view[detail view] which offers a readonly view for entities.
 ** it's possible to configure an entity to link to the detail view instead of the update view by default
 * link to the delete view (delete button) has moved from the tab menu (`EntityAdminMenu`) to the detail and update view
 ** see the xref:guides:form-view/customize-link-to-delete-view.adoc[customize link to delete view] guide to revert to the previous behaviour.
@@ -98,7 +98,7 @@ Overall upgrading from the previous version should be seamless for most applicat
 * message codes for form groups and fieldsets have been extended, apart from `[description]`, there is now also built-in support for `[help]` and `[tooltip]`
 ** this constitutes a minor breaking change in that `[description]` content is now always rendered above the control of a form group.
 Previously this could be different depending on the type of control inside the form group.
-** see the section xref:building-views/form-view.adoc#configuring-form-text[configuring form controls text] for a full explanation of the new message codes
+** see the section xref:building-views/customizing-views/form-view.adoc#configuring-form-text[configuring form controls text] for a full explanation of the new message codes
 * the behaviour of when controls are prefixed with `entity.` has been changed
 ** when using `EntityViewCommand` all property controls of the base entity will should be prefixed with `entity.` in order to map on the `EntityViewCommand.entity` values
 ** previously this was done always when an `EntityViewCommand` was found on the `ViewElementBuilderContext`

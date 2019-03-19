@@ -96,23 +96,23 @@ For each of the default views, a required action is configured.
 | Required action
 | Level
 
-| xref:building-views/list-view.adoc#list-view[List view]
+| xref:building-views/customizing-views/list-view.adoc#list-view[List view]
 | `AllowableAction.READ`
 | global
 
-| xref:building-views/form-view.adoc#create-view[Create view]
+| xref:building-views/customizing-views/create-update-view.adoc#create-view[Create view]
 | `AllowableAction.CREATE`
 | global
 
-| xref:building-views/form-view.adoc#detail-view[Detail view]
+| xref:building-views/customizing-views/detail-view.adoc[Detail view]
 | `AllowableAction.READ`
 | instance
 
-| xref:building-views/form-view.adoc#update-view[Update view]
+| xref:building-views/customizing-views/create-update-view.adoc#update-view[Update view]
 | `AllowableAction.UPDATE`
 | instance
 
-| xref:building-views/form-view.adoc#delete-view[Delete view]
+| xref:building-views/customizing-views/delete-view.adoc[Delete view]
 | `AllowableAction.DELETE`
 | instance
 

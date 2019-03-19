@@ -37,4 +37,4 @@ public void configure( EntitiesConfigurationBuilder entities ) {
 ----
 
 == Labels
-The labels for enum properties can be set using xref:services-and-components/message-codes.adoc[messageCodes].
+The labels for enum properties can be set using xref:services-and-components/message-codes.adoc[message codes].

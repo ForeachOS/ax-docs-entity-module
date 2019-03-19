@@ -13,7 +13,7 @@ All entity names, property names and labels can be customized using message sour
 For an explanation of the different message codes used, see <<appendix-message-codes,the relevant appendix>>.
 More information can be found in the xref:customizing-entities/index.adoc#_configuring_labels[Customizing existing entities] section.
 
-See also the section on xref:building-views/form-view.adoc#configuring-form-text[configuring form controls text] for common customizations.
+See also the section on xref:building-views/customizing-views/form-view.adoc#configuring-form-text[configuring form controls text] for common customizations.
 
 [[customize-page-layout]]
 == Setting page title or changing page layout

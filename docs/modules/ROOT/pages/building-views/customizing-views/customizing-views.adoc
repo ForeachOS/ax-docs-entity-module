@@ -232,8 +232,8 @@ Configuring views::
 
 * xref:building-views/customizing-views/form-view.adoc[Customizing a list view]
 * xref:building-views/customizing-views/list-view.adoc[Customizing crud views]
-* xref:building-views/creating-views/creating-views.adoc[Creating views]
-* xref::services-and-components/attributes-overview.adoc[Attributes overview]
+* xref:customizing-entities/entity-views.adoc[Configuring entity views]
+* xref:services-and-components/attributes-overview.adoc[Attributes overview]
 
 Configuring properties::
 

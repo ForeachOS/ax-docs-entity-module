@@ -1,6 +1,5 @@
-:page-partial:
 [[entity-views]]
-== Entity views
+= Entity views
 
 EntityModule has the ability to generate automatic views for entities.
 When AdminWebModule is present, automatic CRUD pages for entities will be generated using these views.
@@ -13,7 +12,7 @@ They do so by implementing the `EntityViewRegistry` interface.
 Every view has a unique name within an `EntityViewRegistry`.
 
 [[default-views]]
-=== Default views
+== Default views
 By default CRUD views will be created for every `EntityConfiguration` with a `CrudRepository` or an `EntityQueryExecutor` registered.
 Likewise CRUD views will be created for every `EntityAssociation` with an `AssociatedEntityQueryExecutor` attribute.
 
