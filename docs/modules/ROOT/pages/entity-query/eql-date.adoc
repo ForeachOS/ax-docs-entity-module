@@ -3,78 +3,98 @@ EntityModule provides an extensive list of `EQL functions` to handle the specifi
 The creation of all date and times you need for filtering can be facilitated by providing the necessary date and time specifications to these functions.
 
 These functions will use your `Locale.default()` to determine daylight saving time and the day the week start at.
-You can set up your Locale by setting the `spring.mvc.locale` property in you application property file.
+You can set up your Locale by setting the `spring.mvc.locale` property in you application properties.
 
 === Default EQL date and time functions
+The date functions found below can have a number of different arguments:
+
+* a `temporal` can be
+** a formatted date string f.e. `offset(2019-03-02, 'at 15:05')`
+** another eql date function f.e. `startOfDay(thisMonth())"`
+* a `period` consists off xref::entity-query/eql-date.adoc#eql-date-and-time-specifications[date and time specifications]
+
 The following `EQL functions` are provided by default:
 
 [cols="1,2",opts=header]
 |===
 |Function
 |Output
+|Example
 
-|now(x)
+|now()
 |Current date & time
+|`now()`
 
-|today(x)
-|The current day at midnight
+|today()
+|Today at midnight
+|`today()`
 
-|monday(x)
-|The previous monday at midnight.
-If the current day is monday, the output will be equal to the current day at midnight.
+|offset(TEMPORAL, PERIOD)
+|Adds a a period to a given temporal
+|`offset(now(),'+1h +3m')` = the current time + 1 hour + 3 minutes
 
-|tuesday(x)
-|The previous tuesday at midnight.
-If the current day is tuesday, the output will be equal to the current day at midnight.
+|startOfDay(TEMPORAL)
+|Midnight of the date of the temporal
+|`offset(startOfDay(), +1d)` = today at midnight + 1 day
 
-|wednesday(x)
-|The previous wednesday at midnight.
-If the current day is wednesday, the output will be equal to the current day at midnight.
+|thisWeek(FIRST_DAY_OF_WEEK)
+|Midnight on the first day of week of the temporal, with the first day of week being an optional third parameter
+|`thisWeek()`
 
-|thursday(x)
-|The previous thursday at midnight.
-If the current day is thursday, the output will be equal to the current day at midnight.
+|nextWeek(FIRST_DAY_OF_WEEK)
+|Midnight on the next day of week of the temporal, with the first day of week being an optional third parameter
+|`nextWeek(SUNDAY)` = midnight of the next week starting the week on a sunday
 
-|friday(x)
-|The previous friday at midnight.
-If the current day is friday, the output will be equal to the current day at midnight.
+|lastWeek( FIRST_DAY_OF_WEEK)
+|Midnight on the last day of week of the temporal, with the first day of week being an optional third parameter
+|`lastWeek()`
 
-|saturday(x)
-|The previous saturday at midnight.
-If the current day is saturday, the output will be equal to the current day at midnight.
+|startOfWeek(TEMPORAL, FIRST_DAY_OF_WEEK)
+|Midnight on first day of week of the temporal, with first day of week being an optional third parameter
+|`startOfWeek(nextMonth())` = Get the first day of the month at midnight and then get the first day of the week at midnight for that date
 
-|sunday(x)
-|The previous sunday at midnight.
-If the current day is sunday, the output will be equal to the current day at midnight.
-
-|day(x)
-|The current day at midnight.
-
-|week(x, dayOfTheWeek)
-|First day of the current week at midnight without parameters.
-Uses the `Locale.default()` to determine if the week starts on sunday or monday.
-You can provide an optional dayOfTheWeek paramater ("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY" ,"SUNDAY") that get that day at midnight.
-For example week("SATURDAY") give you the saterday of the current week at midnight.
-
-|weekNumber(x)
-|The current weekNumber
-
-|month(x, month)
+|thisMonth()
 |First day of the current month at midnight.
-You can provided an option month parameter ("JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER", "DECEMBER")
-For example `month("FEBRUARY", "+2D)`
+|`thisMonth()`
 
-|year(x)
+|nextMonth()
+|First day of the next month at midnight.
+|`nextMonth()`
+
+|lastMonth()
+|First day of the previous month at midnight.
+|`lastMonth()`
+
+|startOfMonth(TEMPORAL)
+|First day of the current month at midnight.
+|`startOfMonth(nextWeek())`= Get the first day of next week at midnight and then get the first day of the month for that date
+
+|thisYear()
 |First day of the current year at midnight.
+|`thisYear()`
+
+|nextYear()
+|First day of the current year at midnight.
+|`nextYear()`
+
+|lastYear()
+|First day of the current year at midnight.
+|`lastYear()`
+
+|startOfYear(TEMPORAL)
+|First day of the current year at midnight.
+|`startOfYear()`
 |===
 
-NOTE: All possible values for x can be found in the Date and time specifications chapter.
-You have to use the `now()` function to include the current time.
-The rest of the functions will reset the time to midnight for convenience.
+NOTE: When the `` is not provided, the `Locale.default()` is used to determine if the week starts on sunday or monday.
+You can provide an optional dayOfTheWeek paramater ("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY" ,"SUNDAY") to get that day at midnight.
+For example week("SATURDAY") give you the saterday of the current week at midnight.
 
+[#eql-date-and-time-specifications]
 === Date and time specifications
 Each function accepts one or more date and time specifications that can alter the date/time used.
-The date and time specifications are represented by an integer followed by (one or more) characters starting with a case-sensitive `date and time specification`.
+The date and time specifications are represented by a sign, followed by an integer and one or more characters starting with a case-sensitive `date and time specification`.
+Each group of periods is separated by a space and must be proceeded by a sign (Note that at doesn't require a sign).
 The possible `date and time specifications` are:
 
 [cols="1,2,3",opts=header]
@@ -83,9 +103,13 @@ The possible `date and time specifications` are:
 |Date and time specification starting character
 |Example
 
+|Milliseconds
+|S
+| The next second: `now("+1 s")`
+
 |Seconds
-|s or S
-| The next second: `now("+1 second")`
+|s
+| The next millisecond: `now("+1 S")`
 
 |Minutes
 |m
@@ -136,9 +160,6 @@ Some more examples:
 |`now("+2w +3d +50m")`
 
 |Two weeks, 3 days and 50 minutes ago (Full text)
-|`now("+2 weeks +3 days +50 minutes")`
-
-|Monday of next week
-|`monday(week("+1w"))`
+|`now("+2weeks +3days +50minutes")`
 
 |===

@@ -197,19 +197,7 @@ Preferred for collection type properties, altough usually will work as an altern
 
 **Date and time functions**
 
-[cols="1,2",opts=header]
-|===
-
-|Function
-|Description
-
-|`now()`
-| returns current timestamp
-
-|`today()`
-| returns date of today
-
-|===
+All information about the date and time functions that are offered by default can be found in the xref::entity-query/eql-date.adoc[EQL date and time functions section.]
 
 == EntityQueryParser
 
