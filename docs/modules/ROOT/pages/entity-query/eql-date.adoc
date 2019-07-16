@@ -6,12 +6,12 @@ These functions will use your `Locale.default()` to determine daylight saving ti
 You can set up your Locale by setting the `spring.mvc.locale` property in you application properties.
 
 === Default EQL date and time functions
-The date functions found below can have a number of different arguments:
+The date functions found below can take a number of different arguments:
 
 * a `temporal` can be
 ** a formatted date string f.e. `offset(2019-03-02, 'at 15:05')`
 ** another eql date function f.e. `startOfDay(thisMonth())"`
-* a `period` consists off xref::entity-query/eql-date.adoc#eql-date-and-time-specifications[date and time specifications]
+* a `period` can be build using the following xref::entity-query/eql-date.adoc#eql-date-and-time-specifications[date and time specifications].
 
 The following `EQL functions` are provided by default:
 
