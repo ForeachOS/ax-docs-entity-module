@@ -99,7 +99,7 @@ The `AssociatedEntityQueryExecutor` allows executing queries in the context of a
 
 Like the `EntityQueryExecutor`, the `AssociatedEntityQueryExecutor` is usually added automatically.
 
-The presence of the `AssociatedEntityQueryExecutor` is a requirement for the default association <<entity-views,entity views>>.
+The presence of the `AssociatedEntityQueryExecutor` is a requirement for the default xref:building-views/association-views.adoc[association views].
 
 == Performance
 As `EntityQuery` is an abstraction layer it is usually somewhat less performant than native repository implementations.
