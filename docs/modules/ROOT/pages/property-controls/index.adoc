@@ -54,11 +54,10 @@ entities.withType(Booking.class)
 |Control to update the value (e.g. a textbox).
 
 |`FORM_READ`
-|Typical combination of `LABEL` and `VALUE`.
+|Typically a combination of `LABEL` and `VALUE`.
 
 |`FORM_WRITE`
-|Typical combination of `LABEL` and `CONTROL`.
-
+|Typically a combination of `LABEL` and `CONTROL`.
 
 |`LIST_LABEL`
 |Label of the property used in a tabular view (Column header).
@@ -68,6 +67,10 @@ entities.withType(Booking.class)
 
 |`LIST_CONTROL`
 |Control to update the value in a tabular view inline.
+
+|`FILTER_FORM`
+|Form group in a xref:entity-query/filtering-list-views.adoc#basic-mode[basic filter form].
+Typically a combination of `LABEL` and `FILTER_CONTROL`.
 
 |`FILTER_CONTROL`
 |Control used to select a value in a filter.

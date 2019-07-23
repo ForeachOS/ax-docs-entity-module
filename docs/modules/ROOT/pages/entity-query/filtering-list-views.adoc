@@ -30,6 +30,7 @@ Various options are configurable via the `EntityQueryFilterConfiguration` on a l
 Filtering is done by via the `EntityQueryFilterProcessor`, which uses an `EntityQueryRequest` model for parsing queries, the current filter being used and whether a query supports basic mode.
 The selected properties are processed via an `EntityQueryRequestValueFetcher`.
 
+[#basic-mode]
 == Basic mode
 
 Basic mode enables the use of controls to filter by and will parse the content of the property controls to a valid EQL statement which will then be submitted.
@@ -69,8 +70,6 @@ used for the following property types:
 
 Textbox elements:: default element to be used.
 
-A custom ViewElement can also be used by defining a `ViewElementBuilder` for the `ViewElementMode.FILTER_CONTROL` mode.
-
 .Example basic filter configuration
 [source,java,indent=0]
 ----
@@ -82,6 +81,27 @@ entities.withType( Book.class )
             )
         );
 ----
+
+.Customizing filter controls
+Additional control types (like `BootstrapUiElements.RADIO` or `BootstrapUiElements.CHECKBOX`) can be used as well, but these need to be specified manually.
+
+The basic filter form uses the following 2 view element modes which can be set per property:
+
+[opts="header",cols="1,4"]
+|===
+
+| Property type
+| Operand
+
+| `FILTER_FORM`
+| Renders the form group for the property.
+This is a combination of the label (`ViewElementMode.LABEL`) and the filter control (`ViewElementMode.FILTER_CONTROL`) for the property.
+If the control is a single checkbox or radio button, the label will be omitted.
+
+| `FILTER_CONTROL`
+| Renders the actual control for the property.
+
+|===
 
 == Advanced mode
 Advanced mode provides a single textbox in which an EQL query can be used, which allows for more complex queries to be used.
