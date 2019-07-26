@@ -213,37 +213,32 @@ This example configures autosuggest of some common cities, but allowing any valu
 ----
 List<String> cities = Arrays.asList( "Antwerp", "Brussels", "Ghent", "Kortrijk", "Hasselt" ); <1>
 
-AutoSuggestDataSet.ResultTransformer cityToSuggestion <2>
-        = city -> new SimpleAutoSuggestDataSet.Result( city, city.toString() );
-
-autoSuggestDataEndpoint.registerDataSet( <3>
+autoSuggestDataEndpoint.registerDataSet(
         "cities",
-        SimpleAutoSuggestDataSet
-                .builder()
-                .suggestionsLoader(
-                        ( query, controlName ) ->
-                                cities.stream()
-                                      .filter( candidate -> StringUtils.containsIgnoreCase( candidate, query ) )
-                                      .map( cityToSuggestion::transformToResult )
-                                      .collect( Collectors.toList() )
-                )
-                .build()
+        AutoSuggestDataSet.forControl() <2>
+                          .suggestionsLoader( ( query, controlName ) ->
+                                                      cities.stream()
+                                                            .filter( candidate -> StringUtils.containsIgnoreCase( candidate, query ) )
+                                                            .map( SimpleAutoSuggestDataSet.Result::of )
+                                                            .collect( Collectors.toList() ) )
+                          .resultTransformer( SimpleAutoSuggestDataSet.Result::of )
+                          .build()
 );
 
 entities.withType( User.class )
         .properties(
-                props -> props.property( "address[].city" ) <4>
+                props -> props.property( "address[].city" ) <3>
                               .viewElementType( ViewElementMode.CONTROL, BootstrapUiElements.AUTOSUGGEST )
                               .attribute( AutoSuggestDataAttributeRegistrar.DATASET_ID, "cities" )
-                              .attribute( AutoSuggestDataSet.ResultTransformer.class, cityToSuggestion )
         );
 ----
 
-<1> Our dummy dataset of city names to autosuggest.
-<2> The transformer which maps a city name to a suggestion result.
-In this case both the value and the label are exactly the same.
-<3> Register an autosuggest dataset that searches for the user input anywhere in the city name.
-<4> Configure the `city` property of each `address` to render as an autosuggest control using our dataset.
+<1> The list of city names to autosuggest.
+<2> Register an autosuggest dataset that searches for the user input anywhere in the city name.
+We create a dataset using `AutoSuggestDataSet.forControl()` which forces us to set a result transformer.
+In this case our transformer maps a city name to a suggestion result.
+<3> Configure the `city` property of each `address` to render as an autosuggest control using our dataset.
+Because our dataset implements `AutoSuggestDataSet.ResultTransformer`, setting only the dataset id attribute is sufficient.
 
 == Autosuggest infrastructure
 
