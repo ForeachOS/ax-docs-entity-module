@@ -37,7 +37,7 @@ The EQL statement represents the `EntityQuery` that should be executed to fetch 
 The parameter `+{0}+` will be replaced with the input from the user.
 This particular query will select all authors whose name starts with the input specified.
 <2> In this case we also customize the control itself, configuring it so suggestions are only fetched when at least 2 characters have been provided.
-This is entirely optional, if we were to omit this a default control which fetches suggestions as soon as a single character is present.
+This is entirely optional, if we were to omit this a default control would be created which fetches suggestions as soon as a single character is present.
 <3> We configure an autosuggest control to be rendered for the `CONTROL` and both single-value and multi-value `FILTER_CONTROL` modes.
 As we configure this directly on the `Author` entity, this will cause any property referencing this entity type to use the autosuggest control.
 
