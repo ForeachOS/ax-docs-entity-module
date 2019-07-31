@@ -144,7 +144,7 @@ entities.withType( Author.class )
 
 entities.withType( Book.class )
         .properties(
-                props -> props.property( "author" ) )
+                props -> props.property( "author" )
                               .attribute( autoSuggestData.entityQuery( "name ilike '{0}%' and type = BOOKS order by name asc" ) )
         );
 ----
@@ -183,8 +183,9 @@ TIP: If you want to avoid the default dataset of your configuration to be replac
 
 .Using a ViewElementPostProcessor
 If you want to customize the control itself after it has been built, you can do so by adding a `ViewElementPostProcessor`.
-The actual control built will be of type `AutoSuggestFormElement`.
+The actual control built will be of type `AutoSuggestFormElement` (for a single-value control) or `NodeViewElement` (which contains an `AutoSuggestFormElement` - for a multi-value control).
 
+.Example registering a post-processor for a single-value autosuggest control
 [source,java,indent=0]
 ----
 entities.withType( Author.class )
@@ -253,7 +254,7 @@ If you are looking to learn more, see the source code and javadoc of the followi
 |Holds the datasets that can be accessed.
 
 |`AutoSuggestDataAttributeRegistrar`
-|Helper for easy configuration of autosuggest controls on entities and properties.
+|Helper for fluent configuration of autosuggest controls on entities and properties.
 
 |`AutoSuggestFormElementBuilderFactory`
 |Responsible for building autosuggest controls for type `BootstrapUiElements.AUTO_SUGGEST`.
