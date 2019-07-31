@@ -7,7 +7,7 @@ New features:
 
 * added separate `ViewElementMode.FILTER_FORM` which builds the form group that is rendered in a basic EntityQuery filter form
 ** this allows consumers to customize the entire form group for a filter control, separately from the control itself
-* support has been added for xref:property-controls/autosuggest.adoc[configuring Autosuggest controls] for single value properties that reference an entity
+* support has been added for xref:property-controls/autosuggest.adoc[configuring Autosuggest controls]
 * support for marking an `EntityQuery` or `EntityQueryCondition` as `translated`, see xref:entity-query/extending-eql.adoc#custom-eql-translated[Extending EQL]
 
 Bug-fixes and minor improvements:
