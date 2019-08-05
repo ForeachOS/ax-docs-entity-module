@@ -3,7 +3,7 @@
 = Registering an ENUM as an entity
 
 EntityModule supports registration of enums as `EntityConfiguration`.
-When creating an `EntityConfiguration` for an enum, a basic `EntityModule` will get built and all enum properties will be configurable.
+When creating an `EntityConfiguration` for an enum, a basic `EntityModel` will get built and all enum properties will be configurable.
 
 Registering enums as entity is mainly useful for configuration of display properties in related entity views.
 
@@ -35,3 +35,6 @@ public void configure( EntitiesConfigurationBuilder entities ) {
     entities.create().entityType( Country.class, true ).label( "name" );
 }
 ----
+
+== Labels
+The labels for enum properties can be set using xref:services-and-components/message-codes.adoc[message codes].

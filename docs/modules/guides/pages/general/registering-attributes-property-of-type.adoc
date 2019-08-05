@@ -1,8 +1,11 @@
-= Registering attributes to a property of a specified type
+= How-to: Registering attributes to a property of a specified type
 
+[abstract]
+--
 On this page, you will learn:
 
 * [*] How to register an attribute to all property descriptors of a specific type.
+--
 
 == AbstractEntityPropertyDescriptorEnhancer
 

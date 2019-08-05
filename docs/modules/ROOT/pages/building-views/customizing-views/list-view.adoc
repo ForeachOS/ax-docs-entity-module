@@ -19,15 +19,25 @@ default processors
 == Adding a list view
 TODO
 
+Adding a list view is as simple as specifying a listView
+////
+- configure listviewentityfactorybuilder with specific name
+- cfr normal listview
+- link to list view using entityviewlinks to listview with viewname
+////
+
 == Customizing a list view
+
+////
+- customize sortabletablebuilder
+-
+- customize header?
+////
 TODO
 
 .Custom sorting
 Customizing the sort behaviour of a specific property can be done by setting a `Sort.Order.class` attribute on the `EntityPropertyDescriptor`.
 You can use this to sort on a different property instead, or to specify behaviour for null handling and case sensitivity.
-
-
-
 
 [[list-view-filter]]
 == Filtering a list view
@@ -35,8 +45,9 @@ You can use this to sort on a different property instead, or to specify behaviou
 By default a list view is not filtered.
 If your entity has an <<entity-query-executor,`EntityQueryExecutor`>> available, you can easily activate a simple yet powerful <<entity-query-language-eql,EQL-based filter>>.
 
-Activating `EntityQuery` based filtering can be done through the builders:
+Activating `EntityQuery` based filtering can be done by customizing the list view on an entity configuration.
 
+.Activating EQL filtering
 [source,java,indent=0]
 [subs="verbatim,quotes,attributes"]
 ----
@@ -48,7 +59,8 @@ public void configure( EntitiesConfigurationBuilder entities ) {
 }
 ----
 
-See <<entity-list-view-custom-filter,this chapter>> for information on how to configure a custom filter for a list view.
+For more information and how to configure EQL filtering, see the xref::entity-query/filtering-list-views.adoc[Filtering list views] chapter.
+To create a custom filter without the use of EQL, see <<entity-list-view-custom-filter, Adding a custom filter to a list view>>.
 
 [[filter-by-access]]
 === Filtering by access permissions
@@ -169,7 +181,7 @@ public void configure( EntitiesConfigurationBuilder entities ) {
         .listView( lvb -> lvb
             .entityQueryFilter( false )           // optional - disable the previously activated entity query filter
             .filter( groupFilteringProcessor() )  // register the custom filter
-		);
+        );
 }
 ----
 
@@ -177,7 +189,7 @@ public void configure( EntitiesConfigurationBuilder entities ) {
 
 It is possible to activate a detail view inline in a list view.
 If the `EntityConfiguration` or `EntityAssociation` has a view named *listSummaryView* a summary pane will automatically become available when clicking on the item row in the table.
-The summary pane is called using AJAX and only the _content_ fragment of the page will be rendered.
+The summary pane itself is rendered by fetching the _content_ fragment of the page using xref:across:across-web:web-views/partial-rendering.adoc[partial rendering] and ajax.
 
 [source,java,indent=0]
 [subs="verbatim,quotes,attributes"]

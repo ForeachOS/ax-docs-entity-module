@@ -1,5 +1,53 @@
 = 3.x.x release notes
 
+[#3-4-0]
+== 3.4.0-SNAPSHOT
+
+New features:
+
+* added separate `ViewElementMode.FILTER_FORM` which builds the form group that is rendered in a basic EntityQuery filter form
+** this allows consumers to customize the entire form group for a filter control, separately from the control itself
+* support has been added for xref:property-controls/autosuggest.adoc[configuring Autosuggest controls]
+* support for marking an `EntityQuery` or `EntityQueryCondition` as `translated`, see xref:entity-query/extending-eql.adoc#custom-eql-translated[Extending EQL]
+
+Bug-fixes and minor improvements:
+
+* a single checkbox can now be used as a control for basic EntityQuery filtering
+
+[#3-3-0]
+== 3.3.0.RELEASE
+
+`EntityQuery` infrastructure changes:
+
+* `CollectionEntityQueryExecutor` now supports a `Supplier` for the collection
+* an `EntityQueryExecutor` will now be registered automatically for any Spring Data `CrudRepository`
+** the default implementation is a `CollectionEntityQueryExecutor` using the repository to fetch all items
+** previously only `JpaSpecificationExecutor` and `QueryDslPredicateExecutor` would register an `EntityQueryExecutor`
+* EQL predicate `property IS EMPTY` will now check for empty string or null value when dealing with a string (text) property
+
+New features:
+
+* it is now possible to xref:property-controls/embedded-collection.adoc#template-values[specify default values for the template controls of embedded collections]
+* an `EntityPropertyRegistrationHelper` component is now available which allows you to easily xref:guides:general/creating-an-entity-id-proxy-property.adoc[map an id property to its target entity]
+** this can be especially helpful when building a UI for entities spanning multiple datasources or from webservice APIs
+* a valid `EntityQueryExecutor` is now automatically registered when creating a manual association
+** this removes the need to provide a custom `AssociatedEntityQueryExecutor` for manually defined associations
+
+Bug-fixes and minor improvements:
+
+* fixed bug where list actions were added to table header row on a list view
+* uncaught exceptions are now registered as global validation errors on CRUD views
+* association tabs are now hidden if the user does not have the required `AllowableAction` on the target entity configuration
+* simple value types (eg a domain-specific id type like `AuthorId`) will now render a textbox as control
+** general rule is that any custom type without readable/writable properties will yield a textbox control
+* fixed some issues where the `ConversionService` was being ignored when working with custom id types
+* EQL related:
+** fixed bug where a `NullPointerException` was thrown if an invalid EQL expression was entered in an advanced filter
+** Java 8 time types are now supported for `now()` and `today()` functions
+** custom textbox types (eg `email`) are now supported for basic filtering
+*** this fixes a bug where a property marked with an `@Email` validator could not be used in basic filtering
+
+
 [#3-2-0]
 == 3.2.0.RELEASE
 
@@ -15,9 +63,9 @@ Overall upgrading from the previous version should be seamless for most applicat
 ** a custom template can be configured on a property using the `ViewElementFieldset.TEMPLATE` attribute
 ** several default templates have been provided with default styling for common form layouts in Admin Web
 ** if no property selector is specified, a fieldset property will select all child properties as its members
-*  added support for xref:building-views/list-view.adoc#filter-by-access[filtering a list view based on `AllowableAction`]
+*  added support for xref:building-views/customizing-views/list-view.adoc#filter-by-access[filtering a list view based on `AllowableAction`]
 ** this can be used to hide items from a list view if the user does not have the correct permissions
-* addition of the xref:building-views/form-view.adoc#detail-view[detail view] which offers a readonly view for entities.
+* addition of the xref:building-views/customizing-views/form-view.adoc#detail-view[detail view] which offers a readonly view for entities.
 ** it's possible to configure an entity to link to the detail view instead of the update view by default
 * link to the delete view (delete button) has moved from the tab menu (`EntityAdminMenu`) to the detail and update view
 ** see the xref:guides:form-view/customize-link-to-delete-view.adoc[customize link to delete view] guide to revert to the previous behaviour.
@@ -64,22 +112,22 @@ Overall upgrading from the previous version should be seamless for most applicat
 * configuration & view builders support `AttributeRegistrar` for registering or removing attributes
 ** using `AttributeRegistrar` is useful if you want to use the owner of the attribute collection (eg. the `EntityConfiguration`)
 ** common default registrars can be found in the `EntityAttributeRegistrars` utility class
-* entity views can now have a <<appendix-entity-view-factory-attributes,collection of configuration attributes>>
+* entity views can now have a xref:services-and-components/attributes-overview.adoc#appendix-entity-view-factory-attributes[collection of configuration attributes]
 ** attributes can be used to influence or extend default behaviour, new attributes are available for permission checking and admin menu rendering
 ** during view rendering attributes are accessible (and can be modified) using `EntityViewRequest.getConfigurationAttributes()`
 * improvements to view configuration
 ** `EntityViewFactoryAttributes.ADMIN_MENU` attribute can be used to specify if a view should have an admin menu item added
 ** `EntityViewFactoryAttributes.ACCESS_VALIDATOR` attribute can be used to determine how access to the view should be validated
-* added an `ExtensionViewProcessorAdapter` base class for easily creating a view for a custom extension class (see <<howto-extension-form,how-to>>)
+* added an `ExtensionViewProcessorAdapter` base class for easily creating a view for a custom extension class (see xref:guides:form-view/creating-an-extension-form.adoc[how-to])
 * added `EntityViewCustomizers` utility class providing some helpers for customizing `EntityViewFactoryBuilder` in a chainable fashion
 * EntityModule no longer creates its own `Validator` instance, the `registerForMvc` related settings have been removed
 ** the validator used by EntityModule is the default MVC validator
-* it's now possible to <<customizing-message-code-prefix,define a different message code prefix>> for module entities using properties
+* it's now possible to xref:services-and-components/message-codes.adoc#customizing-message-code-prefix[define a different message code prefix] for module entities using properties
 * you can now force the required status of a control by setting the `EntityAttributes.REQUIRED_PROPERTY` attribute to `true` or `false` on an `EntityPropertyDescriptor`
 * message codes for form groups and fieldsets have been extended, apart from `[description]`, there is now also built-in support for `[help]` and `[tooltip]`
 ** this constitutes a minor breaking change in that `[description]` content is now always rendered above the control of a form group.
 Previously this could be different depending on the type of control inside the form group.
-** see the section <<configuring-form-text,configuring form controls text>> for a full explanation of the new message codes
+** see the section xref:building-views/customizing-views/form-view.adoc#configuring-form-text[configuring form controls text] for a full explanation of the new message codes
 * the behaviour of when controls are prefixed with `entity.` has been changed
 ** when using `EntityViewCommand` all property controls of the base entity will should be prefixed with `entity.` in order to map on the `EntityViewCommand.entity` values
 ** previously this was done always when an `EntityViewCommand` was found on the `ViewElementBuilderContext`
@@ -88,4 +136,4 @@ Previously this could be different depending on the type of control inside the f
 ** though not intentionally breaking, this change can have side effects with controls no longer being prefixed, developers are encouraged to test the custom forms they have
 * new components for linking to entity views have been introduced
 ** the old `EntityLinkBuilder` interface and attributes are deprecated, but should still work as before
-** see the chapter on <<entity-view-links,linking to entity views>> for an overview of the new components
+** see the chapter on xref:building-views/linking-to-entity-views.adoc[linking to entity views] for an overview of the new components

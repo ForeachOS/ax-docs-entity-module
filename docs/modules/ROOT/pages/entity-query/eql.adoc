@@ -1,5 +1,5 @@
 [[entity-query-language-eql]]
-== EntityQuery Language (EQL)
+= EntityQuery Language (EQL)
 
 Apart from building an `EntityQuery` in code, one can be specified using the EntityQuery Language (EQL).
 EQL provides an SQL-like syntax for building queries.  Some examples could be:
@@ -24,9 +24,9 @@ An EQL statement with only an ordering clause will select all items in that orde
 > Special characters in string literals should be escaped using the \\ (backslash) character.
 In case of like conditions, they should be double-escaped.
 
-=== Supported operators
+== Supported operators
 
-==== Equality operators
+=== Equality operators
 Usable on most property types.
 
 [cols="1,2",opts=header]
@@ -43,7 +43,7 @@ Usable on most property types.
 
 |===
 
-==== IN/NOT IN
+=== IN/NOT IN
 Usable on most property types.
 These are the only operators that take a group of values as argument.
 
@@ -61,7 +61,7 @@ These are the only operators that take a group of values as argument.
 
 |===
 
-==== Comparing operators
+=== Comparing operators
 Usable on numeric and date property types.
 
 [cols="1,2",opts=header]
@@ -81,7 +81,7 @@ Usable on numeric and date property types.
 
 |===
 
-==== LIKE operators
+=== LIKE operators
 Usable on string property types.
 The argument specifies the pattern that property value should match.
 The pattern can contain simple wildcard specified using **%**.
@@ -127,7 +127,7 @@ This will convert any equality or like operator to the equivalent case insensiti
 > **WARNING**
 Whenever possible, it is probably best to use collation settings of your datastore to ensure case insensitive querying of properties.  Configuring it on a datastore level will almost certainly give you much better performance.  If collation is not possible, investigate the option of using function indices on the relevant columns.
 
-==== CONTAINS/NOT CONTAINS
+=== CONTAINS/NOT CONTAINS
 Usable on collection or text property types.
 In case of text the contains statement is translated to a like statement with wildcards before and after.
 
@@ -145,7 +145,7 @@ In case of text the contains statement is translated to a like statement with wi
 
 |===
 
-==== IS NULL/IS NOT NULL
+=== IS NULL/IS NOT NULL
 Usable on single value properties only.
 These operators to not take any additional arguments.
 
@@ -163,7 +163,7 @@ These operators to not take any additional arguments.
 
 |===
 
-==== IS EMPTY/IS NOT EMPTY
+=== IS EMPTY/IS NOT EMPTY
 Preferred for collection type properties, altough usually will work as an alternative for `IS NULL`/`IS NOT NULL` on single value properties.  These operators to not take any additional arguments.
 
 [cols="1,2",opts=header]
@@ -180,7 +180,7 @@ Preferred for collection type properties, altough usually will work as an altern
 
 |===
 
-=== Default EQL functions
+== Default EQL functions
 
 **Security related functions**
 
@@ -211,7 +211,7 @@ Preferred for collection type properties, altough usually will work as an altern
 
 |===
 
-=== EntityQueryParser
+== EntityQueryParser
 
 The `EntityQueryParser` is responsible for converting an EQL statement into a valid `EntityQuery`.
 Any entity configuration with an `EntityQueryExecutor` registered will have an `EntityQueryParser` created automatically.

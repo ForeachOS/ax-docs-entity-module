@@ -1,0 +1,246 @@
+= Customizing views
+
+Each view is represent by an `EntityViewFactory`.
+An `EntityViewFactory` can easily be customized on an `EntityConfigurationBuilder` through the use of `EntityViewFactoryBuilders`.
+They allow for various customizations, such as customizing the property registry and registering view processors.
+When specifying multiple entity configurers, they will be applied in order.
+
+[source,java,indent=0]
+----
+@Override
+public void configure( EntitiesConfigurationBuilder entities ) {
+    entities.withType( Book.class )
+            .formView( "publication", # <1>
+                       fvb -> fvb.showProperties( "publication.*" ) # <2>
+            );
+}
+----
+<1> Configure a form view with name publication.
+<2> Show all the properties of the `publication` property of the `Book`.
+
+
+In the following sections, you'll find more detailed information on global configuration options for view factories.
+
+== Configuring properties
+
+Most often, views will render properties for a specific purpose, being the ability to view, modify or delete data.
+As such, an `EntityPropertyRegistry` can be attached to a view that holds the metadata for those properties.
+When a property registry is attached, this registry can be further customized by specificying additional `EntityPropertyRegistryBuilders`.
+
+A selection of these properties can then be provided which should be rendered by default.
+Properties are then rendered with a specific purpose in mind.
+To render properties accordingly, a `ViewElementMode` can be specified to define how those properties should be rendered by default.
+
+.Options for configuring properties
+[opts="header",cols="1,2"]
+|===
+
+| Name
+| Description
+
+| `propertyRegistry`
+| Provide the property registry that should be attached to the view.
+If configured, an `EntityPropertyRegistryViewProcessor` will be registered automatically.
+
+| `properties`
+| Customize the properties using by providing an `EntityPropertyRegistryBuilder`.
+
+| `showProperties`
+| Specify which properties should be rendered by listing property names or configuring an `EntityPropertySelector`.
+
+| `viewElementMode`
+| Configures which xref::property-controls/index.adoc[`ViewElementMode`] should be used by default when rendering properties for this view.
+
+|===
+
+== Customizing request execution
+
+`EntityViewProcessors` allow you to hook into the lifecycle of the view request.
+They can easily be registered, removed or customized on an `EntityViewFactoryBuilder`.
+
+.Configuring view processors
+[opts="header",cols="1,2"]
+|===
+
+| Name
+| Description
+
+| `viewProcessor`
+| Register an `EntityViewProcessor` instance on the view.
+Optionally a name or order can be specified as well.
+
+| `removeViewProcessor`
+| Remove a previously registered view processor.
+
+| `postProcess`
+| Modify a registered view processor.
+This can be used for example to modify properties of a view processor.
+
+|===
+
+== Attributes
+
+Attributes can be registered on an `EntityViewFactory` which can then be used during the request execution.
+Each attribute is represented as a key-value pair where the key is a `string`.
+See the appendix for a xref::services-and-components/attributes-overview.adoc[list of available attributes].
+
+.Configuring attributes
+[source,java,indent=0]
+----
+entities.withType( Book.class )
+        .formView( "publication",
+            fvb -> fvb.attribute( EntityAttributes.FORM_ENCTYPE, FormViewElement.ENCTYPE_MULTIPART )
+        );
+----
+
+== Controlling access
+
+Access to views can be restricted by setting a required `AllowableAction`.
+If the authenticated principal does not have access to the action, access to the view will be denied.
+The allowable action that is set on the `EntityViewFactory` is checked by the `ActionAllowedAuthorizationViewProcessor`.
+
+Access to the view can also be customized through `EntityViewProcessors` by implementing the `authorizeRequest` method.
+
+.Configuring the required allowable action
+[source,java,indent=0]
+----
+entities.withType( Book.class )
+        .formView( "publication",
+            fvb -> fvb.requiredAllowableAction( AllowableAction.READ )
+        );
+----
+
+== Messages & Localization
+
+During the view request various message codes will be resolved.
+A view allows you to define the prefix that should be used when resolving these message codes.
+
+.Configuring the required allowable action
+[source,java,indent=0]
+----
+entities.withType( Book.class )
+        .formView( "publication",
+            fvb -> fvb.messagePrefix( "publicationView" ) # <1>
+        );
+----
+<1> A message code for the publication view will be resolved using `EntityPrefix.adminMenu.publicationView` instead of `EntityPrefix.adminMenu.views[viewName]`
+
+See the appendix for more information on xref:services-and-components/message-codes.adoc[message codes].
+
+[WARNING]
+====
+Setting the message prefix for a view will remove the previously configured message prefixes.
+It will register a new `MessagePrefixingViewProcessor` for the specified prefixes.
+====
+
+////
+
+== Configuring the template
+
+.template(  )
+
+
+== Managing transactions
+
+- transactions
+.transactionManager(  )
+.transactionTemplate(  )
+
+== Advanced configuration
+
+- each of the entity view factories that is registered on an entity configuration is a DefaultEntityViewFactory that handles its viewprocessors
+- factory(/type)
+.factory(  )
+.factoryType(  )
+
+////
+
+
+
+
+////
+		        .listView(
+		        		lvb -> lvb.entityQueryFilter(  )
+				        .defaultSort(  )
+				        .showOnlyItemsWithAction(  )
+				        .pageSize(  )
+				        .sortableOn(  )
+				        .showResultNumber(  )
+				        .pageFetcher(  )
+				        .entityQueryPredicate(  )
+		        )
+
+// TODO move to creating views
+== Creating an additional form view
+
+To create an additional formView, simply register a new form view to the `EntityConfiguration` of that type.
+
+.Example creation of an additional form view
+[source,java,indent=0]
+----
+@Override
+public void configure( EntitiesConfigurationBuilder entities ){
+    entities.withType( Book.class )
+    		.formView( "custom", fvb -> fvb.showProperties( "name" ) ); # <1>
+}
+----
+<1> Register a custom form view with the name *custom*.
+
+To simplify the creation of new form views, a utility class `EntityViewCustomizers` has been provided.
+It provides shorthand methods that allow quick configuration of common features for form views, which can then be further extended.
+The customizers mostly simplify the configuration of the xref::building-views/index.adoc#entity-view-factory[EntityViewFactory and EntityViewProcessors].
+
+[opts="header", cols="1,1,2"]
+|===
+
+| method
+| Consumer
+| Description
+
+| basicSettings
+| BasicEntityViewSettings
+| Allows to easily register a menu item, configuring the `SingleEntityPageStructureViewProcessor` and validating access to the view.
+
+| formSettings
+| FormEntityViewSettings
+| Configuration of form related options, such as the form layout or whether form buttons should be available as well as whether this view will serve as an extension view.
+
+|===
+
+.Using EntityViewCustomizers
+[source,java,indent=0]
+----
+		configuration.withType( Book.class )
+		             .formView( "custom", EntityViewCustomizers.basicSettings()
+		                                                       .adminMenu( "custom" ) # <1>
+		                                                       .titleMessageCode( "pageTitle.custom" ) # <2>
+		                                                       .andThen( EntityViewCustomizers.formSettings()
+		                                                                                      .addFormButtons( false ) ) # <3>
+		                                                       .andThen( fvb -> fvb.showProperties( "name" ) ) ); # <4>
+----
+<1> A navigation item with path `custom` should be added that links to the custom view.
+<2> A specific message code should be used when resolving the page view
+<3> Default form settings can be configured, which makes it easy to add extensions to the form.
+In this case, we're opting to remove the form buttons (save / cancel) from the form.
+<4> This form should only render the name of the book.
+
+////
+
+== Related documentation
+
+Configuring views::
+
+* xref:building-views/customizing-views/form-view.adoc[Customizing a list view]
+* xref:building-views/customizing-views/list-view.adoc[Customizing crud views]
+* xref:customizing-entities/entity-views.adoc[Configuring entity views]
+* xref:services-and-components/attributes-overview.adoc[Attributes overview]
+
+Configuring properties::
+
+* Registering properties
+* Configuring properties
+
+Localization::
+
+* Localization & text messages
+* xref::services-and-components/message-codes.adoc[Message codes]

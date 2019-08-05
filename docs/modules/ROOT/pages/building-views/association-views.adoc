@@ -16,7 +16,7 @@ Whenever a view is rendered for the `book.author` association, the available `En
 
 Linked associations are associations which are of the `AssocationType.Type.LINKED` type, which is the default association type for any association that is created.
 They, as their name says, link to views for the associated entity configuration.
-This means that, when navigating to the association, a xref::building-views/list-view.adoc[list view] will be provided which links to entity views of the target entity configuration.
+This means that, when navigating to the association, a xref:building-views/customizing-views/list-view.adoc[list view] will be provided which links to entity views of the target entity configuration.
 
 == Embedded associations
 

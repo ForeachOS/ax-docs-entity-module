@@ -18,23 +18,31 @@
 
 // Configuring entities
 * xref:registering-entities/index.adoc[Configuring entities]
+** xref:customizing-entities/entity-properties.adoc[Configuring properties]
 ** xref:registering-entities/manual-registration.adoc[Manually adding an entity type]
-*** xref:customizing-entities/entity-properties.adoc[Registering properties]
+*** xref:registering-entities/entity-properties.adoc[Registering properties]
 *** xref:customizing-entities/entity-model.adoc[Defining an entity model]
 *** xref:customizing-entities/entity-views.adoc[Configuring entity views]
 *** xref:customizing-entities/entity-associations.adoc[Adding associations]
 ** xref:registering-entities/creating-an-entity-registrar.adoc[Automatic registration of entities]
 ** xref:customizing-entities/index.adoc[Customizing existing entities]
+** xref:customizing-entities/entity-validation.adoc[Customizing entity validation]
 ** xref:registering-entities/enums-as-entities.adoc[Using enums as entities]
 
 // Entity views
 * xref:building-views/index.adoc[Building entity views]
 ** How entity views work
-** xref:building-views/list-view.adoc[List views]
-** xref:building-views/form-view.adoc[CRUD views]
-*** Create and update form
-*** xref:building-views/generic-view.adoc[Read/detail view]
-*** Delete form
+** Creating views
+*** List views
+*** Form views
+*** Generic views
+** xref:building-views/customizing-views/customizing-views.adoc[Customizing existing views]
+*** xref:building-views/customizing-views/list-view.adoc[List views]
+*** xref:building-views/customizing-views/form-view.adoc[CRUD views]
+**** xref:building-views/customizing-views/create-update-view.adoc[Create and update form]
+**** xref:building-views/customizing-views/detail-view.adoc[Read/detail view]
+**** xref:building-views/customizing-views/delete-view.adoc[Delete form]
+*** Common tasks
 ** xref:building-views/association-views.adoc[Association views]
 ** xref:building-views/linking-to-entity-views.adoc[Linking to entity views]
 ** xref:building-views/localization.adoc[Localization & text messages]
@@ -44,14 +52,15 @@
 // Entity properties and view elements
 * xref:property-controls/index.adoc[Entity property controls]
 ** Specifying a control type
-** Generating controls for properties
+** xref:property-controls/creating-a-property-control/generating-controls-for-properties.adoc[Generating controls for properties]
+
 // Default property types
 ** Available controls
 *** xref:property-controls/autosuggest.adoc[Autosuggest]
 *** xref:property-controls/checkbox.adoc[Checkbox]
 *** xref:property-controls/datetime.adoc[Date/Time picker]
 *** xref:property-controls/select.adoc[Drop-down select]
-*** Embedded collection
+*** xref:property-controls/embedded-collection.adoc[Embedded collection]
 *** xref:property-controls/fieldset.adoc[Fieldset]
 *** Form group
 *** Label
@@ -72,6 +81,7 @@
 * xref:entity-query/index.adoc[EntityQuery infrastructure]
 ** xref:entity-query/eql.adoc[EntityQuery Language (EQL)]
 *** xref:entity-query/extending-eql.adoc[Extending EQL]
+//*** xref:entity-query/eql-date.adoc[EQL date and time functions]
 ** xref:entity-query/filtering-list-views.adoc[Filtering list views]
 
 // Integration with libraries & modules

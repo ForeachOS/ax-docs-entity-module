@@ -1,11 +1,14 @@
-= Creating a custom control
+= How-to: Creating a custom control
 
+[abstract]
+--
 On this page, you will learn how to create a custom control for rendering properties of a specific object type.
 We'll be doing this in the following steps:
 
 1. Creating a custom ViewElementBuilder that can be specified on a property.
 2. Using the custom ViewElementBuilder when a specific viewElementType is specified.
 3. Automatically using a specific viewElementType for properties of a specific object type.
+--
 
 == Creating a custom ViewElementBuilder
 
@@ -23,7 +26,7 @@ public class UserValueViewElementBuilder extends ViewElementBuilderSupport # <1>
     protected MutableViewElement createElement ( ViewElementBuilderContext builderContext ){
 		User user = EntityViewElementUtils.currentPropertyValue( builderContext, User.class ); # <2>
 		if ( user != null ) {
-			BootstrapUiBuilders.div()
+			return BootstrapUiBuilders.div()
 			                   .css( "user-control" )
 			                   .add( BootstrapUiBuilders.node( "img" )
 			                                            .name( "avatar" )
@@ -32,9 +35,9 @@ public class UserValueViewElementBuilder extends ViewElementBuilderSupport # <1>
 			                                            .add( BootstrapUiBuilders.span()
 			                                                                     .css( "user-name" )
 			                                                                     .add( BootstrapUiBuilders.text( user.getDisplayName() ) ) )
-			                   );
+			                   ).build();
 		}
-		return BootstrapUiBuilders.text( "" ) # <3>
+		return BootstrapUiBuilders.text( "" ).build() # <3>
 	}
 }
 ----

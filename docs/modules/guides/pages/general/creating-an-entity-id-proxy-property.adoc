@@ -1,0 +1,160 @@
+= How-to: Map id properties to their entity
+
+[abstract]
+--
+It is common for entities to hold references to other entities but only have the actual id of the referred entity.
+
+In this how-to we show you can easily create a custom property which uses the actual entity for the UI.
+--
+
+== Setup
+
+Suppose you have the following 2 entities `Book` and `Author`:
+
+[source,java]
+----
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true) <1>
+public static class Book
+{
+    @Id
+    private Long id;
+
+    @NotBlank
+    @Length(max = 255)
+    private String title;
+
+    @NotNull
+    private Long authorId; <2>
+
+    @NotNull
+    @Builder.Default
+    private List<Long> reviewerIds = new ArrayList<>(); <3>
+}
+
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
+public static class Author
+{
+    @Id
+    private Long id;
+
+    @NotBlank
+    @Length(max = 255)
+    private String name;
+}
+----
+
+<1> The example uses Lombok annotations for creating getters, setters and other boilerplate of our entity.
+<2> `authorId` is a reference to a single `Author` entity
+<3> `reviewerIds` is a list of references to `Author` entities
+
+Both entities are known in the `EntityRegistry` and backed with a full `EntityModel`.
+It does not matter if these entities were automatically registered from Spring Data repositories, or a full manual registration.
+One entity type can be from a local database, the other from a REST API.
+
+== Rendering a form
+If we were to render a form for a `Book` we would get:
+
+* a single textbox for the `authorId` where we should enter the id number
+* an embedded collection of textboxes where we should enter the `reviewerIds`
+
+Because EntityModule knows about the `Author` entity however, it knows how to retrieve an instance based on its id.
+This means we can easily configure a property `author` which is of type `Author` which fetches and stores its value using the value of `authorId` behind the scenes.
+
+We call this an _entity id proxy property_.
+And because this is a very common case when building user interfaces, EntityModule contains a helper to register this type of properties.
+
+== Registering an entity id proxy
+An entity id proxy for either a single value or a collection can be registered with the `EntityPropertyRegistrationHelper` component:
+
+[source,java]
+----
+@Autowired
+private EntityPropertyRegistrationHelper propertyRegistrars;
+
+private void configureAuthorsOnBook( EntitiesConfigurationBuilder entities ) {
+    entities.withType( Book.class )
+            .properties(
+                    props -> props.property( propertyRegistrars.entityIdProxy( "author" ) <1>
+                                                               .entityType( Author.class )
+                                                               .targetPropertyName( "authorId" ) )
+                                  .and()
+                                  .property( propertyRegistrars.entityIdProxy( "reviewers" ) <2>
+                                                               .entityType( Author.class )
+                                                               .targetPropertyName( "reviewerIds" ) )
+            );
+}
+----
+
+<1> We create a new property `author` which refers to entities of type `Author` and proxies the target property `authorId`.
+
+<2> We create a new property `reviewers` which refers to entities of type `Author` and proxies the target property `reviewerIds`.
+Because the latter is a `List`, the new property will have type `List<Author`>.
+
+The target properties will be hidden automatically, and the newly defined properties will inherit basic settings (read/write/hidden) from the original target property.
+
+If required however, it is possible to customize the newly created property descriptor just like any other property.
+
+When rendering a form for `Book` now, the UI will show:
+
+* an `Author` dropdown for the `author` property
+* the default multi-checkbox of `Author` for the `reviewers` property
+
+== EntityQuery support
+When registering a proxy property this way, EntityModule automatically configures the EntityQuery support for the new properties as well.
+
+ author = 1 or reviewers contains 1
+
+will automatically be translated to
+
+ authorId = 1 or reviewerIds contains 1
+
+NOTE: Any value specification of an `Author` should work and will eventually be translated into its id for the target property.
+
+== Performance
+EntityModule uses the target `EntityModel` to load entities by its id.
+Configuring properties this way is very easy but has the side effect of possibly causing N+1 queries.
+
+As with all performance optimizations: it is up to the developer to customize the generated properties or entity configurations appropriately.
+
+== Using domain-specific id type
+The example used a standard `Long` java type as the entity id, but it's perfectly possible to use a domain-specific type (for example `AuthorId`).
+The only pre-requisite is that the `ConversionService` is able to convert from `String` to the domain-specific type, and vice versa.
+
+You can even use a different type on both ends: for example `Long` for `Author.id` but `AuthorId` for `Book.author`.
+In this case it is also required that the `ConversionService` is able to convert between those 2 types.
+
+.Domain-specific type which could be used as an alternative for `Long` in the example
+[source,java]
+----
+@Getter
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public static class AuthorId implements Serializable
+{
+    private static final long serialVersionUID = 42L;
+
+    private final long id;
+
+    public static AuthorId from( long id ) { <1>
+        return new AuthorId( id );
+    }
+
+    public static AuthorId from( String id ) { <1>
+        return from( Long.parseLong( id ) );
+    }
+
+    @Override
+    public String toString() {
+        return "" + id;
+    }
+}
+----
+
+<1> The static `from` methods ensure that the `ObjectToObjectConverter` from Spring framework will take care of the type conversion.
+Without the need for explicit converter registration.
+

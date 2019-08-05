@@ -67,6 +67,10 @@ Adds a page title, builds the entity specific menu (renders it as tabs) and publ
 | Generates a sortable table for a list of entities.
 Allows several configuration options like properties to render, sorting options etc.
 
+| {entity-module-javadoc-processors}/SaveEntityViewProcessor.html[SaveEntityViewProcessor]
+| Enables binding of the form submit to a dto of the currently rendered entity.
+Will save the entity if no errors occurred and redirect to the update vView
+
 | {entity-module-javadoc-processors}/TemplateViewProcessor.html[TemplateViewProcessor]
 | Configures the name of the template that should be rendered as the result of the controller.
 

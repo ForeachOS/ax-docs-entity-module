@@ -94,14 +94,14 @@ A custom template for a fieldset property can be set as a `ViewElementFieldset.T
 A number of default template functions are available for building layouts:
 
 
-[cols="1,2a"]
+[cols="1,2"]
 |===
 |Template |Example styling
 
 |Render fieldset as HTML `fieldset` element. +
  +
  `ViewElementFieldset.TEMPLATE_FIELDSET`
-|image::fieldset-fieldset.png[]
+|image:fieldset-fieldset.png[,600]
 
 |Render fieldset as `section` element with heading (`h1`, `h2`, `h3`). +
  +
@@ -110,7 +110,7 @@ A number of default template functions are available for building layouts:
 `ViewElementFieldset.TEMPLATE_SECTION_H3` +
  +
 `ViewElementFieldset.structureTemplate(...)`
-|image::fieldset-section.png[]
+|image:fieldset-section.png[,600]
 
 |Render fieldset as Bootstrap panel. +
  +
@@ -123,12 +123,12 @@ A number of default template functions are available for building layouts:
  +
 `ViewElementFieldset.panelTemplate(...)`
 
-|image::fieldset-panel.png[]
+|image:fieldset-panel.png[,600]
 
 |Render only the members of the fieldset. +
  +
 `ViewElementFieldset.TEMPLATE_BODY_ONLY`
-|image::fieldset-body-only.png[]
+|image:fieldset-body-only.png[,600]
 
 |===
 

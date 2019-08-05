@@ -4,7 +4,7 @@
 
 == Default views
 If AdminWebModule is enabled and you have an auto-detected entity type (eg. from a Spring Data repository), the default views are usually enabled.
-Every view has a base URL path, see the chapter <<default-views,default views>> for more information on the view types.
+Every view has a base URL path, see the chapter xref:entity-module-explained/entity-views.adoc[default views] for more information on the view types.
 
 .Default view paths
 [cols="1,5"]
@@ -69,6 +69,7 @@ The following paths would render the exact same view:
 * `@adminWeb:/entities/\{entityName}/\{id}?view=myCustomView`
 * `@adminWeb:/entities/\{entityName}/\{id}/update?view=myCustomView`
 
+[#building-view-links]
 == Building view links
 An `EntityViewLinks` component is available to generate links to entity views from anywhere in your code.
 This component will inspect the `EntityRegistry` to find corresponding configurations and determine how links should be built.
@@ -167,6 +168,13 @@ Every method call results in a new instance being created, so you will not make 
 // return the original EntityViewLinks
 .root()
 ----
+
+== ListView default link generation
+By default if you have the right permissions to update an entity the listView for that entity wil show a link to the updateView.
+If you only have read permissions on the entity, the listView will generate a link to to detailView.
+
+If you want the listView to always link to the detailView you can set the `LINK_TO_DETAIL_VIEW` attribute to `true`.
+More information can be found in the xref:services-and-components/attributes-overview.adoc[attributes overview] section.
 
 == Common URL parameters
 The following is a list of query string parameters often used with entity views:
