@@ -1,6 +1,6 @@
 name: entity-module
 title: "Module: Entity Management"
-version: 3.3.0
+version: master
 nav:
 - modules/ROOT/nav.adoc
 - modules/guides/nav.adoc
