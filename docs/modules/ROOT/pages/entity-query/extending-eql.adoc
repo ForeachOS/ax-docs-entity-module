@@ -102,7 +102,7 @@ public class HelloFunction implements EntityQueryFunctionHandler
 }
 ```
 
-== Custom EQL translation
+== Custom EQL translation with registered fields
 You can register an `EntityQueryConditionTranslator` attribute on any entity property.
 If a translator instance is present, it will be called during the parsing phase of an EQL statement into an `EntityQuery`.
 
@@ -134,3 +134,30 @@ The property customizations of the `EntityQueryFilterConfiguration` is only used
 
 The actual parsing of the query and execution of the query uses the property registry of the `EntityConfiguration`, which is configured via the `EntityQueryFacadeRegistrar`.
 ====
+
+[#custom-eql-translated]
+== Custom EQL translation with non registered fields
+In the example above we expanded (replaced and added) the `text` field into `name` and `content`.
+These three fields are all present on the entity `Group`.
+In some cases, it might be useful to expand a field into fields that are *not present* on the entity.
+
+A use case would be if you are querying a backend and want to expand a `text` field into `text` and `sub_text`, where `sub_text` is not present on the entity itself.
+
+You can achieve this by setting an `EntityQuery` or `EntityQueryCondition` as `translated`.
+When the translated flag is set, the `DefaultEntityQueryTranslator` will not attempt to lookup fields from the `PropertyRegistry`
+anymore.
+It will then send the `EntityQuery` as-is to the backend.
+
+**Define a search text property that actually searches on another field, where `sub_text` is not a registered property**
+[source,java,indent=0]
+----
+configuration.withType( Article.class )
+     .properties( props -> props.property( "text" )
+        .attribute( EntityQueryConditionTranslator.class, new EntityQueryConditionTranslator() {
+                @Override
+                public EntityQueryExpression translate( EntityQueryCondition condition ) {
+                    return new EntityQueryCondition( "sub_text", condition.getOperand(), condition.getFirstArgument() ).setTranslated( true );
+                }
+            }
+        ) );
+----

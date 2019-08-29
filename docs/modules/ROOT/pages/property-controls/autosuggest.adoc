@@ -1,0 +1,263 @@
+= Autosuggest control
+
+EntityModule supports automatic rendering of an xref:bootstrap-ui-module::components/form-controls/auto-suggest.adoc[`AutoSuggestFormElement` control] for properties.
+
+Apart from <<custom,custom autosuggest controls>>, configuration helpers are available for the common case of providing <<entity,autosuggest for known entities>>.
+
+[#entity]
+== Configuring autosuggest for entities
+
+Autosuggest controls are never rendered by default for any entity or property type.
+They must be activated manually by setting the `BootstrapUiElements.AUTO_SUGGEST` view element type on the corresponding modes.
+
+At minimum you must register the dataset that should be used for an autosuggest control.
+
+=== Registering the dataset
+You can use the `AutoSuggestDataAttributeRegistrar` component to register an autosuggest dataset for an entity type.
+It allows for several ways of configuring a dataset for a registered entity, based on the available entity configuration.
+
+.Example activating autosuggest control for an entity
+[source,java,indent=0]
+----
+@Autowired
+private AutoSuggestDataAttributeRegistrar autoSuggestData;
+
+entities.withType( Author.class )
+        .attribute(
+            autoSuggestData.entityQuery( "name ilike '{0}%' order by name asc" ) <1>
+                           .control( ctl -> ctl.minLength( 2 ) ) <2>
+        )
+        .viewElementType( ViewElementMode.CONTROL, BootstrapUiElements.AUTOSUGGEST ) <3>
+        .viewElementType( ViewElementMode.FILTER_CONTROL, BootstrapUiElements.AUTOSUGGEST ) <3>
+        .viewElementType( ViewElementMode.FILTER_CONTROL.forMultiple(), BootstrapUiElements.AUTOSUGGEST ); <3>
+----
+
+<1> Create an autosuggest dataset using an xref:entity-query/eql.adoc[`EQL statement`].
+The EQL statement represents the `EntityQuery` that should be executed to fetch the suggestions for the control.
+The parameter `+{0}+` will be replaced with the input from the user.
+This particular query will select all authors whose name starts with the input specified.
+<2> In this case we also customize the control itself, configuring it so suggestions are only fetched when at least 2 characters have been provided.
+This is entirely optional, if we were to omit this a default control would be created which fetches suggestions as soon as a single character is present.
+<3> We configure an autosuggest control to be rendered for the `CONTROL` and both single-value and multi-value `FILTER_CONTROL` modes.
+As we configure this directly on the `Author` entity, this will cause any property referencing this entity type to use the autosuggest control.
+
+== Entity dataset configuration
+
+The above example is the easiest way to configure an autosuggest dataset by specifying only the EQL statement that should be executed for fetching suggestions.
+
+This will detect the target entity type (`Author`) based on the context and use the available `EntityQuery` infrastructure for actual retrieval of the results.
+Each result will then be transformed into a suggestion using the `EntityModel` registered for `Author`.This simple configuration also limits the number of results returned to 50, and that limit will also be taken into account when fetching the actual data.
+
+Every element of the dataset can be configured separately as well for more fine-grained control.
+
+.Example customizing the dataset
+[source,java,indent=0]
+----
+@Autowired
+private AutoSuggestDataAttributeRegistrar autoSuggestData;
+
+@Autowired
+private AuthorRepository authorRepository;
+
+entities.withType( Author.class )
+        .attribute(
+            autoSuggestData.entityQuery(
+                    ds -> ds.as( Author.class ) <1>
+                            .suggestions( ( query, control ) -> authorRepository.findAllByNameContaining( query ) ) <2>
+                            .maximumResults( 10 ) <3>
+                            .resultTransformer( author -> new SimpleAutoSuggestDataSet.Result( author.getId(), author.getLogin() ) ) <4>
+            )
+        )
+----
+
+<1> This simply downcasts the configuration consumer, avoiding explicit casting in the inner lambdas.
+<2> Fetch the possible suggestions manually using the repository.
+<3> Only transform and return the first 10 results as suggestions.
+<4> Instead of using the `EntityModel` convert the results using the specified lambda.
+
+=== Dataset id
+
+Every dataset will be registered automatically with a unique id in the `AutoSuggestDataEndpoint`.
+Unless you specify a dataset id manually, one will be generated based on the context.
+
+For example, the dataset registered directly on the `Author` entity will get a generated id `entity-author`.
+
+NOTE: If you want to re-use the same dataset you should manually assign a dataset id.
+Dataset ids are considered part of the endpoint for the suggestions and should remain the same across application instances and restarts.
+
+=== Using a separate dataset
+
+You can also separately define and register datasets with the `AutoSuggestDataEndpoint`.
+To use a previously registered dataset simply configure its id as attribute.
+
+.Example using a separate dataset
+[source,java,indent=0]
+----
+@Autowired
+private AutoSuggestDataEndpoint autoSuggestDataEndpoint;
+
+@Autowired
+private GroupRepository groupRepository;
+
+@Override
+public void configure( EntitiesConfigurationBuilder entities ) {
+    AutoSuggestDataSet.ResultTransformer groupToSuggestion = candidate -> {
+        Group group = (Group) candidate;
+        return new SimpleAutoSuggestDataSet.Result( group.getId(), group.getName() );
+    };
+
+    autoSuggestDataEndpoint.registerDataSet( <1>
+            "possible-groups",
+            SimpleAutoSuggestDataSet
+                    .builder()
+                    .suggestionsLoader(
+                            ( query, controlName ) -> groupRepository.findByNameContaining( query, new PageRequest( 0, 15, new Sort( "name" ) ) )
+                                                                     .getContent()
+                                                                     .stream()
+                                                                     .map( groupToSuggestion::transformToResult )
+                                                                     .collect( Collectors.toList() ) )
+                    .build()
+    );
+
+    entities.withType( Group.class )
+            .attribute( AutoSuggestDataAttributeRegistrar.DATASET_ID, "possible-groups" ) <2>
+            .attribute( AutoSuggestDataSet.ResultTransformer.class, groupToSuggestion ) <3>
+            .viewElementType( ViewElementMode.CONTROL, BootstrapUiElements.AUTOSUGGEST );
+}
+----
+
+<1> Manually register an `AutoSuggestDataSet` directly on the `AutoSuggestDataEndpoint`.
+<2> Configure the same dataset to be used when rendering an autosuggest control for the `Group` entity.
+<3> Because the dataset registered does not directly implement `AutoSuggestDataSet.ResultTransformer`, manually specify the transformer that should be used.
+A result transformer is required for the control to be able to detect and preset the previously selected value server-side.
+
+=== Property configuration
+
+An autosuggest configuration can be specified both on entity and property level (including view specific properties).
+You can set different autosuggest control settings for a single property, just like with other controls.
+
+.Example using a alternative dataset for a property
+[source,java,indent=0]
+----
+entities.withType( Author.class )
+        .attribute( autoSuggestData.entityQuery( "name ilike '{0}%' order by name asc" ) );
+
+entities.withType( Book.class )
+        .properties(
+                props -> props.property( "author" )
+                              .attribute( autoSuggestData.entityQuery( "name ilike '{0}%' and type = BOOKS order by name asc" ) )
+        );
+----
+
+== Customizing the control
+
+You can customize the actual client-side control being generated by setting an `AutoSuggestFormElementConfiguration` attribute.
+
+If you do not specify a configuration manually, a default will be used which will:
+
+* search suggestions as soon as a single character is entered
+* show a hint of the best matching suggestion in the textbox
+* highlight the input string in the suggestions
+
+.Setting the AutoSuggestFormElementConfiguration
+Apart from creating a configuration manually and setting it as an attribute, `AutoSuggestDataAttributeRegistrar` provides a `control()` method which does just that and can be combined with dataset specification.
+
+[source,java,indent=0]
+----
+props.property( "author" )
+     .attribute(
+         autoSuggestData.dataSetId( "authorSearch" ) <1>
+                        .control( ctl -> ctl.minLength( 3 ).showHint( false ) ) <2>
+     );
+----
+
+<1> Specify the dataset by id, assuming it has been registered separately.
+<2> Configure the control that should be used.
+
+.Control configuration and dataset
+When setting an `AutoSuggestFormElementConfiguration` it is not strictly required to configure a dataset as attribute.
+If a dataset is configured (as in all previous examples) it will replace the default dataset which is set on the control configuration.
+If a dataset has not yet been configured for the current configuration, it must be configured on the `AutoSuggestFormElementConfiguration` instead.
+
+TIP: If you want to avoid the default dataset of your configuration to be replaced, explicitly specify an empty string as dataset id.
+
+.Using a ViewElementPostProcessor
+If you want to customize the control itself after it has been built, you can do so by adding a `ViewElementPostProcessor`.
+The actual control built will be of type `AutoSuggestFormElement` (for a single-value control) or `NodeViewElement` (which contains an `AutoSuggestFormElement` - for a multi-value control).
+
+.Example registering a post-processor for a single-value autosuggest control
+[source,java,indent=0]
+----
+entities.withType( Author.class )
+        .viewElementType( ViewElementMode.CONTROL, BootstrapUiElements.AUTOSUGGEST )
+        .<AutoSuggestFormElement>viewElementPostProcessor(
+                ViewElementMode.CONTROL, (builderContext, autosuggest) -> /* customize the control */
+        );
+----
+
+[#custom]
+== Custom autosuggest control rendering
+
+You can render an autosuggest control for any property by either:
+
+* setting a fully configured `AutoSuggestFormElementConfiguration` attribute and a `AutoSuggestDataSet.ResultTransformer` attribute
+* setting a dataset id of a dataset that implements `AutoSuggestDataSet.ResultTransformer` (eg. an `InitializingAutoSuggestDataSet`)
+* setting a dataset id and a `AutoSuggestDataSet.ResultTransformer` attribute directly
+
+The `AutoSuggestDataSet.ResultTransformer` is required for the control to be able to pre-select a previously selected property value (server-side).
+
+.Example custom registration of autosuggest control
+In this example a `User` has a list of addresses, where each `Address` has a city.
+The value of `city` is simply the city name - a `String`.
+This example configures autosuggest of some common cities, but allowing any value.
+
+[source,java,indent=0]
+----
+List<String> cities = Arrays.asList( "Antwerp", "Brussels", "Ghent", "Kortrijk", "Hasselt" ); <1>
+
+autoSuggestDataEndpoint.registerDataSet(
+        "cities",
+        AutoSuggestDataSet.forControl() <2>
+                          .suggestionsLoader( ( query, controlName ) ->
+                                                      cities.stream()
+                                                            .filter( candidate -> StringUtils.containsIgnoreCase( candidate, query ) )
+                                                            .map( SimpleAutoSuggestDataSet.Result::of )
+                                                            .collect( Collectors.toList() ) )
+                          .resultTransformer( SimpleAutoSuggestDataSet.Result::of )
+                          .build()
+);
+
+entities.withType( User.class )
+        .properties(
+                props -> props.property( "address[].city" ) <3>
+                              .viewElementType( ViewElementMode.CONTROL, BootstrapUiElements.AUTOSUGGEST )
+                              .attribute( AutoSuggestDataAttributeRegistrar.DATASET_ID, "cities" )
+        );
+----
+
+<1> The list of city names to autosuggest.
+<2> Register an autosuggest dataset that searches for the user input anywhere in the city name.
+We create a dataset using `AutoSuggestDataSet.forControl()` which forces us to set a result transformer.
+In this case our transformer maps a city name to a suggestion result.
+<3> Configure the `city` property of each `address` to render as an autosuggest control using our dataset.
+Because our dataset implements `AutoSuggestDataSet.ResultTransformer`, setting only the dataset id attribute is sufficient.
+
+== Autosuggest infrastructure
+
+If you are looking to learn more, see the source code and javadoc of the following components:
+
+[cols="1,4"]
+|===
+|Component |Role
+
+|`AutoSuggestDataEndpoint`
+|Holds the datasets that can be accessed.
+
+|`AutoSuggestDataAttributeRegistrar`
+|Helper for fluent configuration of autosuggest controls on entities and properties.
+
+|`AutoSuggestFormElementBuilderFactory`
+|Responsible for building autosuggest controls for type `BootstrapUiElements.AUTO_SUGGEST`.
+
+|===
+

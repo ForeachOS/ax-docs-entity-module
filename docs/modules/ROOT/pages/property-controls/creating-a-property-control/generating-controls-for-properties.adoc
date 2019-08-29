@@ -46,7 +46,7 @@ If `BootstrapUiModule` is present, default constants in `BootstrapUiElements` ca
 | Provide your own custom `ViewElementBuilder` that is used for building the element.
 
 | `ViewElement`
-| Provided a fixed element that should be returned
+| Provide a fixed element that should be returned
 
 |===
 
