@@ -11,7 +11,7 @@ What we’ll do:
 
 == Create a new web application
 
-In the following sections, we'll start from an application generated through the http://start-across.foreach.be[Across Initializer].
+In the following sections, we'll start from an application generated through the https://start.across.dev[Across Initializer].
 We'll generate an application for Across 2.1.2.RELEASE with the following modules:
 
 * `AcrossWebModule`
