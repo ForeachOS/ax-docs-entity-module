@@ -3,8 +3,7 @@
 :sectnums:
 :chapter-number: 0
 
-include::adding-a-custom-property-to-an-entity.adoc[]
-include::adding-a-custom-action-to-a-listview.adoc[]
-include::creating-an-extension-form.adoc[]
+This section contains all guides and how-tos for entity module.
+These are categorized into general, list-views & form-views and can be navigated trough using the left-hand side navigation.
 
 :!sectnums:
