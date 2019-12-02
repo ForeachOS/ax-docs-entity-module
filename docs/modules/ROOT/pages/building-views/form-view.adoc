@@ -1,0 +1,300 @@
+:page-partial:
+[[form-view]]
+=== Form view
+:chapter-number: 0
+
+Entity module provides various default views out of the box to provide a complete CRUD interface for entities.
+These are divided into types of views:
+
+- *list views*: A list view renders all the existing objects for the current configuration.
+- *form views*: Renders a view to manage a single entity instance.
+A form view always renders within the context of an instance for an entity type and also provides a separate `EntityAdminMenu` for that context.
+
+In the following sections, a more in depth explanation is given on the default views that are available.
+
+[[create-view]]
+==== Create view
+
+A create view enables the user to create a new instance for an entity type.
+This view can only be accessed if the user has the `AllowableAction.CREATE` action on the `EntityConfiguration` of the type.
+By default, it will render all the writable properties in ViewElementMode.FORM_WRITE.
+
+A create view will have no references to other forms by default, but only controls for the properties that should be rendered and the ability to save.
+
+.Default settings
+[cols="1,1"]
+|===
+
+| View name
+| createView
+
+| Required action
+| `AllowableAction.READ`
+
+| ViewElementMode
+| `ViewElementMode.FORM_WRITE`
+
+| Default property selector
+| `EntityPropertyDescriptor.WRITABLE`
+
+|===
+
+
+[[detail-view]]
+==== Detail view
+
+The detail view enables a user to view an existing instance for an entity type, without being able to modify the entity directly.
+It can only be accessed if the user has the `AllowableAction.READ` action.
+The detail view is the default entry point to view an instance and provides the following:
+
+links to associated entities::
+By default, tabs are generated for properties that are `ManyToOne` / `OneToMany` and `ManyToMany` relationships.
+link to the deleteView for the instance::
+Usually visualized as a garbage-bin icon at the top right of the navigation bar.
+link to the updateView for the instance::
+A *modify* button is provided when the user has the `AllowableAction` action.
+
+.Default settings
+[cols="1,1"]
+|===
+
+| View name
+| view
+
+| Required action
+| `AllowableAction.READ`
+
+| ViewElementMode
+| `ViewElementMode.FORM_READ`
+
+| Default property selector
+| `EntityPropertyDescriptor.READABLE`
+
+|===
+
+
+[[update-view]]
+==== Update view
+
+The update view enables the user to modify an existing instance for an entity type.
+It can only be accessed if the user has the `AllowableAction.UPDATE` action.
+It is the default entry point to manage the instance for an entity and provides the following:
+
+links to associated entities::
+By default, tabs are generated for properties that are `ManyToOne` / `OneToMany` and `ManyToMany` relationships.
+link to the deleteView for the instance::
+Usually visualized as a garbage-bin icon at the top right of the navigation bar.
+ability to modify the current entity::
+A save button is provided which modifies the current entity.
+
+.Default settings
+[cols="1,1"]
+|===
+
+| View name
+| updateView
+
+| Required action
+| `AllowableAction.UPDATE`
+
+| ViewElementMode
+| `ViewElementMode.FORM_WRITE`
+
+| Default property selector
+| `EntityPropertyDescriptor.WRITABLE`
+
+|===
+
+
+[NOTE]
+====
+Both the <<detail-view,detail view>> and the <<update-view,update view>> are entry points to access an instance.
+Depending on access permissions, different scenario's will be applied for linking to these views:
+
+.Actions on the listView
+- If a user has access to the read action, but not the update action, a link to the detail view will be present on the row for the instance
+- If a user has access to the read action and the update action, a link to the update view will be present on the row for the instance
+
+.'General' navigation item on form views
+Clicking the 'General' navigation item will
+
+- reload the detail view if the user is on the detail view
+- reload the update view if the user is on the update view
+- redirect to the detail view, if the user is not on the detail or update view and has the read action but not the update action
+- redirect to the update view, if the user is not on the detail or update view and has the read action and the update action
+
+This can also be overridden by specifying the `EntityAttributes.LINK_TO_DETAIL_VIEW` attribute on the `EntityConfiguration`, or the current `EntityViewRequest`.
+If the attribute has value `true`, a list view will link to the detail view but not to the update view for every item, if the read action is present.
+On a form view, the 'General' menu item will always link to the detail view unless the user is on the update view.
+====
+
+
+[[delete-view]]
+==== Delete view
+
+The delete view allows the deletion of an instance for an entity type.
+If the `AllowableAction.DELETE` is present for the instance, it may be removed via a confirmation page.
+The delete view can by default be accessed through the garbage bin at the bottom right of the detail or update view and provides the following:
+
+links to associated entities::
+By default, tabs are generated for properties that are `ManyToOne` / `OneToMany` and `ManyToMany` relationships.
+ability to delete the current instance::
+A delete button is provided which modifies the current entity.
+
+.Default settings
+[cols="1,1"]
+|===
+
+| View name
+| deleteView
+
+| Required action
+| `AllowableAction.DELETE`
+
+|===
+
+Whether the instance can be deleted depends on other factors (usually associations) of the entity type.
+If associated items are detected, the form settings depend on the `ParentDeleteMode` settings of the association.
+This can be customized by either specifying the `ParentDeleteMode` on the association configuration or catching the `BuildEntityDeleteViewEvent`.
+
+.Setting the parentDeleteMode on an association
+[source,java,indent=0]
+----
+private void configure( EntitiesConfigurationBuilder entities ){
+    entities.withType( Author.class )
+            .association( ab -> ab.name( "book.author" )
+                .parentDeleteMode( EntityAssociation.ParentDeleteMode.WARN ) #<1>
+            );
+}
+----
+<1> A warning will be shown when attempting to delete an `Author` which is linked in other books.
+
+.ParentDeleteMode settings
+[cols="1,3"]
+|===
+| `ParentDeleteMode.IGNORE`
+| item information is not printed nor influences the ability to delete
+
+| `ParentDeleteMode.WARN`
+| item information is printed on the form but does not influence the ability to delete
+
+|`ParentDeleteMode.SUPPRESS`
+| item information is printed on the form and disables the ability to delete, this is the default setting
+|===
+
+The `BuildEntityDeleteViewEvent`, which is published after the initial association information has been set, allows you to customize the following:
+
+* suppress the ability to delete (by hiding the delete button)
+* add associations to the form
+* add custom feedback messages to the form (and optionally remove the associations block)
+
+The initial `BuildEntityDeleteViewEvent` is configured based on the `EntityAssociation` list of the entity.
+If associated items are detected, they influence the form settings depending on the *parentDeleteMode* property of the `EntityAssociation`.
+
+
+
+.Example BuildEntityDeleteEvent
+[source,java,indent=0]
+----
+	@EventListener
+	void modifyDeleteOptions( BuildEntityDeleteViewEvent<Book> deleteEvent ) {
+		deleteEvent.setDeleteDisabled( false ); # <1>
+	}
+----
+<1> Allow the instance to be deleted
+
+Via the `BuildEntityDeleteViewEvent`, the page can also be customized depending on the actual instance that the user attempts to delete.
+
+NOTE: The EntityModule simply calls the delete method of the `EntityModel`, usually a direct call to a repository `delete()`.
+You will have to take care yourself of complex delete scenarios - like deleting the associations - by either modifying the `EntityModel` or using another mechanism like the `EntityInterceptor`.
+
+==== Creating an additional form view
+
+To create an additional formView, simply register a new form view to the `EntityConfiguration` of that type.
+
+.Example creation of an additional form view
+[source,java,indent=0]
+----
+@Override
+public void configure( EntitiesConfigurationBuilder entities ){
+    entities.withType( Book.class )
+    		.formView( "custom", fvb -> fvb.showProperties( "name" ) ); # <1>
+}
+----
+<1> Register a custom form view with the name *custom*.
+
+To simplify the creation of new form views that are also immediately accessible through the navigation bar, a few helper classes have been added.
+These provide shorthand methods to add common features to the form view and then accept further configuration.
+
+[source,java,indent=0]
+----
+		configuration.withType( Book.class )
+		             .formView( "custom", EntityViewCustomizers.basicSettings()
+		                                                       .adminMenu( "custom" ) # <1>
+		                                                       .titleMessageCode( "pageTitle.custom" ) # <2>
+		                                                       .andThen( EntityViewCustomizers.formSettings()
+		                                                                                      .addFormButtons( true ) ) # <3>
+		                                                       .andThen( fvb -> fvb.showProperties( "name" ) ) ); # <4>
+----
+<1> Provide a form view with the name *custom* which should also provide a navigation item with path *custom*.
+<2> A specific message code should be used when resolving the page view
+<3> Default form settings can be configured, which makes it easy to add extensions to the form.
+In this case, we're opting to add form buttons (save / cancel) to the form.
+<4> This form should only render the name of the book.
+
+[[configuring-form-text]]
+==== Configuring form controls text
+
+Usually a property is rendered in either in a xref:bootstrap-ui-module::form-controls/form-group.adoc[form group], which is a combination of a label and a control, or a xref:property-controls/fieldset.adoc[fieldset].
+By default, a property like this would be rendered as a form group (`FormGroupElement` which is usually a combination of the label and the control for the property) or a xref:property-controls/fieldset.adoc[fieldset] (`FieldsetFormElement`).
+
+Depending on the `ViewElementMode` that the property is rendered in, various text messages can be modified.
+
+===== Read mode
+
+In `FORM_READ` (readonly) mode, the default form renders only the label and the value of a property.
+You can customize the label by configuring the corresponding xref:services-and-components/message-codes.adoc[message code], for example: `UserModule.entities.user.properties.username=Name of the user`.
+
+===== Write mode
+
+In `FORM_WRITE` mode several other message codes will be resolved as well, and if they return values, additional content will be shown on the form.
+
+Description text::
+A description provides additional context for the property being shown.
+It is rendered above the control of a form group, or above the content of a fieldset.
+
+[source=properties]
+----
+UserModule.entities.user.properties.username[description]=The username must be unique.
+----
+
+Help text::
+Help text is rendered below the control of a form group, or below the content of a fieldset.
+It usually provides a (less important) hint for updating the value.
+
+[source=properties]
+----
+UserModule.entities.user.properties.username[help]=Try to pick something you will remember.
+----
+
+Tooltip text::
+Tooltip text is added as a separate icon (question mark) that will only show the actual tooltip when you hover over it with the mouse cursor.
+Tooltips are often used as an alternative for help text.
+The difference is that help text is always visible, whereas to see the tooltip a used will need to take an extra action.
+
+The tooltip icon is added to the label of a form group or to the legend of a fieldset.
+
+[source=properties]
+----
+UserModule.entities.user.properties.username[tooltip]=You will receive an error when saving if your username is already taken.
+----
+
+By default all message codes allow HTML entities, so you can add additional links or markup to them.
+
+NOTE: In case of a form group you can also manually set the different text components from code.
+Values set from code will take precedence and will never be replaced by the values resolved from message codes.
+
+A more detailed explanation of how message codes are resolved and which codes are possible can be found in the xref:services-and-components/message-codes.adoc[message codes overview].
+
+
+
