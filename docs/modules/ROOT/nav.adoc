@@ -46,6 +46,7 @@
 ** xref:building-views/association-views.adoc[Association views]
 ** xref:building-views/linking-to-entity-views.adoc[Linking to entity views]
 ** xref:building-views/localization.adoc[Localization & text messages]
+** xref:building-views/styling.adoc[Styling views]
 ** xref:building-views/security-and-permissions.adoc[Security and permissions]
 ** Admin Web menu
 

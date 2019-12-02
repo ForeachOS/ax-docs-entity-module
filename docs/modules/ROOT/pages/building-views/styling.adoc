@@ -1,0 +1,56 @@
+= Styling views
+
+You can use several CSS classes and data attributes to style elements or use them for binding Javascript events.
+
+The following classes have been added specifically for this purpose:
+
+.CSS classes and data attributes on outer most wrapper (.pcs)
+[cols="20%,80%",options="header"]
+|===
+| Attribute
+| Value
+
+| `data-em-entity`
+| the name of the entity (e.g. `article`)
+
+| `data-em-view`
+| the name of the view (e.g. `listView`, `updateView`, `view` or `customListView` in case of a custom created view)
+
+| `data-em-association`
+| the name of the association (e.g. `article.author`), only if this view is an association
+
+| `class` (CSS class)
+| the type of the view (e.g. `em-view-listView`, `em-view-updateView`, `em-view-formView`, ...)
+
+|===
+
+.Data attributes on a form group
+[cols="20%,80%",options="header"]
+|===
+| Attribute
+| Value
+
+| `data-em-property`
+| the name of the property (e.g. `article`)
+
+|===
+
+.CSS classes attributes on views
+[cols="20%,80%",options="header"]
+|===
+| View
+| CSS class
+
+| Form of form view
+| `em-form`
+
+| Form of list view
+| `em-list-form`
+
+| Panel of list view
+| `em-sortableTable-panel`
+
+| Table of list view
+| `em-sortableTable-table`
+
+|===

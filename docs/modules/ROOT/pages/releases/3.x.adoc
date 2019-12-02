@@ -1,7 +1,7 @@
 = 3.x.x release notes
 
 [#3-4-0]
-== 3.4.0-SNAPSHOT
+== 3.4.0.RELEASE
 
 New features:
 
@@ -9,6 +9,7 @@ New features:
 ** this allows consumers to customize the entire form group for a filter control, separately from the control itself
 * support has been added for xref:property-controls/autosuggest.adoc[configuring Autosuggest controls]
 * support for marking an `EntityQuery` or `EntityQueryCondition` as `translated`, see xref:entity-query/extending-eql.adoc#custom-eql-translated[Extending EQL]
+* added CSS classes and data attributes on some views to make styling easier, see xref:building-views/styling.adoc[Styling views]
 
 Bug-fixes and minor improvements:
 
