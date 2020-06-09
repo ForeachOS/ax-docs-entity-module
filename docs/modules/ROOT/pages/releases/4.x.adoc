@@ -1,0 +1,22 @@
+= 4.x.x release notes
+
+[#4-0-0]
+== 4.0.0-SNAPSHOT
+
+* Behaviour of `EntityLinkBuilder` has been changed due to changes in Spring 5 concerning URL encoding of parameters.
+** All `linkTo` calls in `EntityViewLinks` will automatically URL encode `from` parameters correctly.
+** All calls to `withPartial`, `withFromUrl`, `withViewName`, `withQueryParam` will automatically URL encode `from` parameters correctly.
+** Calls to to `.queryParam` are now seen as literals and will not be url encoded anymore.
+If you want query parameters to be encoded you must use templated variables as seen on https://docs.spring.io/spring/docs/5.1.12.RELEASE/spring-framework-reference/web.html#web-uri-encoding.
+* Fix bug with `EntityIdProxyPropertyRegistrar`: when an id value is `null` the `EntityModel.findOne()` of the target entity will no longer be called
+* The default navigation items generated for Across module are now by default included in the breadcrumb.
+Register `Menu` attribute `AdminMenu.ATTR_BREADCRUMB` to exclude them again, see also the xref:admin-web-module:building/nav-sections#exclude-from-breadcrumb[AdminWebModule documentation].
+* The generic *Entity management* overview controller is no longer available
+* Improvements for manual entity registration:
+** Instead of `EntitiesConfigurationBuilder.create().entityType(Class, true)` you can now use either `withType(Class)` or `register(Class)`
+** Both alternatives behave the same and will register the type if it is missing.
+The only difference is the intent expressed by the method name.
+* `data-em-button-role` has been added to most important navigation buttons and links
+* form buttons are now wrapped in a `div.em-form-actions`
+* `EntityFormStateCompleted` hook and event added to `SaveEntityViewProcessor` and `DeleteEntityViewProcessor`
+** allows for easier customization of the redirect and feedback messages after creating/saving/deleting an entity
