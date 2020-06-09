@@ -1,7 +1,7 @@
 = 4.x.x release notes
 
 [#4-0-0]
-== 4.0.0-SNAPSHOT
+== 4.0.0.RELEASE
 
 * Behaviour of `EntityLinkBuilder` has been changed due to changes in Spring 5 concerning URL encoding of parameters.
 ** All `linkTo` calls in `EntityViewLinks` will automatically URL encode `from` parameters correctly.
