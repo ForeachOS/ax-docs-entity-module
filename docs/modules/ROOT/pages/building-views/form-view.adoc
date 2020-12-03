@@ -10,7 +10,7 @@ These are divided into types of views:
 - *form views*: Renders a view to manage a single entity instance.
 A form view always renders within the context of an instance for an entity type and also provides a separate `EntityAdminMenu` for that context.
 
-In the following sections, a more in depth explanation is given on the default views that are available.
+In the following sections, a more in depth explanation is given on the default form views that are available.
 
 [[create-view]]
 ==== Create view
@@ -223,9 +223,28 @@ public void configure( EntitiesConfigurationBuilder entities ){
 ----
 <1> Register a custom form view with the name *custom*.
 
-To simplify the creation of new form views that are also immediately accessible through the navigation bar, a few helper classes have been added.
-These provide shorthand methods to add common features to the form view and then accept further configuration.
+To simplify the creation of new form views, a utility class `EntityViewCustomizers` has been provided.
+It provides shorthand methods that allow quick configuration of common features for form views, which can then be further extended.
+The customizers mostly simplify the configuration of the xref::building-views/index.adoc#entity-view-factory[EntityViewFactory and EntityViewProcessors].
 
+[opts="header", cols="1,1,2"]
+|===
+
+| method
+| Consumer
+| Description
+
+| basicSettings
+| BasicEntityViewSettings
+| Allows to easily register a menu item, configuring the `SingleEntityPageStructureViewProcessor` and validating access to the view.
+
+| formSettings
+| FormEntityViewSettings
+| Configuration of form related options, such as the form layout or whether form buttons should be available as well as whether this view will serve as an extension view.
+
+|===
+
+.Using EntityViewCustomizers
 [source,java,indent=0]
 ----
 		configuration.withType( Book.class )
@@ -233,13 +252,13 @@ These provide shorthand methods to add common features to the form view and then
 		                                                       .adminMenu( "custom" ) # <1>
 		                                                       .titleMessageCode( "pageTitle.custom" ) # <2>
 		                                                       .andThen( EntityViewCustomizers.formSettings()
-		                                                                                      .addFormButtons( true ) ) # <3>
+		                                                                                      .addFormButtons( false ) ) # <3>
 		                                                       .andThen( fvb -> fvb.showProperties( "name" ) ) ); # <4>
 ----
-<1> Provide a form view with the name *custom* which should also provide a navigation item with path *custom*.
+<1> A navigation item with path `custom` should be added that links to the custom view.
 <2> A specific message code should be used when resolving the page view
 <3> Default form settings can be configured, which makes it easy to add extensions to the form.
-In this case, we're opting to add form buttons (save / cancel) to the form.
+In this case, we're opting to remove the form buttons (save / cancel) from the form.
 <4> This form should only render the name of the book.
 
 [[configuring-form-text]]
