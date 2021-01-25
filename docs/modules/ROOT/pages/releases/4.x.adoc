@@ -1,5 +1,17 @@
 = 4.x.x release notes
 
+[#4-2-0]
+== 4.2.0.RELEASE
+
+* Switched from `node-sass` to `sass` dependency
+* Changed `AutoSuggestDataEndpoint` to handle a change in `UriComponentsBuilder.fromUriString( baseUrl )
+* Allow `AutoSuggestFormElementBuilderFactory` to customize the builder in `createSingleValueControl`
+* The message codes for boolean options (yes/no) can now be customized (see `BooleanValueTextProcessor`)
+* Fixed an issue in `DefaultEntityPropertyRegistryProvider` that could lead to a ConcurrentModificationException on JDK >= 9
+* Added `EntityViewLinksUtils` to easier configure back/cancel button url.
+It also offers helper functions for easier configuration redirect after save.
+See xref:building-views/linking-to-entity-views.adoc#entity-view-links-utils[`EntityViewLinksUtils`]
+
 [#4-1-0]
 == 4.1.0.RELEASE
 

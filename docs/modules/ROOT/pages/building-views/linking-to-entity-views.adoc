@@ -194,3 +194,52 @@ See also `EntityViewLinkBuilder#withPartial(String)`.
 `view`::
 Name of the specific custom view that should be rendered.
 See also `EntityViewLinkBuilder#withViewName(String)`.
+
+[#entity-view-links-utils]
+Configuring a redirect after save to the list view is generally done by adding a views processor.
+
+.Registering a custom view processor
+[source,java]
+----
+entities.withType( Library.class )
+   .createOrUpdateFormView( cufv -> cufv.viewProcessor( vp -> vp.createBean( LinkToListViewProcessor.class ) ) );
+----
+
+Because this scenario was quite common, we added `EntityViewLinksUtils` to more easily configure `EntityViewLinks` functionality.
+
+`EntityViewLinks` handles two scenarios:
+
+* Setting the URL when the `save` action is handled.
+Use the `EntityViewLinksUtils.afterSave` handler.
+* Setting the URL on rendered buttons (the back button, cancel button, ...).
+Use the `EntityViewLinksUtils.button` handler.
+
+The above example can now be configured as:
+
+.Registering a custom view processor with EntityViewLinksUtils
+[source,java]
+----
+entities.withType( Book.class )
+    .createOrUpdateFormView( EntityViewLinksUtils.afterSave.toListView() );
+----
+
+.Registering a custom view processor with EntityViewLinksUtils to redirect to the author association of this Book entity
+[source,java]
+----
+entities.withType( Book.class )
+   .createOrUpdateFormView(  EntityViewLinksUtils.afterSave.to(
+        ctx -> ctx.getEntityViewRequest().getEntityViewContext().getLinkBuilder()
+	        .forInstance( ctx.getEntityViewRequest().getCommand().getEntity() )
+            .association( "book.author" )
+            .listView()
+            .toUriString() ) )
+----
+
+To change the url on the cancel or delete button on the create or update view, you can now do the following:
+
+.Registering a custom view processor with EntityViewLinksUtils to change the link on the delete button
+[source,java]
+----
+entities.withType( Book.class )
+    .createOrUpdateFormView( EntityViewLinksUtils.button.toUpdateView( "btn-delete", "customView" ) );
+----
