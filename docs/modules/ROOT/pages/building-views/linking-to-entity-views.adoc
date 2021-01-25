@@ -196,6 +196,8 @@ Name of the specific custom view that should be rendered.
 See also `EntityViewLinkBuilder#withViewName(String)`.
 
 [#entity-view-links-utils]
+== Using EntityViewLinksUtils
+
 Configuring a redirect after save to the list view is generally done by adding a views processor.
 
 .Registering a custom view processor
