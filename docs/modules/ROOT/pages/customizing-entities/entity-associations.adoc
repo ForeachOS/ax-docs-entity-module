@@ -21,7 +21,53 @@ public void configure( EntitiesConfigurationBuilder entities ) {
 }
 ----
 
+Associations are mostly referred to by their name.
+In this case the `groups` field on the `MachinePrincipal` will be displayed as an association, instead of a property.
+
+In more complex setups, it might be handy to target multiple associations of an entity.
+This might be the case where you want to hide all associations.
+You can use this by using the `all()` method.
+
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+@Override
+public void configure( EntitiesConfigurationBuilder entities ) {
+    entities.withType( MachinePrincipal.class )
+                 .association( ab -> ab.all().hide() );
+}
+----
+
+NOTE: Calling `all()` is the equivalent of `name('*')` - which can also be used.
+
+It is also possible to configure associations by their underlying type or by inherited type:
+
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+@Override
+public void configure( EntitiesConfigurationBuilder entities ) {
+    entities.withType( MachinePrincipal.class )
+                 .association( ab -> ab.withType( Group.class ).hide() );
+}
+----
+
+[source,java,indent=0]
+[subs="verbatim,quotes,attributes"]
+----
+@Override
+public void configure( EntitiesConfigurationBuilder entities ) {
+    entities.withType( MachinePrincipal.class )
+                 .association( ab -> ab.assignableTo( SecurityPrincipal.class ).hide() );
+}
+----
+
+WARNING: The order in which associations are configured across several configuration files is not deterministic.
+For example, if you have configured something that hides all associations with `entities.all().association( ab -> ab.all().hide() )`, make sure you also provide an `@Order` annotation on your `@Configuration` file to make sure it is applied first (or last).
+
+
 == Association type
+
 Every `EntityAssociation` is of a specific type, configured through the *associationType* property.
 The association type determines how the associated values can be managed through the user interface.
 
