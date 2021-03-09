@@ -1,0 +1,47 @@
+= Spring Data Integration
+
+`EntityModule` optionally depends on `AcrossHibernateModule`.
+This means that you are not required to *only* use JPA for your backing repositories.
+
+While most use cases center around management of database entities, `EntityModule` also has some limited support for `ElasticsearchRepository`.
+
+When repositories are scanned and registered into `EntityModule` by `RepositoryEntityRegistrar`, several implementing registrars are conditionally applied.
+These classes are an implementation of `EntityQueryExecutorRegistrar` and are possibly not always loaded, depending on your classpath resources.
+
+NOTE: When an unsupported repository is loaded, the `DefaultEntityQueryExecutorRegistrar` will register a `PagingAndSortingEntityQueryExecutor` if the repository implements PagingAndSortingRepository.
+If not, the default will fallback to `CollectionEntityQueryExecutor` which will load all records with a `findAll()` query.
+Consider implementing a registrar and specific executor if you use an unsupported type.
+
+== Spring Data JPA
+
+When a project adds a dependency to `spring-data-jpa`.
+The `EntityQueryJpaExecutorRegistrar` class will register `EntityQueryJpaExecutor` to be used for all repositories that implement `JpaSpecificationExecutor`.
+
+When EQL parsing is needed, this is handled by `EntityQueryJpaUtils`.
+
+== QueryDSL
+
+When a project adds a dependency to `querydsl-core`.
+The `EntityQueryQueryDslExecutorRegistrar` class will register `EntityQueryQueryDslExecutor` to be used for all repositories that implement `QuerydslPredicateExecutor`.
+This is the preferred executor for repositories.
+
+When EQL parsing is needed, this is handled by `EntityQueryQueryDslUtils`.
+
+== Spring Data Elasticsearch
+
+When a project adds a dependency to `spring-data-elasticsearch`.
+The `ElasticEntityQueryExecutorRegistrar` class will register `ElasticEntityQueryExecutor` to be used for all repositories that implement `ElasticsearchRepository`.
+
+When EQL parsing is needed, this is handled by `EntityQueryElasticUtils`.
+
+=== Spring Data Elasticsearch view integrations
+
+The default setup of `EntityModule` with *only* Spring Data Elasticsearch might be useful to display, filter and search for data in an (existing) elasticsearch index.
+
+CRUD operations do not really make sense (although perfectly possible), since most often the data is indexed/updated by another process.
+
+In the https://bitbucket.org/beforeach/entity-ui-module/src/develop/entity-module-elastic-application/src/main/java/com/foreach/across/samples/entity/application/config/[following] setup we configured database entities, where the CRUD operations are handled by the JPA entities and the list views are backed by an elasticsearch `@Entity` and `ElasticsearchRepository`.
+
+This setup allows you to offload search to an Elasticsearch instance, while still keeping the master data in your database.
+
+To mimic the indexing operations, we used an `EntityInterceptorAdapter` to handle an CRUD operations from database entities towards Elasticsearch entities.

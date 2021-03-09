@@ -88,7 +88,7 @@
 // Integration with libraries & modules
 * xref:integration-with-other-modules.adoc[Integrations]
 ** Admin Web
-** Spring Data
+** xref:integrations/spring-data.adoc[Spring Data]
 ** Spring Security
 
 * xref:developer-tools.adoc[Developer tools]
