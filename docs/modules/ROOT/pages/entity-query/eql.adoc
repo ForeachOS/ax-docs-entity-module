@@ -2,10 +2,12 @@
 = EntityQuery Language (EQL)
 
 Apart from building an `EntityQuery` in code, one can be specified using the EntityQuery Language (EQL).
-EQL provides an SQL-like syntax for building queries.  Some examples could be:
+EQL provides an SQL-like syntax for building queries.
+Some examples could be:
 
 * `name = 'john'`
 * `order by birthday asc`
+* `users[].name = 'john'`
 * `name = 'john' order by birthday desc, registrationDate asc`
 * `name = 'john' and birthday >= '1980-01-01'`
 * `(name in ('john', 'jane') and birthday = today()) or birthday is EMPTY order by name asc`

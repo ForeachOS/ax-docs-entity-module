@@ -43,7 +43,8 @@ So supposing you have an entity `User` with id 1 and you want to query on a prop
 When building the `EntityQuery` the value 1 would be used as the id to find the `User` instance, and the latter would be used as the argument for the final query.
 If we want to replace the custom behavior and allow the user to be specified by username instead, we could easily register a custom converter.
 
-```java
+[source,java,indent=0]
+----
 public class EQValueToUserConverter implements Converter<EQValue, User>
 {
     ...
@@ -57,7 +58,7 @@ public class EQValueToUserConverter implements Converter<EQValue, User>
 ...
 
 converterRegistry.addConverter( new EQValueToUserConverter(...) );
-```
+----
 
 This would allow us to execute the queries like `creator = john` or  `creator in (john, jane)`.
 Any type-specific converter will take precedence over the defaults.
@@ -79,7 +80,9 @@ If you want to use a function to compare a property that has a `Date` type, your
 A single handler can support multiple functions and requested return types.
 
 **Simple EntityQuery function that always returns the String hello**
-```java
+
+[source,java,indent=0]
+----
 /**
  * Simple EntityQuery function that always returns the String 'hello'.
  * Example eql: name = hello() or name in (hello(), 'goodbye')
@@ -100,22 +103,26 @@ public class HelloFunction implements EntityQueryFunctionHandler
 		return "hello";
 	}
 }
-```
+----
 
 == Custom EQL translation with registered fields
+
 You can register an `EntityQueryConditionTranslator` attribute on any entity property.
 If a translator instance is present, it will be called during the parsing phase of an EQL statement into an `EntityQuery`.
 
 **Ensuring a field search is always case insensitive**
-```java
+
+[source,java,indent=0]
+----
 configuration
  .withType( Group.class )
  .properties(
     props -> props.property( "name" ).attribute( EntityQueryConditionTranslator.class, EntityQueryConditionTranslator.ignoreCase() )
  )
-```
+----
 
 **Define a search text property that actually searches on other fields**
+
 [source,java,indent=0]
 ----
 configuration.withType( Note.class )
@@ -161,3 +168,50 @@ configuration.withType( Article.class )
             }
         ) );
 ----
+
+== EQL translation with EntityQueryConditionFunctionHandler
+
+While most of the examples above translate properties or property values into new `EntityQueryCondition` conditions, they do not allow translation into the lower level query that will be executed by the underlying JPA/QueryDSL/... infrastructure.
+
+`EntityQueryConditionFunctionHandler` gives you the ability to hook into the translation step between `EntityQueryCondition` and (for JPA) the `Specification` API.
+For JPA this is handled in `EntityQueryJpaUtils`.
+
+The following example demonstrates how you could write an EQL function that will translate to an abs() function in JPA.
+
+**Define an abs() function in EQL that translate to a JPA abs() function**
+
+[source,java,indent=0]
+----
+@Component
+public class JpaAbsFunctionHandler implements EntityQueryFunctionHandler # <1>
+{
+	@Override
+	public boolean accepts( String functionName, TypeDescriptor desiredType ) {
+		return Objects.equals( "abs", functionName );
+	}
+
+	@Override
+	public Object apply( String functionName, EQType[] arguments, TypeDescriptor desiredType, EQTypeConverter argumentConverter ) {
+		if ( arguments.length != 1 ) {
+			throw new RuntimeException( "Expecting one argument" );
+		}
+
+		return new EntityQueryConditionJpaFunctionHandler()  # <2>
+		{
+			Object[] convertedArgs = argumentConverter.convertAll( desiredType, false, arguments );
+
+			@Override
+			public Specification apply( EntityQueryCondition entityQueryCondition ) {
+				return ( root, criteriaQuery, criteriaBuilder ) -> criteriaBuilder.equal(
+						criteriaBuilder.abs( root.get( entityQueryCondition.getProperty() ) ), convertedArgs[0] );  # <3>
+			}
+		};
+	}
+}
+----
+
+<1> Register an `EntityQueryFunctionHandler` as you normally would.
+<2> Return a `EntityQueryConditionFunctionHandler`, in this case for JPA, `EntityQueryConditionJpaFunctionHandler`.
+<3> Based on your arguments and `EntityQueryCondition` values, create a JPA Specification into which this function will be translated to.
+
+`EntityQueryJpaUtils` will now chain this function into a JPA Specification query.
