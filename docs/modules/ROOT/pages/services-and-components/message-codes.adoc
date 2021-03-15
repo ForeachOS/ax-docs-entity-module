@@ -43,6 +43,21 @@ Example: _{0,date,medium} {0,time,short} by \{1}_
 
  Example: _BookingApplicationModule.entities.enums.TicketType.VIP_
 
+| EntityModule.controls.options[filterNotSelected]
+| Message code for all boolean <option> controls, when the filter is not selected.
+
+| EntityModule.controls.options[notSet]
+| Message code for all boolean <option> controls, when the filter is selected, but no value is set.
+
+| EntityModule.controls.options[empty]
+| Message code for all boolean <option> controls, when the filter is empty.
+
+| EntityModule.controls.options[yes]
+| Message code for all boolean <option> controls, when the filter is set to true/yes.
+
+| EntityModule.controls.options[no]
+| Message code for all boolean <option> controls, when the filter is set to false/no.
+
 | *EntityPrefix*.name.singular
 | Label for an entity in singular form, for use outside or at the beginning of a sentence.
 
@@ -55,7 +70,7 @@ Example: _UserModule.entities.user.name.plural_
 
 | *EntityPrefix*.name.singular.inline
 | Label for an entity in singular form, for use within a sentence.
- If not explicitly specified, the label is generated based by lower-casing the non-inline version.
+If not explicitly specified, the label is generated based by lower-casing the non-inline version.
 
 Example: UserModule.entities.user.name.singular.inline_
 
@@ -236,7 +251,8 @@ You can trace the message codes being resolved by setting the logger named *com.
 == Default message codes
 The following is a copy of **EntityModule.properties** which contains the default message codes for EntityModule.
 
-```
+[source]
+----
 EntityModule.adminMenu=Entity management
 
 # Default actions
@@ -305,4 +321,12 @@ Auditable.createdDate={0,date,medium} {0,time,short}
 Auditable.lastModifiedDate={0,date,medium} {0,time,short}
 Auditable.created={0,date,medium} {0,time,short} by {1}
 Auditable.lastModified={0,date,medium} {0,time,short} by {1}
-```
+
+# BooleanValueTextProcessor
+
+EntityModule.controls.options[filterNotSelected]=
+EntityModule.controls.options[notSet]=No value set
+EntityModule.controls.options[empty]=
+EntityModule.controls.options[true]=Yes
+EntityModule.controls.options[false]=No
+----
